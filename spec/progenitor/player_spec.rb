@@ -1,13 +1,18 @@
 require 'eventmachine'
-
 require 'progenitor/player'
+
+def wire_message(expected_message)
+  "%06d" % expected_message.size + expected_message
+end
+
 describe Progenitor::Player do
+
 
 
   it "should hear" do
     module TestConnection
       def receive_data(data)
-        data.should == Progenitor::Messages.build_event("spalla123", "event_name", "event_value")
+        data.should == wire_message(Progenitor::Messages.build_event("spalla123", "event_name", "event_value"))
         EM::stop_event_loop
       end
     end
@@ -21,8 +26,8 @@ describe Progenitor::Player do
   it "should hear twice" do
     module TestConnection
       def receive_data(data)
-        data.should == Progenitor::Messages.build_event("spalla123", "event_name", "event_value") +
-          Progenitor::Messages.build_event("spalla123", "event2_name", "event3_value")
+        data.should == wire_message(Progenitor::Messages.build_event("spalla123", "event_name", "event_value")) +
+          wire_message(Progenitor::Messages.build_event("spalla123", "event2_name", "event3_value"))
         EM::stop_event_loop
       end
     end

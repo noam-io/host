@@ -9,7 +9,7 @@ module Progenitor
   end
 
   class Player
-    attr_accessor :spalla_id, :remote_client_ip, :remote_port
+    attr_accessor :spalla_id, :host, :port
 
     def initialize(id,  host, port)
       @spalla_id = id
@@ -26,7 +26,7 @@ module Progenitor
       EventMachine::connect(@host, @port, PlayerHandler) do |connection|
         @connection = connection
         @connection.parent = self
-        @connection.send_data(message)
+        send_data(message)
       end
     end
 
@@ -34,12 +34,22 @@ module Progenitor
       @connection = nil
     end
 
+    def terminate
+      @connection.close_connection_after_writing
+    end
+
     def send_message(message)
+      #TODO:   multiple sends before a connect
       if @connection
-        @connection.send_data(message)
+        send_data(message)
       else
         new_connection(message)
       end
+    end
+
+    def send_data(data)
+      @connection.send_data("%06d" % data.length)
+      @connection.send_data(data)
     end
 
   end
