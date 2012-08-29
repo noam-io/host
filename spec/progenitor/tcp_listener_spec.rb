@@ -55,8 +55,7 @@ describe Progenitor::TcpListener do
     listener = described_class.new do | message |
       @messages << message
     end
-    listener.receive_data("000002ab")
-    listener.receive_data("000002cd")
+    listener.receive_data("000002ab000002cd")
     @messages.should == ["ab", "cd"]
   end
 end

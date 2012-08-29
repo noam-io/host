@@ -1,3 +1,5 @@
+require 'json'
+
 module Progenitor
   module Messages
 
@@ -20,6 +22,7 @@ module Progenitor
         @event_value = data[index+=1]
         index
       end
+
     end
 
     class RegisterMessage < Message
@@ -46,7 +49,10 @@ module Progenitor
       message_array = JSON::parse(raw)
       message = build(message_array)
       message
+    end
 
+    def self.build_event(spalla_id, event_name, event_value)
+      ["event", spalla_id, event_name, event_value].to_json
     end
   end
 end

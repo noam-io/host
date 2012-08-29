@@ -10,8 +10,11 @@ module Progenitor
 
     def receive_data(data)
      enum = data.bytes
-     read_length(enum) if self.message_length.nil?
-     read_payload(enum) unless self.message_length.nil?
+     while true
+       read_length(enum) if self.message_length.nil?
+       read_payload(enum) unless self.message_length.nil?
+     end
+    rescue StopIteration
     end
 
     def read_length(enum)
@@ -19,7 +22,6 @@ module Progenitor
         @length_string << enum.next
       end
       length_complete
-    rescue StopIteration
     end
 
     def length_complete
@@ -32,7 +34,6 @@ module Progenitor
         self.message_payload << enum.next
       end
       message_complete
-    rescue StopIteration
     end
 
     def message_complete

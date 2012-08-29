@@ -20,4 +20,9 @@ describe Progenitor::Messages do
     parsed.hears.should == ["car_speed", "rpm", "volume"]
     parsed.plays.should == ["headlights"]
   end
+
+  it "should build an event message" do
+    message = [ "event", "spalla_id2", "car_speed", 65.32 ].to_json
+    described_class.build_event("spalla_id2", "car_speed", 65.32).should == message
+  end
 end
