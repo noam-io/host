@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+
+require 'eventmachine'
+require 'progenitor/maestro_server'
+
+server = Progenitor::MaestroServer.new(8833)
+
+EM::run do
+  server.start
+end
