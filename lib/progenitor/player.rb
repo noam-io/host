@@ -15,6 +15,7 @@ module Progenitor
       @spalla_id = id
       @host = host
       @port = port
+      @backlog = []
     end
 
     def hear(event_name, event_value)
@@ -22,28 +23,30 @@ module Progenitor
       send_message(message)
     end
 
-    def new_connection(message)
+    def new_connection
       EventMachine::connect(@host, @port, PlayerHandler) do |connection|
         @connection = connection
         @connection.parent = self
-        send_data(message)
+        @backlog.each { |message| send_data(message) }
+        @backlog.clear
       end
     end
 
     def disconnect
+      terminate
       @connection = nil
     end
 
     def terminate
-      @connection.close_connection_after_writing
+      @connection.close_connection_after_writing if @connection
     end
 
     def send_message(message)
-      #TODO:   multiple sends before a connect
       if @connection
         send_data(message)
       else
-        new_connection(message)
+        @backlog << message
+        new_connection if @backlog.size == 1
       end
     end
 
