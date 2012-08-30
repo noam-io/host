@@ -9,6 +9,10 @@ describe Progenitor::Orchestra do
     orchestra.play("listens_for_1", 12.42)
   end
 
+  it "plays a note noone has registered for" do
+    -> {orchestra.play("listens_for_1", 12.42)}.should_not raise_error
+  end
+
   it "replaces existing registration with a new one" do
     player1 = mock("Player1", :spalla_id => 1234)
     player2 = mock("Player2", :spalla_id => 1234)

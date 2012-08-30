@@ -23,7 +23,7 @@ module Progenitor
     def play(event, value)
       @players[event].each do |id, player|
         player.hear(event, value)
-      end
+      end if @players[event]
     end
 
   end
