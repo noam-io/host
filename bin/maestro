@@ -6,6 +6,13 @@ require 'eventmachine'
 require 'progenitor/maestro_server'
 
 server = Progenitor::MaestroServer.new(8833)
+Progenitor::Orchestra.instance.on_play do |name, event|
+  puts "Playing #{name} #{event}"
+end
+
+Progenitor::Orchestra.instance.on_register do |player, hears, plays|
+  puts "Register #{player.spalla_id}"
+end
 
 EM::run do
   server.start

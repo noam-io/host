@@ -29,4 +29,31 @@ describe Progenitor::Orchestra do
   it "implements a Singleton" do
     described_class.instance.should === described_class.instance
   end
+
+  it "registers registration observers" do
+    player = mock("Player1", :spalla_id => 1234)
+    callback_run = false
+    orchestra.on_register do |bplayer, hears, plays|
+      callback_run = true
+      bplayer.should == player
+      hears.should == ["listens_for_1", "listens_for_2"]
+      plays.should == ["plays_1", "plays_2"]
+    end
+
+    orchestra.register(player, ["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"])
+
+    callback_run.should == true
+  end
+
+  it "registers event observers" do
+    callback_run = false
+
+    orchestra.on_play do |name, value|
+      callback_run = true
+    end
+
+    orchestra.play("food", "bard")
+
+    callback_run.should == true
+  end
 end
