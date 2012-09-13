@@ -1,6 +1,6 @@
 module Progenitor
   class Orchestra
-    attr_reader :players
+    attr_reader :players, :events
 
     def self.instance
       @instance ||= self.new
@@ -8,28 +8,39 @@ module Progenitor
 
     def initialize
       @players = {}
+      @events = {}
       @play_callbacks = []
       @register_callbacks = []
     end
 
-    def register(player, hears, plays)
+    def register(player_connection, player)
+      players[player_connection.spalla_id] = player
+
       fired = []
-      hears.each do |event|
-        @players[event] ||= {}
-        fired << @players[event][player.spalla_id]
-        @players[event][player.spalla_id] = player
+      player.hears.each do |event|
+        @events[event] ||= {}
+        fired << @events[event][player_connection.spalla_id]
+        @events[event][player_connection.spalla_id] = player_connection
       end
       fired.compact.uniq.each(&:terminate)
 
+      player.plays.each do |event|
+        @events[event] ||= {}
+      end
+
       @register_callbacks.each do |callback|
-        callback.call(player, hears, plays)
+        callback.call(player_connection, player.hears, player.plays)
       end
     end
 
+    def event_names
+      @events.keys
+    end
+
     def play(event, value)
-      @players[event].each do |id, player|
+      @events[event].each do |id, player|
         player.hear(event, value)
-      end if @players[event]
+      end if @events[event]
 
       @play_callbacks.each do |callback|
         callback.call(event, value)

@@ -12,7 +12,7 @@
       url: '/refresh',
       success: function(e) {
         $("#real-time-data").html(e);
-        setTimeout("refreshStuff()", 1000);
+        setTimeout("refreshStuff()", 250);
       }
     });
   }
@@ -21,4 +21,5 @@
     refreshStuff();
   });
 </script>
+
 

@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+$: << File.expand_path(File.join(File.dirname(__FILE__), "..", "web"))
+
+require 'eventmachine'
+require 'sinatra/async'
+
+require 'maestro_web'
+
+server = Progenitor::MaestroServer.new(8833)
+EM::run do
+  server.start
+  MyApp.run!
+end
+

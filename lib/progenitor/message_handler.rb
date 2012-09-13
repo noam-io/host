@@ -1,5 +1,6 @@
 require 'progenitor/orchestra'
 require 'progenitor/messages'
+require 'progenitor/player_connection'
 require 'progenitor/player'
 module Progenitor
 
@@ -10,8 +11,9 @@ module Progenitor
 
     def message_received(message)
       if message.is_a?(Messages::RegisterMessage)
-        player = Player.new(message.spalla_id, @ip, message.callback_port)
-        orchestra.register(player, message.hears, message.plays)
+        player_connection = PlayerConnection.new(message.spalla_id, @ip, message.callback_port)
+        player = Player.new(message.hears, message.plays)
+        orchestra.register(player_connection, player)
       elsif message.is_a?(Messages::EventMessage)
         orchestra.play(message.event_name, message.event_value)
       end

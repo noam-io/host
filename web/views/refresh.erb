@@ -1,16 +1,26 @@
-this is refresh @ <%= DateTime.now %>
-<br />
-<br />
-this is the global value <%= @x %>
-
-
-<table>
-  <tr> 
-    <th>Spalla</th>
-    <th>Speed - <%= @speed %></th>
-    <th>RPMS - <%= @rpms %></th>
+<table border=1>
+  <tr>
+    <th>Spalla Id</th>
+    <% @orchestra.event_names.each do |event| %>
+      <th colspan=2><%= event %></th>
+    <% end %>
   </tr>
   <tr>
+  <td/>
+    <% @orchestra.event_names.each do |event| %>
+      <td colspan=2><%= @values.get(event) %></td>
+    <% end %>
   </tr>
+
+  <% @orchestra.players.each do |spalla_id, player| %>
+    <tr>
+      <td><%= spalla_id %></td>
+      <% @orchestra.event_names.each do |event| %>
+        <td><%= "X" if player.hears?(event) %></td>
+        <td><%= "X" if player.plays?(event) %></td>
+      <% end %>
+    </tr>
+  <% end %>
+
 </table>
 

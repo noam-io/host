@@ -18,15 +18,15 @@ describe Progenitor::MessageHandler do
 
     handler.message_received(message)
 
-    orchestra.players["e1"].size.should == 1
-    orchestra.players["e1"]["1234"].spalla_id.should == "1234"
-    orchestra.players["e1"]["1234"].port.should == 4423
-    orchestra.players["e1"]["1234"].host.should == "127.0.0.2"
+    orchestra.events["e1"].size.should == 1
+    orchestra.events["e1"]["1234"].spalla_id.should == "1234"
+    orchestra.events["e1"]["1234"].port.should == 4423
+    orchestra.events["e1"]["1234"].host.should == "127.0.0.2"
   end
 
   it "handles an event message" do
     player = mock("Player", :spalla_id => "444")
-    orchestra.register(player, ["the_event"], [])
+    orchestra.register(player, Progenitor::Player.new(["the_event"], []))
     message = Progenitor::Messages::EventMessage.new({})
     message.event_name = "the_event"
     message.event_value = "the_value"
