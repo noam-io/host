@@ -1,6 +1,7 @@
 require 'sinatra/async'
 require 'progenitor/maestro_server'
 
+
 class Statabase
   @@values = {}
 
@@ -17,6 +18,7 @@ class MyApp < Sinatra::Base
   register Sinatra::Async
 
   set :server, 'thin'
+  set :public_folder, File.dirname(__FILE__)
 
   get '/' do
     erb :index

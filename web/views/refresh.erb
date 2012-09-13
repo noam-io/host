@@ -1,14 +1,14 @@
-<table border=1>
+<table cellpadding=0 cellspacing=0>
   <tr>
     <th>Spalla Id</th>
     <% @orchestra.event_names.each do |event| %>
-      <th colspan=2><%= event %></th>
+      <th><%= event %></th>
     <% end %>
   </tr>
   <tr>
-  <td/>
+    <td>Last Value</td>
     <% @orchestra.event_names.each do |event| %>
-      <td colspan=2><%= @values.get(event) %></td>
+      <td class="event"><%= @values.get(event) %></td>
     <% end %>
   </tr>
 
@@ -16,8 +16,14 @@
     <tr>
       <td><%= spalla_id %></td>
       <% @orchestra.event_names.each do |event| %>
-        <td><%= "X" if player.hears?(event) %></td>
-        <td><%= "X" if player.plays?(event) %></td>
+        <td>
+          <% if player.hears?(event) %>
+            <img src="/images/play.png" class="icon"/>
+          <% end %>
+          <% if player.plays?(event) %>
+            <img src="/images/hear.png" class="icon"/>
+          <% end %>
+        </td>
       <% end %>
     </tr>
   <% end %>

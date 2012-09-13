@@ -1,0 +1,25 @@
+.icon {
+  width: 25px;
+  height: 25px;
+}
+
+table {
+  border: 1px solid;
+}
+
+th, td {
+  border-right: 1px solid;
+  padding: 5px;
+}
+
+th {
+  border-bottom: 4px solid;
+}
+
+th:last-child, td:last-child {
+  border-right:0;
+}
+
+.event {
+  width:50px;
+}
