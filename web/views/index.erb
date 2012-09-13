@@ -11,19 +11,19 @@
   </body>
 
   <script>
-    function refreshStuff()
+    function refreshStuff(route)
     {
       $.ajax({
-        url: '/refresh',
+        url: route,
         success: function(e) {
           $("#real-time-data").html(e);
-          setTimeout("refreshStuff()", 250);
+          setTimeout("refreshStuff('/arefresh')", 1);
         }
       });
     }
 
     $(function() {
-      refreshStuff();
+      refreshStuff('/refresh');
     });
   </script>
 
