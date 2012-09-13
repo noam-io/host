@@ -4,8 +4,12 @@ $: << File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 
 require 'eventmachine'
 require 'progenitor/maestro_server'
+require 'progenitor/udp_broadcaster'
 
-server = Progenitor::MaestroServer.new(8833)
+PORT = 8833
+server = Progenitor::MaestroServer.new(PORT)
+broadcaster = Progenitor::UdpBroadcaster.new(PORT)
+
 Progenitor::Orchestra.instance.on_play do |name, event|
   puts "Playing #{name} #{event}"
 end
@@ -16,4 +20,9 @@ end
 
 EM::run do
   server.start
+
+  EventMachine.add_periodic_timer(5) do
+    broadcaster.go
+  end
 end
+
