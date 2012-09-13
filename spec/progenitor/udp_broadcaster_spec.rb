@@ -1,27 +1,50 @@
 require 'progenitor/udp_broadcaster'
 
 describe Progenitor::UdpBroadcaster do
+  let(:port) { 24039 }
+  let(:expected_message) { "[Maestro@#{local_ip}:#{port}]" }
+  let(:broadcaster) { described_class.new(port) }
+  let(:data) {[]}
+  let(:address) { '0.0.0.0' }
+  let(:socket) { UDPSocket.new }
+
+  before :all do
+    BasicSocket.do_not_reverse_lookup = true
+  end
+
+
+  before :each do
+    socket.bind(address, port)
+  end
+
+  after :each do
+    socket.close
+  end
+
   it "broadcasts it's IP and port" do
-    port = 24039
-    data = nil
+    broadcast_and_read
 
+    data.count.should == 1
+    data[0].should == expected_message
+  end
+
+  it "can broadcast multiple times" do
+    broadcast_and_read
+    broadcast_and_read
+
+    data.count.should == 2
+    data[0].should == expected_message
+    data[1].should == expected_message
+  end
+
+  def broadcast_and_read
     readThread = Thread.new do
-      address = '0.0.0.0'
-      BasicSocket.do_not_reverse_lookup = true
-
-      socket = UDPSocket.new
-      socket.bind(address, port)
-      data, addr = socket.recvfrom(1024)
-      socket.close
+      message, addr = socket.recvfrom(1024)
+      data << message
     end
-
-    broadcaster = described_class.new(port)
+    Thread.pass
     broadcaster.go
-
     readThread.join
-
-    expected_message = "[Maestro@#{local_ip}:#{port}]"
-    data.should == expected_message
   end
 
   def local_ip
