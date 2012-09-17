@@ -19,10 +19,10 @@
       <% @orchestra.event_names.each do |event| %>
         <td>
           <% if player.hears?(event) %>
-            <img src="/images/play.png" class="icon"/>
+            <img src="/images/hear.png" class="icon"/>
           <% end %>
           <% if player.plays?(event) %>
-            <img src="/images/hear.png" class="icon"/>
+            <img src="/images/play.png" class="icon"/>
           <% end %>
         </td>
       <% end %>
