@@ -18,6 +18,10 @@ Progenitor::Orchestra.instance.on_register do |player, hears, plays|
   puts "Register #{player.spalla_id}"
 end
 
+Progenitor::Orchestra.instance.on_unregister do |spalla_id|
+  puts "Spalla disconnected: #{spalla_id}"
+end
+
 EM::run do
   server.start
 

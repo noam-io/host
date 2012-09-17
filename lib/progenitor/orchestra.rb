@@ -11,6 +11,7 @@ module Progenitor
       @events = {}
       @play_callbacks = []
       @register_callbacks = []
+      @unregister_callbacks = []
     end
 
     def register(player_connection, player)
@@ -33,6 +34,14 @@ module Progenitor
       end
     end
 
+    def fire_player(spalla_id)
+      players.delete(spalla_id)
+
+      @unregister_callbacks.each do |callback|
+        callback.call(spalla_id)
+      end
+    end
+
     def event_names
       @events.keys
     end
@@ -52,6 +61,10 @@ module Progenitor
 
     def on_register(&callback)
       @register_callbacks << callback
+    end
+
+    def on_unregister(&callback)
+      @unregister_callbacks << callback
     end
 
     def on_play(&callback)

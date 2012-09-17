@@ -3,12 +3,20 @@ require 'progenitor/player'
 
 describe Progenitor::Orchestra do
   let(:orchestra) { described_class.new }
-  it "should register a players" do
+  it "should register players" do
     player = mock("Player", :spalla_id => 1234)
     orchestra.register(player, Progenitor::Player.new(["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]))
 
     player.should_receive(:hear).with("listens_for_1", 12.42)
     orchestra.play("listens_for_1", 12.42)
+  end
+
+  it "fires players" do
+    spalla_id = 1234
+    player = mock("Player", :spalla_id => spalla_id)
+    orchestra.register(player, Progenitor::Player.new([], []))
+    orchestra.fire_player( spalla_id )
+    orchestra.players.has_key?(spalla_id).should be_false
   end
 
   it "should update plays when an event is sent" do
@@ -54,6 +62,17 @@ describe Progenitor::Orchestra do
     orchestra.register(player, Progenitor::Player.new(["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]))
 
     callback_run.should == true
+  end
+
+  it "unregisters players" do
+    callback_run = false
+    orchestra.on_unregister do |spalla_id|
+      callback_run = true
+      spalla_id.should == "spalla_id"
+    end
+
+    orchestra.fire_player( "spalla_id" )
+    callback_run.should be_true
   end
 
   it "registers event observers" do

@@ -72,3 +72,8 @@ Progenitor::Orchestra.instance.on_register do |player, hears, plays|
   Request.respond
 end
 
+Progenitor::Orchestra.instance.on_unregister do |spalla_id|
+  puts "Spalla disconnected: #{spalla_id}"
+  Request.respond
+end
+
