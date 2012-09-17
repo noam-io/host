@@ -10,8 +10,8 @@ PORT = 8833
 server = Progenitor::MaestroServer.new(PORT)
 broadcaster = Progenitor::UdpBroadcaster.new(PORT)
 
-Progenitor::Orchestra.instance.on_play do |name, event|
-  puts "Playing #{name} #{event}"
+Progenitor::Orchestra.instance.on_play do |name, event, player_id|
+  puts "Playing #{name} #{event} from #{player_id}"
 end
 
 Progenitor::Orchestra.instance.on_register do |player, hears, plays|

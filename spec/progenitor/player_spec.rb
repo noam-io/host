@@ -24,4 +24,16 @@ describe Progenitor::Player do
       player.plays?(event).should be_true
     end
   end
+
+  it "adds notes to plays" do
+    player.learn_to_play("window_state")
+    player.plays?("window_state").should == true
+  end
+
+  it "does not duplicate notes" do
+    player.learn_to_play("window_state")
+    size = player.plays.size
+    player.learn_to_play("window_state")
+    player.plays.size.should == size
+  end
 end

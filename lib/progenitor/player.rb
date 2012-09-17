@@ -14,5 +14,10 @@ module Progenitor
     def plays?(event)
       @plays.include?(event)
     end
+
+    def learn_to_play(event)
+      @plays << event unless @plays.include?(event)
+    end
+
   end
 end

@@ -37,13 +37,16 @@ module Progenitor
       @events.keys
     end
 
-    def play(event, value)
+    def play(event, value, player_id = "")
+      players[player_id].learn_to_play(event) unless players[player_id].nil?
+      @events[event] ||= {}
+
       @events[event].each do |id, player|
         player.hear(event, value)
       end if @events[event]
 
       @play_callbacks.each do |callback|
-        callback.call(event, value)
+        callback.call(event, value, player_id)
       end
     end
 

@@ -11,6 +11,15 @@ describe Progenitor::Orchestra do
     orchestra.play("listens_for_1", 12.42)
   end
 
+  it "should update plays when an event is sent" do
+    player = mock("Player", :spalla_id => "1234")
+    orchestra.register(player, Progenitor::Player.new(["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]))
+
+    orchestra.play("plays_3", 12.42, "1234")
+    orchestra.players["1234"].plays?("plays_3").should == true
+    orchestra.events.include?("plays_3").should == true
+  end
+
   it "plays a note noone has registered for" do
     -> {orchestra.play("listens_for_1", 12.42)}.should_not raise_error
   end
@@ -50,11 +59,14 @@ describe Progenitor::Orchestra do
   it "registers event observers" do
     callback_run = false
 
-    orchestra.on_play do |name, value|
+    orchestra.on_play do |name, value, id|
       callback_run = true
+      id.should == "spid"
+      name.should == "food"
+      value.should == "bard"
     end
 
-    orchestra.play("food", "bard")
+    orchestra.play("food", "bard", "spid")
 
     callback_run.should == true
   end

@@ -15,7 +15,7 @@ module Progenitor
         player = Player.new(message.hears, message.plays)
         orchestra.register(player_connection, player)
       elsif message.is_a?(Messages::EventMessage)
-        orchestra.play(message.event_name, message.event_value)
+        orchestra.play(message.event_name, message.event_value, message.spalla_id)
       end
     end
 

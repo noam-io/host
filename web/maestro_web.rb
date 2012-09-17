@@ -29,6 +29,8 @@ class Request
   end
 end
 
+$last_active_id = ""
+
 class MyApp < Sinatra::Base
   register Sinatra::Async
 
@@ -51,6 +53,7 @@ class MyApp < Sinatra::Base
     Request.pile do
       @orchestra = Progenitor::Orchestra.instance
       @values = Statabase
+      @last_active_id = $last_active_id
 
       body(erb :refresh)
     end
@@ -58,8 +61,9 @@ class MyApp < Sinatra::Base
 
 end
 
-Progenitor::Orchestra.instance.on_play do |name, value|
+Progenitor::Orchestra.instance.on_play do |name, value, player_id|
   Statabase.set( name, value )
+  $last_active_id = player_id
   Request.respond
 end
 

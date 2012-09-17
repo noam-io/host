@@ -15,7 +15,7 @@
 
   <% @orchestra.players.each do |spalla_id, player| %>
     <tr>
-      <td><%= spalla_id %></td>
+      <td <%= "class=\"active\"" if @last_active_id == spalla_id %> ><%= spalla_id %></td>
       <% @orchestra.event_names.each do |event| %>
         <td>
           <% if player.hears?(event) %>
