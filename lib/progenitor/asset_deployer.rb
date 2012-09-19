@@ -8,9 +8,13 @@ module Progenitor
      @destination = destination
    end
 
-    def deploy( ips, folder )
-      ips.each { |ip| run_scp(ip, folder) } if ips.is_a? Array
-      run_scp(ips, folder) unless ips.is_a? Array
+    def deploy( ips, folders )
+      ips = [ips] unless ips.is_a? Array
+      folders = [folders] unless folders.is_a? Array
+
+      ips.product(folders) do |ip, folder|
+        run_scp(ip, folder)
+      end
     end
 
     private
