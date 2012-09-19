@@ -2,33 +2,10 @@
   <head>
     <link href="/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+    <script src="/javascripts/maestro-web.js"></script>
   </head>
   <body>
     <h1>Maestro</h1>
-
-    <div id="real-time-data">
-    </div>
+    <div id="real-time-data"></div>
   </body>
-
-  <script>
-    function refreshStuff(route)
-    {
-      $.ajax({
-        url: route,
-        success: function(e) {
-          $("#real-time-data").html(e);
-          setTimeout("refreshStuff('/arefresh')", 1);
-        },
-        error: function(e) {
-          $("#real-time-data").html("Maestro is down");
-          setTimeout("refreshStuff('/refresh')", 1000);
-        }
-      });
-    }
-
-    $(function() {
-      refreshStuff('/refresh');
-    });
-  </script>
-
 </html>
