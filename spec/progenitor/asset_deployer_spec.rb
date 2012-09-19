@@ -11,10 +11,7 @@ describe Progenitor::AssetDeployer do
     ip = '172.03.2.3'
     source_folder = 'another-path'
 
-    deployer.should_receive(:system)
-      .with('scp', '-r', '-i', private_key,
-      asset_location + '/' + source_folder + "/.",
-      remote_user + "@" + ip + ":" + destination + "/.")
+    set_expectation( ip, source_folder )
 
     deployer.deploy(ip, source_folder)
   end
@@ -24,10 +21,7 @@ describe Progenitor::AssetDeployer do
     source_folder = 'another-path'
 
     ips.each do |ip|
-      deployer.should_receive(:system)
-        .with('scp', '-r', '-i', private_key,
-        asset_location + '/' + source_folder + "/.",
-        remote_user + "@" + ip + ":" + destination + "/.")
+      set_expectation( ip, source_folder )
     end
 
     deployer.deploy(ips, source_folder)
@@ -38,13 +32,17 @@ describe Progenitor::AssetDeployer do
     source_folders = ['f1', 'f2']
 
     source_folders.each do |source_folder|
-      deployer.should_receive(:system)
-        .with('scp', '-r', '-i', private_key,
-        asset_location + '/' + source_folder + "/.",
-        remote_user + "@" + ip + ":" + destination + "/.")
+      set_expectation( ip, source_folder )
     end
 
     deployer.deploy(ip, source_folders)
+  end
+
+  def set_expectation( ip, source_folder )
+    deployer.should_receive(:system)
+      .with('scp', '-r', '-i', private_key,
+      asset_location + '/' + source_folder + "/.",
+      remote_user + "@" + ip + ":" + destination + "/.")
   end
 end
 
