@@ -1,5 +1,6 @@
 require 'progenitor/orchestra'
 require 'progenitor/player'
+require 'progenitor/player_connection'
 
 describe Progenitor::Orchestra do
   let(:orchestra) { described_class.new }
@@ -110,5 +111,22 @@ describe Progenitor::Orchestra do
     %w(listens_for_1 listens_for_2 plays_1 plays_2).each do |event|
       orchestra.event_names.include?(event).should be_true
     end
+  end
+
+  it 'returns players addresses' do
+    connection_1 = Progenitor::PlayerConnection.new('a', 'ip 1', 111)
+    connection_2 = Progenitor::PlayerConnection.new('b', 'ip 2', 222)
+    orchestra.register(connection_1, Progenitor::Player.new([], []))
+    orchestra.register(connection_2, Progenitor::Player.new([], []))
+    orchestra.ips_for(['a', 'b']).should == ['ip 1', 'ip 2']
+  end
+
+  it 'returns connected players addresses' do
+    connection_1 = Progenitor::PlayerConnection.new('a', 'ip 1', 111)
+    connection_2 = Progenitor::PlayerConnection.new('b', 'ip 2', 222)
+    orchestra.register(connection_1, Progenitor::Player.new([], []))
+    orchestra.register(connection_2, Progenitor::Player.new([], []))
+    orchestra.fire_player('a')
+    orchestra.ips_for(['a', 'b']).should == ['ip 2']
   end
 end

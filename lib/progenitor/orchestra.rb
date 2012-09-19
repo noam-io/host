@@ -8,6 +8,7 @@ module Progenitor
 
     def initialize
       @players = {}
+      @connections = {}
       @events = {}
       @play_callbacks = []
       @register_callbacks = []
@@ -16,6 +17,7 @@ module Progenitor
 
     def register(player_connection, player)
       players[player_connection.spalla_id] = player
+      @connections[player_connection.spalla_id] = player_connection
 
       fired = []
       player.hears.each do |event|
@@ -36,6 +38,7 @@ module Progenitor
 
     def fire_player(spalla_id)
       players.delete(spalla_id)
+      @connections.delete(spalla_id)
 
       @unregister_callbacks.each do |callback|
         callback.call(spalla_id)
@@ -71,5 +74,9 @@ module Progenitor
       @play_callbacks << callback
     end
 
+    def ips_for( spalla_ids )
+      valid_connections = @connections.select{ |spalla_id, connection| spalla_ids.include? spalla_id }
+      valid_connections.map{ |spalla_id, connection| connection.host }
+    end
   end
 end
