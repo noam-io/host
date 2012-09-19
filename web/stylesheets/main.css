@@ -27,3 +27,7 @@ th:last-child, td:last-child {
 .active {
   color: red;
 }
+
+input[type='text'] {
+  text-align: center;
+}

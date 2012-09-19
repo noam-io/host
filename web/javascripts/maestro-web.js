@@ -13,6 +13,12 @@ function refreshStuff(route) {
 }
 
 $(function() {
+  var processManualEventSubmit = function() {
+    $.post( this.action, $(this).serialize() );
+    return false;
+  };
+
+  $("#manual-event-form").submit( processManualEventSubmit );
   refreshStuff('/refresh');
 });
 
