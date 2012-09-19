@@ -12,6 +12,7 @@ module Progenitor
       ips = [ips] unless ips.is_a? Array
       folders = [folders] unless folders.is_a? Array
 
+      folders = filter_bogus_folders( folders )
       ips.product(folders) do |ip, folder|
         run_scp(ip, folder)
       end
@@ -21,6 +22,13 @@ module Progenitor
 
     def run_scp( ip, folder )
       system("scp", "-r", "-i", @private_key, "#{@asset_location}/#{folder}/.", "#{@remote_user}@#{ip}:#{@destination}/.")
+    end
+
+    def filter_bogus_folders( folders )
+      valid_folders = Dir.glob("#{@asset_location}/*")
+                        .select{ |path| File.directory? path }
+                        .map{ |path| File.basename path }
+      folders & valid_folders
     end
   end
 end
