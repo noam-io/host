@@ -9,6 +9,7 @@ module Progenitor
    end
 
     def deploy( ips, folders )
+      ips = [] unless ips
       ips = [ips] unless ips.is_a? Array
       folders = [folders] unless folders.is_a? Array
 

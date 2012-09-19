@@ -48,6 +48,13 @@ describe Progenitor::AssetDeployer do
     deployer.deploy( ip_1, [valid_asset_folder_1, valid_asset_folder_2, '../garbage'] )
   end
 
+  it 'handles nils' do
+    deployer.should_not_receive(:system)
+    deployer.deploy( nil, valid_asset_folder_1 )
+    deployer.deploy( ip_1, nil )
+    deployer.deploy( nil, nil )
+  end
+
   def set_expectation( deployer, ip, source_folder )
     deployer.should_receive(:system)
       .with('scp', '-r', '-i', private_key,
