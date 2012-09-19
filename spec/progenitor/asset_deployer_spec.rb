@@ -55,6 +55,10 @@ describe Progenitor::AssetDeployer do
     deployer.deploy( nil, nil )
   end
 
+  it 'lists available asset folders' do
+    deployer.available_assets.should == [valid_asset_folder_1, valid_asset_folder_2]
+  end
+
   def set_expectation( deployer, ip, source_folder )
     deployer.should_receive(:system)
       .with('scp', '-r', '-i', private_key,

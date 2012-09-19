@@ -19,6 +19,12 @@ module Progenitor
       end
     end
 
+    def available_assets
+      Dir.glob("#{@asset_location}/*")
+        .select{ |path| File.directory? path }
+        .map{ |path| File.basename path }
+    end
+
     private
 
     def run_scp( ip, folder )
@@ -26,10 +32,7 @@ module Progenitor
     end
 
     def filter_bogus_folders( folders )
-      valid_folders = Dir.glob("#{@asset_location}/*")
-                        .select{ |path| File.directory? path }
-                        .map{ |path| File.basename path }
-      folders & valid_folders
+      folders & available_assets
     end
   end
 end
