@@ -75,6 +75,7 @@ module Progenitor
     end
 
     def ips_for( spalla_ids )
+      spalla_ids ||= []
       valid_connections = @connections.select{ |spalla_id, connection| spalla_ids.include? spalla_id }
       valid_connections.map{ |spalla_id, connection| connection.host }
     end

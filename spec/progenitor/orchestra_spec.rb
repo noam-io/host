@@ -4,6 +4,7 @@ require 'progenitor/player_connection'
 
 describe Progenitor::Orchestra do
   let(:orchestra) { described_class.new }
+
   it "should register players" do
     player = mock("Player", :spalla_id => 1234)
     orchestra.register(player, Progenitor::Player.new(["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]))
@@ -128,5 +129,11 @@ describe Progenitor::Orchestra do
     orchestra.register(connection_2, Progenitor::Player.new([], []))
     orchestra.fire_player('a')
     orchestra.ips_for(['a', 'b']).should == ['ip 2']
+  end
+
+  it 'handles nil' do
+    connection_1 = Progenitor::PlayerConnection.new('a', 'ip 1', 111)
+    orchestra.register(connection_1, Progenitor::Player.new([], []))
+    orchestra.ips_for( nil ).should == []
   end
 end
