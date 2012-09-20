@@ -15,7 +15,9 @@ module Progenitor
 
       folders = filter_bogus_folders( folders )
       ips.product(folders) do |ip, folder|
-        run_scp(ip, folder)
+        scp_folder_to( folder, ip )
+        execute_over_ssh( "./killSpallaApp.sh", ip )
+        execute_over_ssh( "./startSpallaApp.sh", ip )
       end
     end
 
@@ -27,7 +29,11 @@ module Progenitor
 
     private
 
-    def run_scp( ip, folder )
+    def execute_over_ssh( command, ip )
+      system('ssh', '-i', @private_key, "#{@remote_user}@#{ip}", "sudo", command )
+    end
+
+    def scp_folder_to( folder, ip )
       system("scp", "-r", "-i", @private_key, "#{@asset_location}/#{folder}/.", "#{@remote_user}@#{ip}:#{@destination}/.")
     end
 

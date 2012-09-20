@@ -12,6 +12,7 @@ describe Progenitor::AssetDeployer do
   let(:deployer) { described_class.new(remote_user, private_key, asset_location, destination) }
 
   before :each do
+    deployer.stub(:system)
     valid_path_1 = "#{asset_location}/#{valid_asset_folder_1}" 
     valid_path_2 = "#{asset_location}/#{valid_asset_folder_2}"
 
@@ -26,6 +27,15 @@ describe Progenitor::AssetDeployer do
 
   it 'SSH copies folder to given ip' do
     set_expectation( deployer, ip_1, valid_asset_folder_1 )
+    deployer.deploy( ip_1, valid_asset_folder_1 )
+  end
+
+  it 'restarts the remote SpallaApp' do
+    set_expectation( deployer, ip_1, valid_asset_folder_1 )
+    deployer.should_receive(:system)
+      .with('ssh', '-i', private_key, "#{remote_user}@#{ip_1}", 'sudo', './killSpallaApp.sh')
+    deployer.should_receive(:system)
+      .with('ssh', '-i', private_key, "#{remote_user}@#{ip_1}", 'sudo', './startSpallaApp.sh')
     deployer.deploy( ip_1, valid_asset_folder_1 )
   end
 
