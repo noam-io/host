@@ -114,47 +114,43 @@ describe Progenitor::Orchestra do
     end
   end
 
-  context "Spalla ID's" do
-    it 'returns players spalla ids' do
-      connection_1 = Progenitor::PlayerConnection.new('a', 'ip 1', 111)
-      connection_2 = Progenitor::PlayerConnection.new('b', 'ip 2', 222)
+  context "Spalla ID's and IP's" do
+    let(:id_1) { 'Arduino #1' }
+    let(:id_2) { 'Raspberry Pi #2' }
+    let(:ip_1) { '10.0.3.2' }
+    let(:ip_2) { '192.168.3.2' }
+    let(:connection_1) { Progenitor::PlayerConnection.new(id_1, ip_1, 111) }
+    let(:connection_2) { Progenitor::PlayerConnection.new(id_2, ip_2, 222) }
+
+    before :each do
       orchestra.register(connection_1, Progenitor::Player.new([], []))
       orchestra.register(connection_2, Progenitor::Player.new([], []))
-      orchestra.spalla_ids.should == ['a', 'b']
     end
 
-    it 'returns spalla ids of connected players only' do
-      connection_1 = Progenitor::PlayerConnection.new('a', 'ip 1', 111)
-      connection_2 = Progenitor::PlayerConnection.new('b', 'ip 2', 222)
-      orchestra.register(connection_1, Progenitor::Player.new([], []))
-      orchestra.register(connection_2, Progenitor::Player.new([], []))
-      orchestra.fire_player('a')
-      orchestra.spalla_ids.should == ['b']
-    end
-  end
+    context "ID's" do
+      it 'has Spalla ids' do
+        orchestra.spalla_ids.should == [id_1, id_2]
+      end
 
-  context "Spalla IP addresses" do
-    it 'returns players addresses' do
-      connection_1 = Progenitor::PlayerConnection.new('a', 'ip 1', 111)
-      connection_2 = Progenitor::PlayerConnection.new('b', 'ip 2', 222)
-      orchestra.register(connection_1, Progenitor::Player.new([], []))
-      orchestra.register(connection_2, Progenitor::Player.new([], []))
-      orchestra.ips_for(['a', 'b']).should == ['ip 1', 'ip 2']
+      it 'drops fired spallas' do
+        orchestra.fire_player( id_1 )
+        orchestra.spalla_ids.should == [id_2]
+      end
     end
 
-    it 'returns connected players addresses' do
-      connection_1 = Progenitor::PlayerConnection.new('a', 'ip 1', 111)
-      connection_2 = Progenitor::PlayerConnection.new('b', 'ip 2', 222)
-      orchestra.register(connection_1, Progenitor::Player.new([], []))
-      orchestra.register(connection_2, Progenitor::Player.new([], []))
-      orchestra.fire_player('a')
-      orchestra.ips_for(['a', 'b']).should == ['ip 2']
-    end
+    context "IP's" do
+      it 'has IP addresses' do
+        orchestra.ips_for( [id_1, id_2] ).should == [ip_1, ip_2]
+      end
 
-    it 'handles nil' do
-      connection_1 = Progenitor::PlayerConnection.new('a', 'ip 1', 111)
-      orchestra.register(connection_1, Progenitor::Player.new([], []))
-      orchestra.ips_for( nil ).should == []
+      it 'drops fired players' do
+        orchestra.fire_player( id_1 )
+        orchestra.ips_for( [id_1, id_2] ).should == [ip_2]
+      end
+
+      it 'handles nil' do
+        orchestra.ips_for( nil ).should == []
+      end
     end
   end
 end
