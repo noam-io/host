@@ -46,7 +46,7 @@ class MyApp < Sinatra::Base
     @orchestra = Progenitor::Orchestra.instance
     @values = Statabase
     @folders = @@asset_deployer.available_assets
-    @spallas = Progenitor::Orchestra.instance.players.map { |spalla_id, player| spalla_id }
+    @spallas = Progenitor::Orchestra.instance.spalla_ids
     erb :index
   end
 

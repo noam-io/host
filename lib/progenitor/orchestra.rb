@@ -79,5 +79,9 @@ module Progenitor
       valid_connections = @connections.select{ |spalla_id, connection| spalla_ids.include? spalla_id }
       valid_connections.map{ |spalla_id, connection| connection.host }
     end
+
+    def spalla_ids
+      players.map { |spalla_id, player| spalla_id }
+    end
   end
 end
