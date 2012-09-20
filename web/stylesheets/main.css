@@ -10,6 +10,7 @@ table {
 th, td {
   border-right: 1px solid;
   padding: 5px;
+  vertical-align: top;
 }
 
 th {

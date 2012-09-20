@@ -1,5 +1,6 @@
 require 'sinatra/async'
 require 'progenitor/maestro_server'
+require 'progenitor/asset_deployer'
 
 
 class Statabase
@@ -37,9 +38,15 @@ class MyApp < Sinatra::Base
   set :server, 'thin'
   set :public_folder, File.dirname(__FILE__)
 
+  def self.asset_deployer=( value )
+    @@asset_deployer = value
+  end
+
   get '/' do
     @orchestra = Progenitor::Orchestra.instance
     @values = Statabase
+    @folders = @@asset_deployer.available_assets
+    @spallas = Progenitor::Orchestra.instance.players.map { |spalla_id, player| spalla_id }
     erb :index
   end
 
@@ -62,6 +69,12 @@ class MyApp < Sinatra::Base
   post '/fire-event' do
     Progenitor::Orchestra.instance.play params[:name], params[:value]
     body("ok")
+  end
+
+  post '/deploy-assets' do
+    selected_spalla_ips = Progenitor::Orchestra.instance.ips_for(params[:spallas])
+    @@asset_deployer.deploy( selected_spalla_ips, params[:folders] )
+    redirect '/'
   end
 end
 

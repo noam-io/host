@@ -8,14 +8,11 @@
     <div>
       <h1>Maestro</h1>
       <div id="real-time-data"></div>
-
       <hr />
-      <h2>Fire Manual Events</h2>
-      <form id="manual-event-form" action="/fire-event">
-        <input type="text" name="name" placeholder="Event Name" />
-        <input type="text" name="value" placeholder="Event Value" />
-        <input type="image" alt="Fire!" title="Fire!" src="/images/cannon.png" />
-      </form>
+
+      <%= erb :_fire_manual_events %>
+      <%= erb :_deploy_assets, folders: @folders, spallas: @spallas %>
+
     </div>
   </body>
 </html>

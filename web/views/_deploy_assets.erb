@@ -1,0 +1,31 @@
+<h2>Deploy Assets</h2>
+<form id="deploy-assets-form" action="/deploy-assets" method="post">
+  <table>
+    <tr>
+      <th>Select Folders</th>
+      <th>Select Spallas</th>
+      <th>Confirm</th>
+      <th>Deploy</th>
+    </tr>
+    <tr>
+      <td>
+        <% @folders.each do |folder | %>
+          <input name="folders[]" type="checkbox" value="<%= folder %>" /> <%= folder %><br />
+        <% end %>
+      </td>
+      <td>
+        <% @spallas.each do |spalla | %>
+          <input name="spallas[]" type="checkbox" value="<%= spalla %>" /> <%= spalla %><br />
+        <% end %>
+      </td>
+      <td>
+        <input name="confirm" type="checkbox" />
+        I understand that this will overwrite <br />
+        asset files on the selected Spallas.
+      </td>
+      <td>
+        <input type="image" alt="Fire!" title="Fire!" src="/images/cannon.png" />
+      </td>
+    </tr>
+  </table>
+</form>

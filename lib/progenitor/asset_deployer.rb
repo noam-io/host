@@ -1,9 +1,9 @@
 
 module Progenitor
   class AssetDeployer
-    def initialize(remote_user, private_key, asset_location, destination)
+    def initialize(remote_user, rsa_private_key, asset_location, destination)
      @remote_user = remote_user
-     @private_key = private_key
+     @rsa_private_key = rsa_private_key
      @asset_location = asset_location
      @destination = destination
    end
@@ -30,11 +30,11 @@ module Progenitor
     private
 
     def execute_over_ssh( command, ip )
-      system('ssh', '-i', @private_key, "#{@remote_user}@#{ip}", "sudo", command )
+      system('ssh', '-i', @rsa_private_key, "#{@remote_user}@#{ip}", "sudo", command )
     end
 
     def scp_folder_to( folder, ip )
-      system("scp", "-r", "-i", @private_key, "#{@asset_location}/#{folder}/.", "#{@remote_user}@#{ip}:#{@destination}/.")
+      system("scp", "-r", "-i", @rsa_private_key, "#{@asset_location}/#{folder}/.", "#{@remote_user}@#{ip}:#{@destination}/.")
     end
 
     def filter_bogus_folders( folders )

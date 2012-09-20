@@ -11,7 +11,7 @@ module Progenitor
   class PlayerConnection
     attr_accessor :spalla_id, :host, :port
 
-    def initialize(id,  host, port)
+    def initialize(id, host, port)
       @spalla_id = id
       @host = host
       @port = port

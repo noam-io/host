@@ -18,7 +18,20 @@ $(function() {
     return false;
   };
 
+  var isCheckedConfirm = function( form ) {
+   return 0 < $(form).find("[name='confirm']:checked").length;
+  };
+
+  var processDeployAssetsSubmit = function() {
+    if( !isCheckedConfirm( this )) {
+      alert("You must check the 'confirm' box to perform this action.");
+      return false;
+    }
+    return true;
+  };
+
   $("#manual-event-form").submit( processManualEventSubmit );
+  $("#deploy-assets-form").submit( processDeployAssetsSubmit );
   refreshStuff('/refresh');
 });
 
