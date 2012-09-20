@@ -73,7 +73,7 @@ class MyApp < Sinatra::Base
 
   post '/deploy-assets' do
     selected_spalla_ips = Progenitor::Orchestra.instance.ips_for(params[:spallas])
-    @@asset_deployer.deploy( selected_spalla_ips, params[:folders] )
+    EM.defer { @@asset_deployer.deploy( selected_spalla_ips, params[:folders] ) }
     redirect '/'
   end
 end
