@@ -5,6 +5,7 @@ function refreshStuff(route) {
       $("#real-time-data").html(e);
       setTimeout("refreshStuff('/arefresh')", 1);
     },
+    timeout: -1,
     error: function(e) {
       $("#real-time-data").html("Maestro is down");
       setTimeout("refreshStuff('/refresh')", 1000);
@@ -32,6 +33,14 @@ $(function() {
 
   $("#manual-event-form").submit( processManualEventSubmit );
   $("#deploy-assets-form").submit( processDeployAssetsSubmit );
+  $("#play-events").dialog({
+      autoOpen:false,
+      modal: true,
+      position: [100, 100],
+      width: 550,
+      height: 120,
+      title: "Play Event"
+       });
   refreshStuff('/refresh');
 });
 

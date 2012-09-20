@@ -1,3 +1,4 @@
+<script src="/javascripts/maestro-refresh.js" />
 <table cellpadding=0 cellspacing=0>
   <h4>Last refreshed: <%= Time.now %></h4>
   <tr>
@@ -9,7 +10,9 @@
   <tr>
     <td>Last Value</td>
     <% @orchestra.event_names.each do |event| %>
-      <td class="event"><%= @values.get(event) %></td>
+      <td class="event last-value" data-event-name="<%=event%>" data-event-value="<%= @values.get(event) %>">
+        <%= @values.get(event) %>
+      </td>
     <% end %>
   </tr>
 

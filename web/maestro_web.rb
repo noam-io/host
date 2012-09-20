@@ -66,7 +66,7 @@ class MyApp < Sinatra::Base
     end
   end
 
-  post '/fire-event' do
+  post '/play-event' do
     Progenitor::Orchestra.instance.play params[:name], params[:value]
     body("ok")
   end
