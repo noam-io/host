@@ -37,6 +37,11 @@ describe Progenitor::UdpBroadcaster do
     data[1].should == expected_message
   end
 
+  it 'handles network errors' do
+    UDPSocket.any_instance.should_receive(:send).and_raise(Exception)
+    broadcaster.go
+  end
+
   def broadcast_and_read
     readThread = Thread.new do
       message, addr = socket.recvfrom(1024)

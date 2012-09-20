@@ -13,6 +13,7 @@ module Progenitor
 
     def go
       @socket.send(@message_to_broadcast, 0, @address, @port)
+    rescue Exception
     end
 
     private
