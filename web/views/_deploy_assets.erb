@@ -1,4 +1,3 @@
-<h2>Deploy Assets</h2>
 <form id="deploy-assets-form" action="/deploy-assets" method="post">
   <table>
     <tr>
@@ -10,18 +9,21 @@
     <tr>
       <td>
         <% @folders.each do |folder | %>
-          <input name="folders[]" type="checkbox" value="<%= folder %>" /> <%= folder %><br />
+          <input name="folders[]" type="checkbox" value="<%= folder %>" id="folder-<%= folder %>" />
+          <label for="folder-<%= folder %>"><%= folder %></label><br />
         <% end %>
       </td>
       <td>
         <% @spallas.each do |spalla | %>
-          <input name="spallas[]" type="checkbox" value="<%= spalla %>" /> <%= spalla %><br />
+          <% id = "spalla-#{spalla.gsub(/\s/, "")}" %>
+          <input name="spallas[]" type="checkbox" value="<%= spalla %>" id="<%= id %>" />
+          <label for="<%= id %>"><%= spalla %></label><br />
         <% end %>
       </td>
-      <td>
-        <input name="confirm" type="checkbox" />
-        I understand that this will overwrite <br />
-        asset files on the selected Spallas.
+      <td class="confirm">
+        <input name="confirm" type="checkbox" id="confirm-deploy" />
+        <label for="confirm-deploy">I understand that this will overwrite
+        asset files on the selected Spallas.</label>
       </td>
       <td>
         <input type="image" alt="Fire!" title="Fire!" src="/images/cannon.png" />

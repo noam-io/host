@@ -6,14 +6,16 @@
     <% @orchestra.event_names.each do |event| %>
       <th><%= event %></th>
     <% end %>
+    <td/>
   </tr>
   <tr>
     <td>Last Value</td>
     <% @orchestra.event_names.each do |event| %>
-      <td class="event last-value" data-event-name="<%=event%>" data-event-value="<%= @values.get(event) %>">
+      <td class="event last-value<%= " active" if @last_active_event == event %>" data-event-name="<%=event%>" data-event-value="<%= @values.get(event) %>">
         <%= @values.get(event) %>
       </td>
     <% end %>
+    <td/>
   </tr>
 
   <% @orchestra.players.each do |spalla_id, player| %>
@@ -29,6 +31,9 @@
           <% end %>
         </td>
       <% end %>
+      <td class="deploy" data-spalla-id="<%= spalla_id.gsub(/\s/, "") %>">
+        Deploy
+      </td>
     </tr>
   <% end %>
 

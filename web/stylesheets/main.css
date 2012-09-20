@@ -25,14 +25,18 @@ th:last-child, td:last-child {
   width:50px;
 }
 
-.active {
-  color: red;
-}
-
 input[type='text'] {
   text-align: center;
 }
 
 .last-value:hover {
   cursor: pointer;
+}
+
+.deploy:hover {
+  cursor: pointer;
+}
+
+.confirm {
+  width: 200px;
 }

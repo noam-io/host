@@ -31,6 +31,7 @@ class Request
 end
 
 $last_active_id = ""
+$last_active_event = ""
 
 class MyApp < Sinatra::Base
   register Sinatra::Async
@@ -45,8 +46,6 @@ class MyApp < Sinatra::Base
   get '/' do
     @orchestra = Progenitor::Orchestra.instance
     @values = Statabase
-    @folders = @@asset_deployer.available_assets
-    @spallas = Progenitor::Orchestra.instance.spalla_ids
     erb :index
   end
 
@@ -56,11 +55,18 @@ class MyApp < Sinatra::Base
     erb :refresh
   end
 
+  aget '/show-assets' do
+    @spallas = Progenitor::Orchestra.instance.spalla_ids
+    @folders = @@asset_deployer.available_assets
+    body(erb :_deploy_assets, folders: @folders, spallas: @spallas)
+  end
+
   aget '/arefresh' do
     Request.pile do
       @orchestra = Progenitor::Orchestra.instance
       @values = Statabase
       @last_active_id = $last_active_id
+      @last_active_event = $last_active_event
 
       body(erb :refresh)
     end
@@ -81,11 +87,14 @@ end
 Progenitor::Orchestra.instance.on_play do |name, value, player_id|
   Statabase.set( name, value )
   $last_active_id = player_id
+  $last_active_event = name
   Request.respond
 end
 
 Progenitor::Orchestra.instance.on_register do |player, hears, plays|
   puts "Registration from: #{player.spalla_id}"
+  $last_active_id = player.spalla_id
+  $last_active_event = ""
   Request.respond
 end
 
