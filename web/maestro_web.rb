@@ -33,11 +33,12 @@ end
 $last_active_id = ""
 $last_active_event = ""
 
-class MyApp < Sinatra::Base
+class MaestroApp < Sinatra::Base
   register Sinatra::Async
 
   set :server, 'thin'
   set :public_folder, File.dirname(__FILE__)
+  set :port, 8081
 
   def self.asset_deployer=( value )
     @@asset_deployer = value
