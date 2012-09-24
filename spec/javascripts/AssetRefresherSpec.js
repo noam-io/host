@@ -6,6 +6,13 @@ describe( "AssetRefresher", function() {
   var asyncResponseText = 'another response';
   var errorMessage = 'error message';
 
+  var responses = {
+    sync: [200, {"Content-Type": 'text/html' }, responseText],
+    async: [200, {"Content-Type": 'text/html' }, asyncResponseText],
+    error: [500, {"Content-Type": 'text/html' }, '']
+  };
+
+
   var refresher;
 
   beforeEach( function() {
@@ -29,8 +36,7 @@ describe( "AssetRefresher", function() {
 
   describe( 'Succesfull responses', function() {
     beforeEach( function() {
-      this.server.respondWith( 'GET', refreshRoute,
-                [200, {"Content-Type": 'text/html' }, responseText]);
+      this.server.respondWith( 'GET', refreshRoute, responses.sync );
 
       refresher.go();
       this.server.respond();
@@ -41,8 +47,7 @@ describe( "AssetRefresher", function() {
     });
 
     it( 'Populates div with content from async refresh after initial refresh', function() {
-      this.server.respondWith( 'GET', asyncRefreshRoute,
-                [200, {"Content-Type": 'text/html' }, asyncResponseText]);
+      this.server.respondWith( 'GET', asyncRefreshRoute, responses.async );
       jasmine.Clock.tick( 1 );
       this.server.respond();
 
@@ -52,8 +57,7 @@ describe( "AssetRefresher", function() {
 
   describe( 'Error responses', function() {
     beforeEach( function() {
-      this.server.respondWith( 'GET', refreshRoute,
-                [500, {"Content-Type": 'text/html' }, responseText]);
+      this.server.respondWith( 'GET', refreshRoute, responses.error );
 
       refresher.go();
       this.server.respond();
@@ -61,6 +65,16 @@ describe( "AssetRefresher", function() {
 
     it( 'Populates div with error message', function() {
       expect( $( '#' + divId )).toHaveHtml( errorMessage );
+    });
+
+    it( 'Tries again after 1 second', function() {
+      this.server.restore();
+      this.server = sinon.fakeServer.create();
+      this.server.respondWith( 'GET', refreshRoute, responses.sync );
+      jasmine.Clock.tick( 1000 );
+      this.server.respond();
+
+      expect( $( '#' + divId )).toHaveHtml( responseText );
     });
   });
     //jasmine.Clock.tick( 3000 );

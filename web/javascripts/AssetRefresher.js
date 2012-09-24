@@ -6,8 +6,12 @@ AssetRefresher.prototype.go = function( ) {
   var params = this.params;
   var div = $("#" + params.divToPopulate);
 
-  var refreshAgain = function() {
+  var softRefresh = function() {
     populateFromUrl( params.asyncRefreshRoute );
+  };
+
+  var hardRefresh = function() {
+    populateFromUrl( params.refreshRoute );
   };
 
   var populateFromUrl = function( route ) {
@@ -15,14 +19,15 @@ AssetRefresher.prototype.go = function( ) {
       url: route,
       success: function( html ){
         div.html( html );
-        setTimeout( refreshAgain, 1);
+        setTimeout( softRefresh, 1);
       },
       error: function() {
         div.html( params.errorMessage );
+        setTimeout( hardRefresh, 1000);
       }
     });
   };
 
-  populateFromUrl( params.refreshRoute )
+  hardRefresh();
 };
 
