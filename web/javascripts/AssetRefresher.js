@@ -1,20 +1,18 @@
-function AssetRefresher( divToPopulate, refreshRoute, errorMessage ) {
-  this.divToPopulate = divToPopulate;
-  this.refreshRoute = refreshRoute;
-  this.errorMessage = errorMessage;
+function AssetRefresher( params ) {
+  this.params = params;
 }
 
 AssetRefresher.prototype.go = function( ) {
-  var div = $("#" + this.divToPopulate);
-  var that = this;
+  var params = this.params;
+  var div = $("#" + params.divToPopulate);
 
   $.ajax({
-    url: that.refreshRoute,
+    url: params.refreshRoute,
     success: function( html ){
       div.html( html );
     },
     error: function() {
-      div.html( that.errorMessage );
+      div.html( params.errorMessage );
     }
   });
 };

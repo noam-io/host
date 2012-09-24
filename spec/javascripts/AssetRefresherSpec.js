@@ -1,6 +1,7 @@
 describe( "AssetRefresher", function() {
   var divId = 'someDiv';
   var refreshRoute = '/some-route';
+  var asyncRefreshRoute = '/asynch-route';
   var responseText = 'some response';
   var errorMessage = 'error message';
 
@@ -10,7 +11,13 @@ describe( "AssetRefresher", function() {
     $('body').append('<div id="' + divId + '"></div>');
     this.server = sinon.fakeServer.create();
 
-    refresher = new AssetRefresher( divId, refreshRoute, errorMessage );
+    var params = {
+      divToPopulate: divId,
+      refreshRoute: refreshRoute,
+      asyncRefreshRoute: asyncRefreshRoute,
+      errorMessage: errorMessage
+    };
+    refresher = new AssetRefresher( params );
   });
 
   afterEach( function() {
