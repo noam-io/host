@@ -27,34 +27,41 @@ describe( "AssetRefresher", function() {
     this.server.restore();
   });
 
-  it( 'Populates div with AJAX response', function() {
-    this.server.respondWith( 'GET', refreshRoute,
-              [200, {"Content-Type": 'text/html' }, responseText]);
+  describe( 'Succesfull responses', function() {
+    beforeEach( function() {
+      this.server.respondWith( 'GET', refreshRoute,
+                [200, {"Content-Type": 'text/html' }, responseText]);
 
-    refresher.go();
-    this.server.respond();
-    expect( $( '#' + divId )).toHaveHtml( responseText );
+      refresher.go();
+      this.server.respond();
+    });
+
+    it( 'Populates div with AJAX response', function() {
+      expect( $( '#' + divId )).toHaveHtml( responseText );
+    });
+
+    it( 'Populates div with content from async refresh after initial refresh', function() {
+      this.server.respondWith( 'GET', asyncRefreshRoute,
+                [200, {"Content-Type": 'text/html' }, asyncResponseText]);
+      jasmine.Clock.tick( 1 );
+      this.server.respond();
+
+      expect( $( '#' + divId )).toHaveHtml( asyncResponseText );
+    });
   });
 
-  it( 'loads content from async refresh after initial refresh', function() {
-    this.server.respondWith( 'GET', refreshRoute,
-              [200, {"Content-Type": 'text/html' }, responseText]);
-    this.server.respondWith( 'GET', asyncRefreshRoute,
-              [200, {"Content-Type": 'text/html' }, asyncResponseText]);
-    refresher.go();
-    this.server.respond();
-    jasmine.Clock.tick( 1 );
-    this.server.respond();
-    expect( $( '#' + divId )).toHaveHtml( asyncResponseText );
-  });
+  describe( 'Error responses', function() {
+    beforeEach( function() {
+      this.server.respondWith( 'GET', refreshRoute,
+                [500, {"Content-Type": 'text/html' }, responseText]);
 
-  it( 'Populates div with error message', function() {
-    this.server.respondWith( 'GET', refreshRoute,
-              [500, {"Content-Type": 'text/html' }, responseText]);
+      refresher.go();
+      this.server.respond();
+    });
 
-    refresher.go();
-    this.server.respond();
-    expect( $( '#' + divId )).toHaveHtml( errorMessage );
+    it( 'Populates div with error message', function() {
+      expect( $( '#' + divId )).toHaveHtml( errorMessage );
+    });
   });
     //jasmine.Clock.tick( 3000 );
 
