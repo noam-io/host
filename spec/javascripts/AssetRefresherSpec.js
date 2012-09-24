@@ -1,26 +1,27 @@
 describe( "AssetRefresher", function() {
+  var divId = 'someDiv';
+  var refreshRoute = '/some-route';
+  var responseText = 'some response';
 
   beforeEach( function() {
-    $('body').append('<div id="refreshDiv">f</div>');
-
+    $('body').append('<div id="' + divId + '"></div>');
     this.server = sinon.fakeServer.create();
+
+    this.server.respondWith( 'GET', refreshRoute,
+              [200, {"Content-Type": 'text/html' }, responseText]);
+
+    var refresher = new AssetRefresher( divId, refreshRoute );
+    refresher.go();
+    this.server.respond();
   });
 
   afterEach( function() {
-    $('#refreshDiv').remove();
+    $('#' + divId).remove();
     this.server.restore();
   });
 
   it( 'Populates div with AJAX response', function() {
-    var responseText = 'some response';
-
-    this.server.respondWith( 'GET', '/boom',
-              [200, {"Content-Type": 'text/html' }, responseText]);
-    var refresher = new AssetRefresher("refreshDiv");
-    refresher.go();
-    this.server.respond();
-
-    expect( $( "#refreshDiv" )).toHaveHtml( responseText );
+    expect( $( '#' + divId )).toHaveHtml( responseText );
   });
     //jasmine.Clock.useMock();
     //jasmine.Clock.tick( 3000 );
