@@ -3,6 +3,7 @@ describe( "AssetRefresher", function() {
   var refreshRoute = '/some-route';
   var asyncRefreshRoute = '/asynch-route';
   var responseText = 'some response';
+  var asyncResponseText = 'another response';
   var errorMessage = 'error message';
 
   var refresher;
@@ -18,6 +19,7 @@ describe( "AssetRefresher", function() {
       errorMessage: errorMessage
     };
     refresher = new AssetRefresher( params );
+    jasmine.Clock.useMock();
   });
 
   afterEach( function() {
@@ -34,6 +36,18 @@ describe( "AssetRefresher", function() {
     expect( $( '#' + divId )).toHaveHtml( responseText );
   });
 
+  it( 'loads content from async refresh after initial refresh', function() {
+    this.server.respondWith( 'GET', refreshRoute,
+              [200, {"Content-Type": 'text/html' }, responseText]);
+    this.server.respondWith( 'GET', asyncRefreshRoute,
+              [200, {"Content-Type": 'text/html' }, asyncResponseText]);
+    refresher.go();
+    this.server.respond();
+    jasmine.Clock.tick( 1 );
+    this.server.respond();
+    expect( $( '#' + divId )).toHaveHtml( asyncResponseText );
+  });
+
   it( 'Populates div with error message', function() {
     this.server.respondWith( 'GET', refreshRoute,
               [500, {"Content-Type": 'text/html' }, responseText]);
@@ -42,7 +56,6 @@ describe( "AssetRefresher", function() {
     this.server.respond();
     expect( $( '#' + divId )).toHaveHtml( errorMessage );
   });
-    //jasmine.Clock.useMock();
     //jasmine.Clock.tick( 3000 );
 
 

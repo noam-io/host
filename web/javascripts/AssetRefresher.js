@@ -6,14 +6,23 @@ AssetRefresher.prototype.go = function( ) {
   var params = this.params;
   var div = $("#" + params.divToPopulate);
 
-  $.ajax({
-    url: params.refreshRoute,
-    success: function( html ){
-      div.html( html );
-    },
-    error: function() {
-      div.html( params.errorMessage );
-    }
-  });
+  var refreshAgain = function() {
+    populateFromUrl( params.asyncRefreshRoute );
+  };
+
+  var populateFromUrl = function( route ) {
+    $.ajax({
+      url: route,
+      success: function( html ){
+        div.html( html );
+        setTimeout( refreshAgain, 1);
+      },
+      error: function() {
+        div.html( params.errorMessage );
+      }
+    });
+  };
+
+  populateFromUrl( params.refreshRoute )
 };
 
