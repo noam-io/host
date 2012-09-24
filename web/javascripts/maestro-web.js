@@ -1,25 +1,9 @@
-function refreshStuff(route) {
-  $.ajax({
-    url: route,
-    success: function(e) {
-      $("#real-time-data").html(e);
-      setTimeout("refreshStuff('/arefresh')", 1);
-    },
-    timeout: 90000,
-    error: function(e) {
-      $("#real-time-data").html("Maestro is down");
-      setTimeout("refreshStuff('/refresh')", 1000);
-    }
-  });
-}
-
 $(function() {
   var processManualEventSubmit = function() {
     $.post( this.action, $(this).serialize() );
     $("#play-events").dialog('close');
     return false;
   };
-
 
   $("#manual-event-form").submit( processManualEventSubmit );
 
@@ -39,6 +23,14 @@ $(function() {
       height: 550,
       title: "Deploy Assets"
        });
-  refreshStuff('/refresh');
+
+  var params = {
+    divToPopulate: 'real-time-data',
+    refreshRoute: '/refresh',
+    asyncRefreshRoute: '/arefresh',
+    errorMessage: 'Maestro is down.'
+  };
+  var refresher = new AssetRefresher( params );
+  refresher.go();
 });
 

@@ -77,10 +77,4 @@ describe( "AssetRefresher", function() {
       expect( $( '#' + divId )).toHaveHtml( responseText );
     });
   });
-    //jasmine.Clock.tick( 3000 );
-
-
-    //expect( $.ajax.mostRecentCall.args[0]['url'] ).toEqual( '/boom' );
-    //expect( $.ajax.mostRecentCall.args[0]['data'] ).toEqual( {x: 5} );
-
 });
