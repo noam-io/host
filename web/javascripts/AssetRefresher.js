@@ -10,6 +10,8 @@ AssetRefresher.prototype.go = function( ) {
     success: function( html ){
       var div = $("#" + that.divToPopulate);
       div.html( html );
+    },
+    error: function() {
     }
   });
 };
