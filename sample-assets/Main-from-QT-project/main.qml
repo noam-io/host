@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Spalla 1.0
-import "sub_folder"
 
 Rectangle {
     id: scene
@@ -39,7 +38,7 @@ Rectangle {
 
     focus: true
     Keys.onPressed: {
-        if( event.key === Qt.Key_Q )
+        if( event.key == Qt.Key_Q )
         {
             event.accepted = true
             Qt.quit()
