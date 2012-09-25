@@ -26,35 +26,33 @@ describe Progenitor::AssetDeployer do
   end
 
   it 'SSH copies folder to given ip' do
-    set_expectation( deployer, ip_1, valid_asset_folder_1 )
+    set_scp_expectation( deployer, ip_1, valid_asset_folder_1 )
     deployer.deploy( ip_1, valid_asset_folder_1 )
   end
 
   it 'restarts the remote SpallaApp' do
-    set_expectation( deployer, ip_1, valid_asset_folder_1 )
-    deployer.should_receive(:system)
-      .with('ssh', '-i', rsa_private_key, "#{remote_user}@#{ip_1}", 'sudo', './killSpallaApp.sh')
-    deployer.should_receive(:system)
-      .with('ssh', '-i', rsa_private_key, "#{remote_user}@#{ip_1}", 'sudo', './startSpallaApp.sh')
+    set_scp_expectation( deployer, ip_1, valid_asset_folder_1 )
+    set_ssh_expectation( deployer, './killSpallaApp.sh', ip_1 )
+    set_ssh_expectation( deployer, './startSpallaApp.sh', ip_1 )
     deployer.deploy( ip_1, valid_asset_folder_1 )
   end
 
   it 'handles multiple ips' do
-    set_expectation( deployer, ip_1, valid_asset_folder_1 )
-    set_expectation( deployer, ip_2, valid_asset_folder_1 )
+    set_scp_expectation( deployer, ip_1, valid_asset_folder_1 )
+    set_scp_expectation( deployer, ip_2, valid_asset_folder_1 )
     deployer.deploy( [ip_1, ip_2], valid_asset_folder_1 )
   end
 
   it 'handles multiple folders' do
-    set_expectation( deployer, ip_1, valid_asset_folder_1 )
-    set_expectation( deployer, ip_1, valid_asset_folder_2 )
+    set_scp_expectation( deployer, ip_1, valid_asset_folder_1 )
+    set_scp_expectation( deployer, ip_1, valid_asset_folder_2 )
     deployer.deploy( ip_1, [valid_asset_folder_1, valid_asset_folder_2] )
   end
 
   it 'ignores files not in the asset_location folder' do
-    set_expectation( deployer, ip_1, valid_asset_folder_1 )
-    set_expectation( deployer, ip_1, valid_asset_folder_2 )
-    set_anti_expectation( deployer, ip_1, '../garbage' )
+    set_scp_expectation( deployer, ip_1, valid_asset_folder_1 )
+    set_scp_expectation( deployer, ip_1, valid_asset_folder_2 )
+    set_scp_anti_expectation( deployer, ip_1, '../garbage' )
     deployer.deploy( ip_1, [valid_asset_folder_1, valid_asset_folder_2, '../garbage'] )
   end
 
@@ -69,18 +67,34 @@ describe Progenitor::AssetDeployer do
     deployer.available_assets.should == [valid_asset_folder_1, valid_asset_folder_2]
   end
 
-  def set_expectation( deployer, ip, source_folder )
-    deployer.should_receive(:system)
-      .with('scp', '-r', '-i', rsa_private_key,
+  def set_scp_expectation( deployer, ip, source_folder )
+    expectation = deployer.should_receive(:system)
+    with_scp_parameters( expectation, deployer, ip, source_folder )
+  end
+
+  def set_scp_anti_expectation( deployer, ip, source_folder )
+    expectation = deployer.should_not_receive(:system)
+    with_scp_parameters( expectation, deployer, ip, source_folder )
+  end
+
+  def with_scp_parameters( expectation, deployer, ip, source_folder )
+    expectation.with('scp',
+      '-r',
+      '-o', 'UserKnownHostsFile=/dev/null',
+      '-o', 'StrictHostKeyChecking=no',
+      '-i', rsa_private_key,
       asset_location + '/' + source_folder + "/.",
       remote_user + "@" + ip + ":" + destination + "/.")
   end
 
-  def set_anti_expectation( deployer, ip, source_folder )
-    deployer.should_not_receive(:system)
-      .with('scp', '-r', '-i', rsa_private_key,
-      asset_location + '/' + source_folder + "/.",
-      remote_user + "@" + ip + ":" + destination + "/.")
+  def set_ssh_expectation( deployer, command, ip )
+    deployer.should_receive(:system)
+      .with('ssh',
+        '-i', rsa_private_key,
+        '-o', 'UserKnownHostsFile=/dev/null',
+        '-o', 'StrictHostKeyChecking=no',
+        "#{remote_user}@#{ip}",
+        'sudo', command )
   end
 end
 
