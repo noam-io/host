@@ -3,7 +3,6 @@
     <tr>
       <th>Select Folders</th>
       <th>Select Spallas</th>
-      <th>Confirm</th>
       <th>Deploy</th>
     </tr>
     <tr>
@@ -19,11 +18,6 @@
           <input name="spallas[]" type="checkbox" value="<%= spalla %>" id="<%= id %>" />
           <label for="<%= id %>"><%= spalla %></label><br />
         <% end %>
-      </td>
-      <td class="confirm">
-        <input name="confirm" type="checkbox" id="confirm-deploy" />
-        <label for="confirm-deploy">I understand that this will overwrite
-        asset files on the selected Spallas.</label>
       </td>
       <td>
         <input type="image" alt="Fire!" title="Fire!" src="/images/cannon.png" />
