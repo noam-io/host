@@ -32,7 +32,17 @@ describe Progenitor::UdpBroadcaster do
   end
 
   it 'handles network errors' do
-    UDPSocket.any_instance.should_receive(:send).and_raise(Exception)
+    UDPSocket.any_instance
+      .should_receive(:send)
+      .twice
+      .and_raise(Exception)
+    broadcaster.go
+  end
+
+  it 'broadcasts to all interfaces even if error occurs on one' do
+    set_expectation( ip_1_host, ip_1_broadcast )
+      .and_raise(Exception)
+    set_expectation( ip_2_host, ip_2_broadcast )
     broadcaster.go
   end
 
