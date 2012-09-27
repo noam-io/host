@@ -9,17 +9,16 @@ module Progenitor
   end
 
   class PlayerConnection
-    attr_accessor :spalla_id, :host, :port
+    attr_accessor :host, :port
 
-    def initialize(id, host, port)
-      @spalla_id = id
+    def initialize(host, port)
       @host = host
       @port = port
       @backlog = []
     end
 
-    def hear(event_name, event_value)
-      message = Messages.build_event(@spalla_id, event_name, event_value)
+    def hear( id_of_player, event_name, event_value )
+      message = Messages.build_event( id_of_player, event_name, event_value )
       send_message(message)
     end
 

@@ -23,6 +23,7 @@ th:last-child, td:last-child {
 
 .event {
   width:50px;
+  text-align: center;
 }
 
 input[type='text'] {
@@ -40,3 +41,4 @@ input[type='text'] {
 .confirm {
   width: 200px;
 }
+

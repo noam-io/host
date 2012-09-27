@@ -1,9 +1,24 @@
 require 'progenitor/player'
 
 describe Progenitor::Player do
+  let(:spalla_id) { "Spalla ID" }
+  let(:device_type) { "Device Type" }
+  let(:system_version) { "System Version" }
   let(:hears) { %w(speed rpm cruise_target) }
   let(:plays) { %w(speed volume) }
-  let(:player) { described_class.new(hears, plays) }
+  let(:player) { described_class.new( spalla_id, device_type, system_version, hears, plays )}
+
+  it 'has spalla id' do
+    player.spalla_id.should == spalla_id
+  end
+
+  it 'has device type' do
+    player.device_type.should == device_type
+  end
+
+  it 'has system version' do
+    player.system_version.should == system_version
+  end
 
   it "hears" do
     hears.each do |event|

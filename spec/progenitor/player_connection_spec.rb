@@ -6,33 +6,44 @@ def wire_message(expected_message)
 end
 
 describe Progenitor::PlayerConnection do
+
+  ID_OF_PLAYER = "id of player"
+  NAME_1 = "name 1"
+  NAME_2 = "name 2"
+  VALUE_1 = "value 1"
+  VALUE_2 = "value 2"
+
   it "should hear" do
+
     module TestConnection
       def receive_data(data)
-        data.should == wire_message(Progenitor::Messages.build_event("spalla123", "event_name", "event_value"))
+        data.should == wire_message(Progenitor::Messages.build_event( ID_OF_PLAYER, NAME_1, VALUE_1 ))
         EM::stop_event_loop
       end
     end
     EM::run do
       server = EventMachine::start_server("127.0.0.1", 5652, TestConnection)
-      player = described_class.new("spalla123", "127.0.0.1", 5652)
-      player.hear("event_name", "event_value")
+      player = described_class.new( "127.0.0.1", 5652 )
+      player.hear( ID_OF_PLAYER, NAME_1, VALUE_1 )
     end
   end
 
   it "should hear twice" do
     module TestConnection
       def receive_data(data)
-        data.should == wire_message(Progenitor::Messages.build_event("spalla123", "event_name", "event_value")) +
-          wire_message(Progenitor::Messages.build_event("spalla123", "event2_name", "event3_value"))
+        message_1 = wire_message(Progenitor::Messages.build_event( ID_OF_PLAYER, NAME_1, VALUE_1 ))
+        message_2 = wire_message(Progenitor::Messages.build_event( ID_OF_PLAYER, NAME_2, VALUE_2 ))
+
+        data.should == message_1 + message_2
         EM::stop_event_loop
       end
     end
     EM::run do
       server = EventMachine::start_server("127.0.0.1", 5652, TestConnection)
-      player = described_class.new("spalla123", "127.0.0.1", 5652)
-      player.hear("event_name", "event_value")
-      player.hear("event2_name", "event3_value")
+      player = described_class.new( "127.0.0.1", 5652 )
+      player.hear( ID_OF_PLAYER, NAME_1, VALUE_1 )
+      player.hear( ID_OF_PLAYER, NAME_2, VALUE_2 )
     end
   end
 end
+

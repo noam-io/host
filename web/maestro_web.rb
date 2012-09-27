@@ -74,7 +74,7 @@ class MaestroApp < Sinatra::Base
   end
 
   post '/play-event' do
-    Progenitor::Orchestra.instance.play params[:name], params[:value]
+    Progenitor::Orchestra.instance.play( params[:name], params[:value], "Maestro Web" )
     body("ok")
   end
 
@@ -85,22 +85,22 @@ class MaestroApp < Sinatra::Base
   end
 end
 
-Progenitor::Orchestra.instance.on_play do |name, value, player_id|
+Progenitor::Orchestra.instance.on_play do |name, value, player|
   Statabase.set( name, value )
-  $last_active_id = player_id
+  $last_active_id = player.spalla_id if player
   $last_active_event = name
   Request.respond
 end
 
-Progenitor::Orchestra.instance.on_register do |player, hears, plays|
+Progenitor::Orchestra.instance.on_register do |player|
   puts "Registration from: #{player.spalla_id}"
   $last_active_id = player.spalla_id
   $last_active_event = ""
   Request.respond
 end
 
-Progenitor::Orchestra.instance.on_unregister do |spalla_id|
-  puts "Spalla disconnected: #{spalla_id}"
+Progenitor::Orchestra.instance.on_unregister do |player|
+  puts "Spalla disconnected: #{player.spalla_id}"
   Request.respond
 end
 

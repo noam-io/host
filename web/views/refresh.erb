@@ -3,24 +3,30 @@
   <h4>Last refreshed: <%= Time.now %></h4>
   <tr>
     <th>Spalla Id</th>
+    <th>Device Type</th>
+    <th>System Version</th>
     <% @orchestra.event_names.each do |event| %>
       <th><%= event %></th>
     <% end %>
     <td/>
   </tr>
   <tr>
-    <td>Last Value</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <% @orchestra.event_names.each do |event| %>
       <td class="event last-value<%= " active" if @last_active_event == event %>" data-event-name="<%=event%>" data-event-value="<%= @values.get(event) %>">
         <%= @values.get(event) %>
       </td>
     <% end %>
-    <td/>
+    <td>&nbsp;</td>
   </tr>
 
   <% @orchestra.players.each do |spalla_id, player| %>
     <tr>
       <td <%= "class=\"active\"" if @last_active_id == spalla_id %> ><%= spalla_id %></td>
+      <td><%= player.device_type %></td>
+      <td><%= player.system_version %></td>
       <% @orchestra.event_names.each do |event| %>
         <td>
           <% if player.hears?(event) %>
