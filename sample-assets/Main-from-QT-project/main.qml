@@ -3,6 +3,7 @@ import Spalla 1.0
 
 Rectangle {
     id: scene
+    property string version: 'Old main.qml'
     width: 1200
     height: 720
     color: Qt.darker("darkgrey",5)

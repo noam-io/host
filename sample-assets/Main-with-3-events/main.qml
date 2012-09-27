@@ -3,6 +3,7 @@ import Spalla 1.0
 
 Rectangle {
     id: scene
+    property string version: '3 Events'
 
     EventFilter {
         trigger: "event 1"
