@@ -7,14 +7,22 @@ describe Progenitor::Orchestra do
 
   let(:id_1) { 'Arduino #1' }
   let(:id_2) { 'Raspberry Pi #2' }
-  let(:player_1 ) { Progenitor::Player.new( id_1, "", "", ["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]) }
-  let(:player_2) { Progenitor::Player.new( id_2, "", "", [], []) }
+  let(:player_1 ) { Progenitor::Player.new( id_1, 'Device Type', 'System Version', ["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]) }
+  let(:player_2) { Progenitor::Player.new( id_2, 'Device Type', 'System Version', [], []) }
 
   let(:ip_1) { '10.0.3.2' }
   let(:ip_2) { '192.168.3.2' }
   let(:connection_1) { Progenitor::PlayerConnection.new( ip_1, 111 )}
   let(:connection_2) { Progenitor::PlayerConnection.new( ip_2, 222 )}
 
+
+  it "plays a note noone has registered for" do
+    -> {orchestra.play( 'player', 'listens_for_1', 12.42 )}.should_not raise_error
+  end
+
+  it "implements a Singleton" do
+    described_class.instance.should === described_class.instance
+  end
 
   it "should register players" do
     orchestra.register( connection_1, player_1)
@@ -36,10 +44,6 @@ describe Progenitor::Orchestra do
     orchestra.events.include?( "plays_3" ).should == true
   end
 
-  it "plays a note noone has registered for" do
-    -> {orchestra.play( 'player', 'listens_for_1', 12.42 )}.should_not raise_error
-  end
-
   it "replaces existing registration with a new one" do
     orchestra.register( connection_1, player_1 )
     connection_1.should_receive( :terminate )
@@ -48,50 +52,6 @@ describe Progenitor::Orchestra do
     connection_1.should_not_receive(:hear)
     connection_2.should_receive(:hear).with( 'player_id', "listens_for_1", 12.42)
     orchestra.play("listens_for_1", 12.42, 'player_id')
-  end
-
-  it "implements a Singleton" do
-    described_class.instance.should === described_class.instance
-  end
-
-  it "registers registration observers" do
-    callback_run = false
-    orchestra.on_register do |player|
-      callback_run = true
-      player.should == player_1
-    end
-
-    orchestra.register(connection_1, player_1)
-
-    callback_run.should == true
-  end
-
-  it "unregisters players" do
-    orchestra.register( connection_1, player_1 )
-
-    callback_run = false
-    orchestra.on_unregister do |player|
-      callback_run = true
-      player.should == player_1
-    end
-
-    orchestra.fire_player( id_1 )
-    callback_run.should be_true
-  end
-
-  it "registers event observers" do
-    orchestra.register( connection_1, player_1 )
-
-    callback_run = false
-    orchestra.on_play do |name, value, player|
-      callback_run = true
-      player.should == player_1
-      name.should == "food"
-      value.should == "bard"
-    end
-
-    orchestra.play("food", "bard", id_1)
-    callback_run.should == true
   end
 
   it "tracks players" do
@@ -112,8 +72,45 @@ describe Progenitor::Orchestra do
     end
   end
 
-  context "Spalla ID's and IP's" do
+  context 'Callbacks' do
+    it "registers registration observers" do
+      orchestra.on_register do |player|
+        @callback_run = true
+        player.should == player_1
+      end
 
+      orchestra.register(connection_1, player_1)
+      @callback_run.should be_true
+    end
+
+    it "unregisters players" do
+      orchestra.register( connection_1, player_1 )
+
+      orchestra.on_unregister do |player|
+        @callback_run = true
+        player.should == player_1
+      end
+
+      orchestra.fire_player( id_1 )
+      @callback_run.should be_true
+    end
+
+    it "registers event observers" do
+      orchestra.register( connection_1, player_1 )
+
+      orchestra.on_play do |name, value, player|
+        @callback_run = true
+        player.should == player_1
+        name.should == "food"
+        value.should == "bard"
+      end
+
+      orchestra.play("food", "bard", id_1)
+      @callback_run.should be_true
+    end
+  end
+
+  context "Spalla ID's and IP's" do
     before :each do
       orchestra.register( connection_1, player_1 )
       orchestra.register( connection_2, player_2 )
