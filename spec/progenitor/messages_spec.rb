@@ -16,6 +16,20 @@ describe Progenitor::Messages do
     parsed = described_class.parse(message)
     parsed.message_type.should == "register"
     parsed.spalla_id.should == "spalla_id0"
+    parsed.device_type.should be_nil
+    parsed.system_version.should be_nil
+    parsed.callback_port.should == 4423
+    parsed.hears.should == ["car_speed", "rpm", "volume"]
+    parsed.plays.should == ["headlights"]
+  end
+
+  it "should parse a registration message with device type and system id" do
+    message = [ "register", "spalla_id0", 4423, ["car_speed", "rpm", "volume"], ["headlights"], 'device type', 'system version' ].to_json
+    parsed = described_class.parse(message)
+    parsed.message_type.should == "register"
+    parsed.spalla_id.should == "spalla_id0"
+    parsed.device_type.should == "device type"
+    parsed.system_version.should == "system version"
     parsed.callback_port.should == 4423
     parsed.hears.should == ["car_speed", "rpm", "volume"]
     parsed.plays.should == ["headlights"]
