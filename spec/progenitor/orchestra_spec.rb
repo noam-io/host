@@ -7,8 +7,8 @@ describe Progenitor::Orchestra do
 
   let(:id_1) { 'Arduino #1' }
   let(:id_2) { 'Raspberry Pi #2' }
-  let(:player_1 ) { Progenitor::Player.new( id_1, 'Device Type', 'System Version', ["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]) }
-  let(:player_2) { Progenitor::Player.new( id_2, 'Device Type', 'System Version', [], []) }
+  let(:player_1 ) { Progenitor::Player.new( id_1, 'Virtual Machine', 'System Version', ["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]) }
+  let(:player_2) { Progenitor::Player.new( id_2, 'Pi', 'System Version', [], []) }
 
   let(:ip_1) { '10.0.3.2' }
   let(:ip_2) { '192.168.3.2' }
@@ -124,6 +124,11 @@ describe Progenitor::Orchestra do
       it 'drops fired spallas' do
         orchestra.fire_player( id_1 )
         orchestra.spalla_ids.should == [id_2]
+      end
+
+      it 'has deployable spalla ids' do
+        player_2.deployable?.should be_true
+        orchestra.deployable_spalla_ids.should == [id_2]
       end
     end
 

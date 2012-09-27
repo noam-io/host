@@ -22,5 +22,9 @@ module Progenitor
     def learn_to_play(event)
       @plays << event unless @plays.include?(event)
     end
+
+    def deployable?
+      ['Pi', 'PI', 'pi'].include? device_type
+    end
   end
 end

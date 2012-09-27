@@ -51,4 +51,17 @@ describe Progenitor::Player do
     player.learn_to_play("window_state")
     player.plays.size.should == size
   end
+
+  it 'is deployable only when device type is pi, PI, or Pi' do
+    player = described_class.new( '', 'pi', '', [], [] )
+    player.deployable?.should be_true
+    player = described_class.new( '', 'PI', '', [], [] )
+    player.deployable?.should be_true
+    player = described_class.new( '', 'Pi', '', [], [] )
+    player.deployable?.should be_true
+  end
+
+  it 'is not deployable in other cases' do
+    player.deployable?.should be_false
+  end
 end

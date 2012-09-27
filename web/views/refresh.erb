@@ -37,9 +37,13 @@
           <% end %>
         </td>
       <% end %>
-      <td class="deploy" data-spalla-id="<%= spalla_id.gsub(/\s/, "") %>">
-        Deploy
-      </td>
+      <% if player.deployable? then %>
+        <td class="deploy" data-spalla-id="<%= spalla_id.gsub(/\s/, "") %>">
+          Deploy
+        </td>
+      <% else %>
+        <td>&nbsp;</td>
+      <% end %>
     </tr>
   <% end %>
 
