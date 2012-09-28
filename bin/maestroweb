@@ -13,8 +13,8 @@ require 'progenitor/asset_deployer'
 PORT = 8833
 
 PI_USERNAME = 'pi'
-RSA_PRIVATE_KEY = File.expand_path(File.join(File.dirname(__FILE__), ".ssh", "maestro-key"))
-ASSETS_LOCATION = File.expand_path(File.join(File.dirname(__FILE__), "sample-assets"))
+RSA_PRIVATE_KEY = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "maestro-key"))
+ASSETS_LOCATION = File.expand_path(File.join(File.dirname(__FILE__), "..", "sample-assets"))
 PI_DEPLOY_DESTINATION = '/home/pi/SpallaApp/qml'
 
 server = Progenitor::MaestroServer.new(PORT)
