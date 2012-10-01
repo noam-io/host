@@ -3,9 +3,9 @@ require 'progenitor/udp_broadcaster'
 describe Progenitor::UdpBroadcaster do
   let(:port) { 24039 }
   let(:ip_1_host) { '3.4.5.6' }
-  let(:ip_1_broadcast) { '3.4.5.255' }
+  let(:ip_1_broadcast) { '3.4.255.255' }
   let(:ip_2_host) { '101.202.303.404' }
-  let(:ip_2_broadcast) { '101.202.303.255' }
+  let(:ip_2_broadcast) { '101.202.255.255' }
   let(:interface_1) { mock( ipv4_private?: true, ip_address: ip_1_host )}
   let(:interface_2) { mock( ipv4_private?: true, ip_address: ip_2_host )}
 
