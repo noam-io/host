@@ -29,7 +29,7 @@ module Progenitor
     end
 
     def to_broadcast( ip )
-      ip.gsub(/^(\d+\.\d+\.\d+\.)\d+$/, '\1255')
+      ip.gsub(/^(\d+\.\d+\.)\d+\.\d+$/, '\1255.255')
     end
   end
 end
