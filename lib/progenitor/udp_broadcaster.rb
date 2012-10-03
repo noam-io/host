@@ -9,11 +9,9 @@ module Progenitor
     end
 
     def go
-      network_interfaces.each do |network|
-        ip = network.ip_address
-        broadcast_ip = to_broadcast( ip )
-        message_to_broadcast = "[Maestro@#{ip}:#{@port}]"
-        send_message_to( message_to_broadcast, broadcast_ip, @port )
+      message_to_broadcast = "[Maestro@1.2.3.4:#{@port}]"
+      broadcast_addresses.each do |address|
+        send_message_to( message_to_broadcast, address, @port )
       end
     end
 
@@ -24,12 +22,9 @@ module Progenitor
     rescue Exception => e
     end
 
-    def network_interfaces
-      Socket.ip_address_list.select{|interface| interface.ipv4_private?}
-    end
 
-    def to_broadcast( ip )
-      ip.gsub(/^(\d+\.\d+\.)\d+\.\d+$/, '\1255.255')
+    def broadcast_addresses
+      `ifconfig | grep broadcast`.split($/).map(&:split).map(&:last)
     end
   end
 end
