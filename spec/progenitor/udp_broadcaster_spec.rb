@@ -14,7 +14,10 @@ describe Progenitor::UdpBroadcaster do
       "#{ip_1_host} broadcast #{ip_1_broadcast}",
       "#{ip_2_host} broadcast #{ip_2_broadcast}"
     ].join($/)
-    Progenitor::UdpBroadcaster.any_instance.stub(:`)
+    Progenitor::UdpBroadcaster.any_instance
+      .should_receive(:`)
+      .with( 'ifconfig | grep broadcast' )
+      .at_least( :once )
       .and_return( ips_and_broadcast_ips )
   end
 
@@ -52,7 +55,7 @@ describe Progenitor::UdpBroadcaster do
     UDPSocket
       .any_instance
       .should_receive(:send)
-      .with("[Maestro@1.2.3.4:#{port}]", 0, broadcast_ip, port)
+      .with("[Maestro@#{port}]", 0, broadcast_ip, port)
   end
 end
 

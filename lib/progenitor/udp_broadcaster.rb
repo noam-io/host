@@ -9,7 +9,7 @@ module Progenitor
     end
 
     def go
-      message_to_broadcast = "[Maestro@1.2.3.4:#{@port}]"
+      message_to_broadcast = "[Maestro@#{@port}]"
       broadcast_addresses.each do |address|
         send_message_to( message_to_broadcast, address, @port )
       end
