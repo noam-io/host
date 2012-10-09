@@ -8,9 +8,13 @@ module Progenitor
        @port, @ip = Socket.unpack_sockaddr_in(get_peername)
        handler = MessageHandler.new(@ip)
        @listener = TcpListener.new do |msg|
-         parsed_message = Messages.parse(msg)
-         @spalla_id = parsed_message.spalla_id
-         handler.message_received(parsed_message)
+         begin
+           parsed_message = Messages.parse(msg)
+           @spalla_id = parsed_message.spalla_id
+           handler.message_received(parsed_message)
+         rescue JSON::ParserError
+           puts "invalid message received:  #{msg}"
+         end
        end
     end
 
