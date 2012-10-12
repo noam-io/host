@@ -16,14 +16,16 @@ module Progenitor
     end
 
     def register(player_connection, player)
-      players[player_connection.spalla_id] = player
-      @connections[player_connection.spalla_id] = player_connection
+      spalla_id = player.spalla_id
+
+      players[spalla_id] = player
+      @connections[spalla_id] = player_connection
 
       fired = []
       player.hears.each do |event|
         @events[event] ||= {}
-        fired << @events[event][player_connection.spalla_id]
-        @events[event][player_connection.spalla_id] = player_connection
+        fired << @events[event][spalla_id]
+        @events[event][spalla_id] = player_connection
       end
       fired.compact.uniq.each(&:terminate)
 
@@ -32,16 +34,16 @@ module Progenitor
       end
 
       @register_callbacks.each do |callback|
-        callback.call(player_connection, player.hears, player.plays)
+        callback.call(player)
       end
     end
 
     def fire_player(spalla_id)
-      players.delete(spalla_id)
+      player = players.delete(spalla_id)
       @connections.delete(spalla_id)
 
       @unregister_callbacks.each do |callback|
-        callback.call(spalla_id)
+        callback.call( player )
       end
     end
 
@@ -49,16 +51,17 @@ module Progenitor
       @events.keys
     end
 
-    def play(event, value, player_id = "")
-      players[player_id].learn_to_play(event) unless players[player_id].nil?
+    def play(event, value, player_id )
+      player = players[player_id]
+      player.learn_to_play(event) unless player.nil?
       @events[event] ||= {}
 
       @events[event].each do |id, player|
-        player.hear(event, value)
+        player.hear(player_id, event, value)
       end if @events[event]
 
       @play_callbacks.each do |callback|
-        callback.call(event, value, player_id)
+        callback.call(event, value, player)
       end
     end
 
@@ -81,7 +84,11 @@ module Progenitor
     end
 
     def spalla_ids
-      players.map { |spalla_id, player| spalla_id }
+      players.values.map( &:spalla_id )
+    end
+
+    def deployable_spalla_ids
+      players.values.select( &:deployable? ).map( &:spalla_id )
     end
   end
 end

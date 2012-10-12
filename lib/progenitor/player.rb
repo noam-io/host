@@ -1,8 +1,12 @@
 
 module Progenitor
   class Player
-    attr_reader :hears, :plays
-    def initialize(hears, plays)
+    attr_reader :spalla_id, :device_type, :system_version, :hears, :plays
+
+    def initialize(spalla_id, device_type, system_version, hears, plays)
+      @spalla_id = spalla_id
+      @device_type = device_type
+      @system_version = system_version
       @hears = hears || []
       @plays = plays || []
     end
@@ -17,6 +21,10 @@ module Progenitor
 
     def learn_to_play(event)
       @plays << event unless @plays.include?(event)
+    end
+
+    def deployable?
+      ['Pi', 'PI', 'pi'].include? device_type
     end
   end
 end

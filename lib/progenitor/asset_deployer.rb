@@ -30,11 +30,21 @@ module Progenitor
     private
 
     def execute_over_ssh( command, ip )
-      system('ssh', '-i', @rsa_private_key, "#{@remote_user}@#{ip}", "sudo", command )
+      system('ssh',
+        '-i', @rsa_private_key,
+        '-o', 'UserKnownHostsFile=/dev/null',
+        '-o', 'StrictHostKeyChecking=no',
+        "#{@remote_user}@#{ip}",
+        "sudo", command )
     end
 
     def scp_folder_to( folder, ip )
-      system("scp", "-r", "-i", @rsa_private_key, "#{@asset_location}/#{folder}/.", "#{@remote_user}@#{ip}:#{@destination}/.")
+      system("scp",
+        "-r",
+        '-o', 'UserKnownHostsFile=/dev/null',
+        '-o', 'StrictHostKeyChecking=no',
+        "-i", @rsa_private_key, "#{@asset_location}/#{folder}/.",
+        "#{@remote_user}@#{ip}:#{@destination}/.")
     end
 
     def filter_bogus_folders( folders )

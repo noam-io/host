@@ -4,23 +4,27 @@ module Progenitor
   class UdpBroadcaster
     def initialize(port)
       @port = port
-      @address = '<broadcast>'
-      @message_to_broadcast = "[Maestro@#{local_ip}:#{@port}]"
-
       @socket = UDPSocket.new
       @socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_BROADCAST, true)
     end
 
     def go
-      @socket.send(@message_to_broadcast, 0, @address, @port)
-    rescue Exception
+      message_to_broadcast = "[Maestro@#{@port}]"
+      broadcast_addresses.each do |address|
+        send_message_to( message_to_broadcast, address, @port )
+      end
     end
 
     private
 
-    def local_ip
-      ip = Socket.ip_address_list.detect{|intf| intf.ipv4_private?}
-      ip.ip_address if ip
+    def send_message_to( message, ip, port )
+      @socket.send(message, 0, ip, port)
+    rescue Exception => e
+    end
+
+
+    def broadcast_addresses
+      `ifconfig | grep broadcast`.split($/).map(&:split).map(&:last)
     end
   end
 end

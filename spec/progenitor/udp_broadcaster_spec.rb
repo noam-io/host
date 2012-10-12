@@ -2,59 +2,60 @@ require 'progenitor/udp_broadcaster'
 
 describe Progenitor::UdpBroadcaster do
   let(:port) { 24039 }
-  let(:expected_message) { "[Maestro@#{local_ip}:#{port}]" }
-  let(:broadcaster) { described_class.new(port) }
-  let(:data) {[]}
-  let(:address) { '0.0.0.0' }
-  let(:socket) { UDPSocket.new }
+  let(:ip_1_host) { '3.4.5.6' }
+  let(:ip_1_broadcast) { '3.4.255.255' }
+  let(:ip_2_host) { '101.202.303.404' }
+  let(:ip_2_broadcast) { '101.202.255.255' }
 
-  before :all do
-    BasicSocket.do_not_reverse_lookup = true
-  end
-
+  let(:broadcaster) { described_class.new( port ) }
 
   before :each do
-    socket.bind(address, port)
-  end
-
-  after :each do
-    socket.close
+    ips_and_broadcast_ips = [
+      "#{ip_1_host} broadcast #{ip_1_broadcast}",
+      "#{ip_2_host} broadcast #{ip_2_broadcast}"
+    ].join($/)
+    Progenitor::UdpBroadcaster.any_instance
+      .should_receive(:`)
+      .with( 'ifconfig | grep broadcast' )
+      .at_least( :once )
+      .and_return( ips_and_broadcast_ips )
   end
 
   it "broadcasts it's IP and port" do
-    broadcast_and_read
-
-    data.count.should == 1
-    data[0].should == expected_message
+    set_expectation( ip_1_host, ip_1_broadcast )
+    set_expectation( ip_2_host, ip_2_broadcast )
+    broadcaster.go
   end
 
   it "can broadcast multiple times" do
-    broadcast_and_read
-    broadcast_and_read
-
-    data.count.should == 2
-    data[0].should == expected_message
-    data[1].should == expected_message
+    set_expectation( ip_1_host, ip_1_broadcast )
+    set_expectation( ip_1_host, ip_1_broadcast )
+    set_expectation( ip_2_host, ip_2_broadcast )
+    set_expectation( ip_2_host, ip_2_broadcast )
+    broadcaster.go
+    broadcaster.go
   end
 
   it 'handles network errors' do
-    UDPSocket.any_instance.should_receive(:send).and_raise(Exception)
+    UDPSocket.any_instance
+      .should_receive(:send)
+      .twice
+      .and_raise(Exception)
     broadcaster.go
   end
 
-  def broadcast_and_read
-    readThread = Thread.new do
-      message, addr = socket.recvfrom(1024)
-      data << message
-    end
-    Thread.pass
+  it 'broadcasts to all interfaces even if error occurs on one' do
+    set_expectation( ip_1_host, ip_1_broadcast )
+      .and_raise(Exception)
+    set_expectation( ip_2_host, ip_2_broadcast )
     broadcaster.go
-    readThread.join
   end
 
-  def local_ip
-    ip = Socket.ip_address_list.detect{|intf| intf.ipv4_private?}
-    ip.ip_address if ip
+  def set_expectation( host_ip, broadcast_ip )
+    UDPSocket
+      .any_instance
+      .should_receive(:send)
+      .with("[Maestro@#{port}]", 0, broadcast_ip, port)
   end
 end
 
