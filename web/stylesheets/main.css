@@ -7,7 +7,7 @@ table {
   border: 1px solid;
 }
 
-th, td {
+td {
   border-right: 1px solid;
   padding: 5px;
   vertical-align: top;
@@ -15,6 +15,15 @@ th, td {
 
 th {
   border-bottom: 4px solid;
+  padding: 5px;
+  vertical-align: bottom;
+  height: 100px;
+}
+
+th div {
+  -webkit-transform: rotate(-60deg);
+  -moz-transform: rotate(-60deg);
+  width: 20px;
 }
 
 th:last-child, td:last-child {
