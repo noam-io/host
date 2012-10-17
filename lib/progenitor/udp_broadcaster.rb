@@ -13,6 +13,8 @@ module Progenitor
       broadcast_addresses.each do |address|
         send_message_to( message_to_broadcast, address, @port )
       end
+
+      send_message_to( message_to_broadcast, '127.0.0.1', @port )
     end
 
     private

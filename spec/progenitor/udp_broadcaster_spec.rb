@@ -2,42 +2,51 @@ require 'progenitor/udp_broadcaster'
 
 describe Progenitor::UdpBroadcaster do
   let(:port) { 24039 }
-  let(:ip_1_host) { '3.4.5.6' }
-  let(:ip_1_broadcast) { '3.4.255.255' }
-  let(:ip_2_host) { '101.202.303.404' }
-  let(:ip_2_broadcast) { '101.202.255.255' }
+  let(:broadcast_ip_1) { '3.4.255.255' }
+  let(:broadcast_ip_2) { '101.202.255.255' }
+  let(:socket){ mock }
 
   let(:broadcaster) { described_class.new( port ) }
 
   before :each do
-    ips_and_broadcast_ips = [
-      "#{ip_1_host} broadcast #{ip_1_broadcast}",
-      "#{ip_2_host} broadcast #{ip_2_broadcast}"
+    ifconfig_grep_result = [
+      "1.2.3.4 broadcast #{broadcast_ip_1}",
+      "100.101.200.202 broadcast #{broadcast_ip_2}"
     ].join($/)
     Progenitor::UdpBroadcaster.any_instance
       .should_receive(:`)
       .with( 'ifconfig | grep broadcast' )
       .at_least( :once )
-      .and_return( ips_and_broadcast_ips )
+      .and_return( ifconfig_grep_result )
+
+    UDPSocket.stub( :new ).and_return( socket )
+    socket
+      .should_receive( :setsockopt )
+      .with( Socket::SOL_SOCKET, Socket::SO_BROADCAST, true )
   end
 
   it "broadcasts it's IP and port" do
-    set_expectation( ip_1_host, ip_1_broadcast )
-    set_expectation( ip_2_host, ip_2_broadcast )
+    set_expectation( broadcast_ip_1 )
+    set_expectation( broadcast_ip_2 )
+    broadcaster.go
+  end
+
+  it "broadcasts localhost" do
+    set_expectation( "127.0.0.1" )
     broadcaster.go
   end
 
   it "can broadcast multiple times" do
-    set_expectation( ip_1_host, ip_1_broadcast )
-    set_expectation( ip_1_host, ip_1_broadcast )
-    set_expectation( ip_2_host, ip_2_broadcast )
-    set_expectation( ip_2_host, ip_2_broadcast )
+    set_expectation( broadcast_ip_1 )
+    set_expectation( broadcast_ip_1 )
+    set_expectation( broadcast_ip_2 )
+    set_expectation( broadcast_ip_2 )
     broadcaster.go
     broadcaster.go
   end
 
   it 'handles network errors' do
-    UDPSocket.any_instance
+    socket
       .should_receive(:send)
       .twice
       .and_raise(Exception)
@@ -45,16 +54,14 @@ describe Progenitor::UdpBroadcaster do
   end
 
   it 'broadcasts to all interfaces even if error occurs on one' do
-    set_expectation( ip_1_host, ip_1_broadcast )
+    set_expectation( broadcast_ip_1 )
       .and_raise(Exception)
-    set_expectation( ip_2_host, ip_2_broadcast )
+    set_expectation( broadcast_ip_2 )
     broadcaster.go
   end
 
-  def set_expectation( host_ip, broadcast_ip )
-    UDPSocket
-      .any_instance
-      .should_receive(:send)
+  def set_expectation( broadcast_ip )
+    socket.should_receive(:send)
       .with("[Maestro@#{port}]", 0, broadcast_ip, port)
   end
 end
