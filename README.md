@@ -10,7 +10,7 @@ Conductor of the Auto Simulator "Orchestra"
 
 * Install [RVM](https://rvm.io/) (Ruby Version Manager) and the latest ruby.
 
-       \curl -L https://get.rvm.io | bash -s stable --ruby
+        \curl -L https://get.rvm.io | bash -s stable --ruby
 
 * Install git from [Git-Scm](http://git-scm.com/downloads)
 
@@ -18,23 +18,23 @@ Conductor of the Auto Simulator "Orchestra"
 
 * clone this repository
 
-       git clone https://github.com/8thlight/ProgenitorMaestro.git
+        git clone https://github.com/8thlight/ProgenitorMaestro.git
 
 * cd (change directory) to this repository
 
-       cd ProgenitorMaestro
+        cd ProgenitorMaestro
 
 * Install bundler gem
 
-       gem install bundler
+        gem install bundler
 
 *  Install gem bundle
 
-       bundle install
+        bundle install
 
 *  Start server
 
-       bin/maestroweb
+        bin/maestroweb
 
 * browse to http://localhost:8081 with Chrome or Safari
 
