@@ -50,7 +50,7 @@ module Progenitor
     end
 
     def send_data(data)
-      @connection.send_data("%06d" % data.length)
+      @connection.send_data("%06d" % data.bytesize)
       @connection.send_data(data)
     end
 
