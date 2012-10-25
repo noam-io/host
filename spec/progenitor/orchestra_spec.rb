@@ -7,13 +7,15 @@ describe Progenitor::Orchestra do
 
   let(:id_1) { 'Arduino #1' }
   let(:id_2) { 'Raspberry Pi #2' }
-  let(:player_1 ) { Progenitor::Player.new( id_1, 'Virtual Machine', 'System Version', ["listens_for_1", "listens_for_2"], ["plays_1", "plays_2"]) }
-  let(:player_2) { Progenitor::Player.new( id_2, 'Pi', 'System Version', [], []) }
-
   let(:ip_1) { '10.0.3.2' }
   let(:ip_2) { '192.168.3.2' }
-  let(:connection_1) { Progenitor::PlayerConnection.new( ip_1, 111 )}
-  let(:connection_2) { Progenitor::PlayerConnection.new( ip_2, 222 )}
+  let(:player_1 ) { Progenitor::Player.new( id_1, 'Virtual Machine', 'System Version',
+                                           ["listens_for_1", "listens_for_2"],
+                                           ["plays_1", "plays_2"] , ip_1, 111)}
+  let(:player_2) { Progenitor::Player.new( id_2, 'Pi', 'System Version', [], [], ip_2, 222) }
+
+  let(:connection_1) { Progenitor::PlayerConnection.new( player_1 )}
+  let(:connection_2) { Progenitor::PlayerConnection.new( player_2 )}
 
 
   it "plays a note noone has registered for" do
@@ -132,18 +134,18 @@ describe Progenitor::Orchestra do
       end
     end
 
-    context "IP's" do
-      it 'has IP addresses' do
-        orchestra.ips_for( [id_1, id_2] ).should == [ip_1, ip_2]
+    context "Players" do
+      it 'has player addresses' do
+        orchestra.players_for( [id_1, id_2] ).should == [player_1, player_2]
       end
 
       it 'drops fired players' do
         orchestra.fire_player( id_1 )
-        orchestra.ips_for( [id_1, id_2] ).should == [ip_2]
+        orchestra.players_for( [id_1, id_2] ).should == [player_2]
       end
 
       it 'handles nil' do
-        orchestra.ips_for( nil ).should == []
+        orchestra.players_for( nil ).should == []
       end
     end
   end

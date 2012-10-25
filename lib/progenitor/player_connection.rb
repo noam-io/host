@@ -11,9 +11,9 @@ module Progenitor
   class PlayerConnection
     attr_accessor :host, :port
 
-    def initialize(host, port)
-      @host = host
-      @port = port
+    def initialize(player)
+      @host = player.host
+      @port = player.port
       @backlog = []
     end
 

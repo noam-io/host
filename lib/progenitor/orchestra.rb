@@ -77,10 +77,9 @@ module Progenitor
       @play_callbacks << callback
     end
 
-    def ips_for( spalla_ids )
+    def players_for(spalla_ids)
       spalla_ids ||= []
-      valid_connections = @connections.select{ |spalla_id, connection| spalla_ids.include? spalla_id }
-      valid_connections.map{ |spalla_id, connection| connection.host }
+      valid_players = players.select{ |spalla_id, player| spalla_ids.include? spalla_id }.values
     end
 
     def spalla_ids

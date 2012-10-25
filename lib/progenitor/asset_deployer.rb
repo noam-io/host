@@ -1,23 +1,21 @@
 
 module Progenitor
   class AssetDeployer
-    def initialize(remote_user, rsa_private_key, asset_location, destination)
-     @remote_user = remote_user
+    def initialize(rsa_private_key, asset_location)
      @rsa_private_key = rsa_private_key
      @asset_location = asset_location
-     @destination = destination
    end
 
-    def deploy( ips, folders )
-      ips = [] unless ips
-      ips = [ips] unless ips.is_a? Array
+    def deploy( players, folders )
+      players = [] unless players
+      players = [players] unless players.is_a? Array
       folders = [folders] unless folders.is_a? Array
 
       folders = filter_bogus_folders( folders )
-      ips.product(folders) do |ip, folder|
-        scp_folder_to( folder, ip )
-        execute_over_ssh( "./killSpallaApp.sh", ip )
-        execute_over_ssh( "./startSpallaApp.sh", ip )
+      players.product(folders) do |player, folder|
+        scp_folder_to( folder, player )
+        execute_over_ssh( "./killSpallaApp.sh", player )
+        execute_over_ssh( "./startSpallaApp.sh", player )
       end
     end
 
@@ -29,22 +27,22 @@ module Progenitor
 
     private
 
-    def execute_over_ssh( command, ip )
+    def execute_over_ssh( command, player )
       system('ssh',
         '-i', @rsa_private_key,
         '-o', 'UserKnownHostsFile=/dev/null',
         '-o', 'StrictHostKeyChecking=no',
-        "#{@remote_user}@#{ip}",
+        "#{player.username}@#{player.host}",
         "sudo", command )
     end
 
-    def scp_folder_to( folder, ip )
+    def scp_folder_to( folder, player)
       system("scp",
         "-r",
         '-o', 'UserKnownHostsFile=/dev/null',
         '-o', 'StrictHostKeyChecking=no',
         "-i", @rsa_private_key, "#{@asset_location}/#{folder}/.",
-        "#{@remote_user}@#{ip}:#{@destination}/.")
+        "#{player.username}@#{player.host}:#{player.deploy_path}/.")
     end
 
     def filter_bogus_folders( folders )

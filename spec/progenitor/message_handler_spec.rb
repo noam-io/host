@@ -35,7 +35,7 @@ describe Progenitor::MessageHandler do
     event_value = 'event value'
 
     connection = mock('Connection')
-    player = Progenitor::Player.new( '', '', '', [event_name], [])
+    player = Progenitor::Player.new( '', '', '', [event_name], [], 0, 0)
     orchestra.register( connection, player )
 
     message = Progenitor::Messages::EventMessage.new({})

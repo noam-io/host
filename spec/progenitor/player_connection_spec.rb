@@ -23,7 +23,7 @@ describe Progenitor::PlayerConnection do
     end
     EM::run do
       server = EventMachine::start_server("127.0.0.1", 5652, TestConnection)
-      player = described_class.new( "127.0.0.1", 5652 )
+      player = described_class.new( mock("player", :host => "127.0.0.1", :port => 5652) )
       player.hear( ID_OF_PLAYER, NAME_1, VALUE_1 )
     end
   end
@@ -40,7 +40,7 @@ describe Progenitor::PlayerConnection do
     end
     EM::run do
       server = EventMachine::start_server("127.0.0.1", 5652, TestConnection)
-      player = described_class.new( "127.0.0.1", 5652 )
+      player = described_class.new( mock("player", :host => "127.0.0.1", :port => 5652) )
       player.hear( ID_OF_PLAYER, NAME_1, VALUE_1 )
       player.hear( ID_OF_PLAYER, NAME_2, VALUE_2 )
     end

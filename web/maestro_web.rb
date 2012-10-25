@@ -79,8 +79,8 @@ class MaestroApp < Sinatra::Base
   end
 
   post '/deploy-assets' do
-    selected_spalla_ips = Progenitor::Orchestra.instance.ips_for(params[:spallas])
-    EM.defer { @@asset_deployer.deploy( selected_spalla_ips, params[:folders] ) }
+    selected_spalla_players = Progenitor::Orchestra.instance.players_for(params[:spallas])
+    EM.defer { @@asset_deployer.deploy( selected_spalla_players, params[:folders] ) }
     redirect '/'
   end
 end
