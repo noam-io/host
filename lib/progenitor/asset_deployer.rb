@@ -28,12 +28,14 @@ module Progenitor
     private
 
     def execute_over_ssh( command, player )
-      system('ssh',
+      command_args = [ 'ssh',
         '-i', @rsa_private_key,
         '-o', 'UserKnownHostsFile=/dev/null',
         '-o', 'StrictHostKeyChecking=no',
-        "#{player.username}@#{player.host}",
-        "sudo", command )
+        "#{player.username}@#{player.host}"]
+      command_args << "sudo" if player.sudo
+      command_args << command
+      system(*command_args)
     end
 
     def scp_folder_to( folder, player)

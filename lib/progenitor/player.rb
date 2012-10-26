@@ -3,10 +3,13 @@ module Progenitor
   class Player
     attr_reader :spalla_id, :device_type, :system_version, :hears, :plays, :host, :port
     def device_key
-      @device_type.downcase
+      (@device_type || "").downcase
     end
 
-    DeployableDevices = {"pi" => {:username => "pi", :deploy_path => '/home/pi/SpallaApp/qml'} }
+    DeployableDevices = {
+      "pi" => {:username => "pi", :deploy_path => '/home/pi/SpallaApp/qml', :sudo => true},
+      "mac" => {:username => "progenitor", :deploy_path => '/Applications/SpallaApp.app/Contents/MacOS/qml', :sudo => false }
+    }
     DeployableDevices.default = {:username => nil, :deploy_path => nil}
 
     def initialize(spalla_id, device_type, system_version, hears, plays, host, port)

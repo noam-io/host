@@ -82,4 +82,9 @@ describe Progenitor::Player do
     player.username.should == nil
     player.deploy_path.should == nil
   end
+
+  it 'is not deployable without a device type' do
+    player = described_class.new( '', nil, '', [], [], 0, 0 )
+    player.deployable?.should be_false
+  end
 end

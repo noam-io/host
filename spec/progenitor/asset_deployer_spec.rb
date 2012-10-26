@@ -11,8 +11,8 @@ describe Progenitor::AssetDeployer do
   let(:ip_2) { '192.168.1.1' }
   let(:destination_1) { '/destination-path/1' }
   let(:destination_2) { '/destination-path/2' }
-  let(:player_1) { mock("player 1", :host => ip_1, :username => remote_user_1, :deploy_path => destination_1) }
-  let(:player_2) { mock("player 2", :host => ip_2, :username => remote_user_2, :deploy_path => destination_2) }
+  let(:player_1) { mock("player 1", :host => ip_1, :username => remote_user_1, :deploy_path => destination_1, :sudo => true) }
+  let(:player_2) { mock("player 2", :host => ip_2, :username => remote_user_2, :deploy_path => destination_2, :sudo => false) }
   let(:deployer) { described_class.new(rsa_private_key, asset_location) }
 
   before :each do
@@ -39,6 +39,13 @@ describe Progenitor::AssetDeployer do
     set_ssh_expectation( deployer, './killSpallaApp.sh', ip_1, remote_user_1 )
     set_ssh_expectation( deployer, './startSpallaApp.sh', ip_1, remote_user_1 )
     deployer.deploy( player_1, valid_asset_folder_1 )
+  end
+
+  it 'restarts the remote SpallaApp without sudo' do
+    set_scp_expectation( deployer, ip_2, valid_asset_folder_1, destination_2, remote_user_2 )
+    set_ssh_expectation( deployer, './killSpallaApp.sh', ip_2, remote_user_2, false )
+    set_ssh_expectation( deployer, './startSpallaApp.sh', ip_2, remote_user_2, false )
+    deployer.deploy( player_2, valid_asset_folder_1 )
   end
 
   it 'handles multiple ips' do
@@ -91,14 +98,17 @@ describe Progenitor::AssetDeployer do
       remote_user + "@" + ip + ":" + destination + "/.")
   end
 
-  def set_ssh_expectation( deployer, command, ip, remote_user )
-    deployer.should_receive(:system)
-      .with('ssh',
+  def set_ssh_expectation( deployer, command, ip, remote_user, sudo = true )
+     with = ['ssh',
         '-i', rsa_private_key,
         '-o', 'UserKnownHostsFile=/dev/null',
         '-o', 'StrictHostKeyChecking=no',
-        "#{remote_user}@#{ip}",
-        'sudo', command )
+        "#{remote_user}@#{ip}"]
+     with << 'sudo' if sudo
+     with << command
+
+    deployer.should_receive(:system)
+      .with(*with)
   end
 end
 
