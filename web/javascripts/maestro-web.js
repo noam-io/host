@@ -28,7 +28,7 @@ $(function() {
     divToPopulate: 'real-time-data',
     refreshRoute: '/refresh',
     asyncRefreshRoute: '/arefresh',
-    errorMessage: 'Maestro is down.'
+    errorMessage: 'Contacting Maestro &hellip;'
   };
   var refresher = new AssetRefresher( params );
   refresher.go();
