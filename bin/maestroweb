@@ -19,8 +19,6 @@ server = Progenitor::MaestroServer.new(PORT)
 broadcaster = Progenitor::UdpBroadcaster.new(PORT)
 deployer = Progenitor::AssetDeployer.new( RSA_PRIVATE_KEY, ASSETS_LOCATION )
 
-deployers =
-
 EM::run do
   server.start
   MaestroApp.asset_deployer = deployer
