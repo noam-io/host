@@ -45,5 +45,9 @@ module Progenitor
     def deploy_path
       DeployableDevices[device_key][:deploy_path]
     end
+
+    def sudo
+      DeployableDevices[device_key][:sudo]
+    end
   end
 end

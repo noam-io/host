@@ -16,7 +16,7 @@ describe Progenitor::AssetDeployer do
   let(:deployer) { described_class.new(rsa_private_key, asset_location) }
 
   before :each do
-    deployer.stub(:system)
+    described_class.any_instance.stub( :system )
     valid_path_1 = "#{asset_location}/#{valid_asset_folder_1}"
     valid_path_2 = "#{asset_location}/#{valid_asset_folder_2}"
 
