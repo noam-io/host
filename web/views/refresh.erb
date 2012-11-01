@@ -42,7 +42,7 @@
   <% @orchestra.event_names.each do |event| %>
     <tr class="event">
       <th> <div> <%= event %> </div> </th>
-        <td class="event_value last-value<%= " active" if @last_active_event == event %>" data-event-name="<%=event%>" data-event-value="<%=CGI.escape(@values.get(event).to_s) %>">
+        <td class="event_value last-value<%= " active" if @last_active_event == event %>" data-event-name="<%=event%>" data-event-value="<%=value_escaped(@values.get(event).to_s) %>">
           <%= value_display(@values.get(event)) %>
           <span style="display:none" id="<%=event%>_value">
             <%= value_escaped(@values.get(event)) %>
