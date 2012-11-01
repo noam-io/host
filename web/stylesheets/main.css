@@ -7,30 +7,21 @@ table {
   border: 1px solid;
 }
 
-td {
-  border-right: 1px solid;
+td.event, th.event {
+  border-bottom: 1px solid;
+}
+
+table tr:nth-child(odd).event {
+  background-color: #ccc;
+}
+
+th, td {
   padding: 5px;
-  vertical-align: top;
+  border-right: 2px solid;
+  text-align: right;
 }
 
-th {
-  border-bottom: 4px solid;
-  padding: 5px;
-  vertical-align: bottom;
-  height: 100px;
-}
-
-th div {
-  -webkit-transform: rotate(-60deg);
-  -moz-transform: rotate(-60deg);
-  width: 20px;
-}
-
-th:last-child, td:last-child {
-  border-right:0;
-}
-
-.event {
+td.event_value {
   width:50px;
   text-align: center;
 }

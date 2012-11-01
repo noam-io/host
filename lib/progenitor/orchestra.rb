@@ -48,7 +48,7 @@ module Progenitor
     end
 
     def event_names
-      @events.keys
+      @events.keys.sort
     end
 
     def play(event, value, player_id )

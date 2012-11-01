@@ -3,31 +3,54 @@
   <h4>Last refreshed: <%= Time.now %></h4>
   <tr>
     <th>Spalla Id</th>
-    <th>Device Type</th>
-    <th>System Version</th>
-    <% @orchestra.event_names.each do |event| %>
-      <th> <div> <%= event %> </div> </th>
+    <th>Spalla Id</th>
+    <% @orchestra.players.each do |spalla_id, player| %>
+      <td <%= "class=\"active\"" if @last_active_id == spalla_id %> ><strong><%= spalla_id %></strong></td>
     <% end %>
-    <td/>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <% @orchestra.event_names.each do |event| %>
-      <td class="event last-value<%= " active" if @last_active_event == event %>" data-event-name="<%=event%>" data-event-value="<%= @values.get(event) %>">
-        <%= @values.get(event) %>
-      </td>
-    <% end %>
-    <td>&nbsp;</td>
   </tr>
 
-  <% @orchestra.players.each do |spalla_id, player| %>
-    <tr>
-      <td <%= "class=\"active\"" if @last_active_id == spalla_id %> ><%= spalla_id %></td>
+  <tr>
+    <th>Device Type</th>
+    <td/>
+    <% @orchestra.players.each do |spalla_id, player| %>
       <td><%= player.device_type %></td>
+    <% end %>
+  </tr>
+
+  <tr>
+    <th>System Version</th>
+    <td/>
+    <% @orchestra.players.each do |spalla_id, player| %>
       <td><%= player.system_version %></td>
-      <% @orchestra.event_names.each do |event| %>
+    <% end %>
+  </tr>
+
+  <tr>
+    <th>Deploy</th>
+    <td/>
+    <% @orchestra.players.each do |spalla_id, player| %>
+      <% if player.deployable? then %>
+        <td class="deploy" data-spalla-id="<%= spalla_id.gsub(/\s/, "") %>">
+          Deploy
+        </td>
+      <% else %>
+        <td>N/A</td>
+      <% end %>
+    <% end %>
+  </tr>
+
+  <% @orchestra.event_names.each do |event| %>
+    <tr class="event">
+      <th> <div> <%= event %> </div> </th>
+        <td class="event_value last-value<%= " active" if @last_active_event == event %>" data-event-name="<%=event%>" data-event-value="<%=CGI.escape(@values.get(event).to_s) %>">
+          <%= value_display(@values.get(event)) %>
+          <span style="display:none" id="<%=event%>_value">
+            <%= value_escaped(@values.get(event)) %>
+          </span>
+
+        </td>
+
+      <% @orchestra.players.each do |spalla_id, player| %>
         <td>
           <% if player.hears?(event) %>
             <img src="/images/hear.png" class="icon"/>
@@ -36,13 +59,6 @@
             <img src="/images/play.png" class="icon"/>
           <% end %>
         </td>
-      <% end %>
-      <% if player.deployable? then %>
-        <td class="deploy" data-spalla-id="<%= spalla_id.gsub(/\s/, "") %>">
-          Deploy
-        </td>
-      <% else %>
-        <td>&nbsp;</td>
       <% end %>
     </tr>
   <% end %>
