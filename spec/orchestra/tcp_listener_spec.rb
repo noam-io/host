@@ -1,6 +1,6 @@
-require 'progenitor/tcp_listener'
+require 'orchestra/tcp_listener'
 
-describe Progenitor::TcpListener do
+describe Orchestra::TcpListener do
   context "with listener" do
     let (:listener) { described_class.new }
 

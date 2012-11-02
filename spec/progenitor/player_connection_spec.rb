@@ -17,7 +17,7 @@ describe Progenitor::PlayerConnection do
 
     module TestConnection
       def receive_data(data)
-        data.should == wire_message(Progenitor::Messages.build_event( ID_OF_PLAYER, NAME_1, VALUE_1 ))
+        data.should == wire_message(Orchestra::Messages.build_event( ID_OF_PLAYER, NAME_1, VALUE_1 ))
         EM::stop_event_loop
       end
     end
@@ -31,8 +31,8 @@ describe Progenitor::PlayerConnection do
   it "should hear twice" do
     module TestConnection
       def receive_data(data)
-        message_1 = wire_message(Progenitor::Messages.build_event( ID_OF_PLAYER, NAME_1, VALUE_1 ))
-        message_2 = wire_message(Progenitor::Messages.build_event( ID_OF_PLAYER, NAME_2, VALUE_2 ))
+        message_1 = wire_message(Orchestra::Messages.build_event( ID_OF_PLAYER, NAME_1, VALUE_1 ))
+        message_2 = wire_message(Orchestra::Messages.build_event( ID_OF_PLAYER, NAME_2, VALUE_2 ))
 
         data.should == message_1 + message_2
         EM::stop_event_loop

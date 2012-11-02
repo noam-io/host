@@ -1,7 +1,7 @@
 require 'json'
-require 'progenitor/messages'
+require 'orchestra/messages'
 
-describe Progenitor::Messages do
+describe Orchestra::Messages do
   it "should parse an event message" do
     message = [ "event", "spalla_id2", "car_speed", 65.32 ].to_json
     parsed = described_class.parse(message)

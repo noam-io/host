@@ -1,6 +1,6 @@
 require 'progenitor/orchestra'
 require 'progenitor/message_handler'
-require 'progenitor/messages'
+require 'orchestra/messages'
 
 describe Progenitor::MessageHandler do
   let (:handler) { described_class.new("127.0.0.2") }
@@ -12,7 +12,7 @@ describe Progenitor::MessageHandler do
 
 
   it "should handle a registration message" do
-    message = Progenitor::Messages::RegisterMessage.new({})
+    message = ::Orchestra::Messages::RegisterMessage.new({})
     message.spalla_id = "1234"
     message.device_type = "device type"
     message.system_version = "system version"
@@ -38,7 +38,7 @@ describe Progenitor::MessageHandler do
     player = Progenitor::Player.new( '', '', '', [event_name], [], 0, 0)
     orchestra.register( connection, player )
 
-    message = Progenitor::Messages::EventMessage.new({})
+    message = Orchestra::Messages::EventMessage.new({})
     message.spalla_id = 'player_id'
     message.event_name = event_name
     message.event_value = event_value

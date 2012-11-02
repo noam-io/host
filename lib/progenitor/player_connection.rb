@@ -1,4 +1,4 @@
-require 'progenitor/messages'
+require 'orchestra/messages'
 
 module Progenitor
   module PlayerHandler
@@ -18,7 +18,7 @@ module Progenitor
     end
 
     def hear( id_of_player, event_name, event_value )
-      message = Messages.build_event( id_of_player, event_name, event_value )
+      message = ::Orchestra::Messages.build_event( id_of_player, event_name, event_value )
       send_message(message)
     end
 

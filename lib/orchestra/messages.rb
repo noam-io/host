@@ -1,6 +1,6 @@
 require 'json'
 
-module Progenitor
+module Orchestra
   module Messages
 
     class Message

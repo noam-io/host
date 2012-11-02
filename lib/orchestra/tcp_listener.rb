@@ -1,4 +1,4 @@
-module Progenitor
+module Orchestra
   class TcpListener
     attr_accessor :message_length, :message_payload
 
