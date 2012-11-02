@@ -56,6 +56,10 @@ module Orchestra
     def self.build_event(spalla_id, event_name, event_value)
       ["event", spalla_id, event_name, event_value].to_json
     end
+
+    def self.build_register(spalla_id, callback_port, hears, plays)
+      ["register", spalla_id, callback_port, hears, plays].to_json
+    end
   end
 end
 

@@ -53,4 +53,21 @@ describe Orchestra::Messages do
     message = [ "event", "spalla_id2", "car_speed", ["value1", "value2"] ].to_json
     described_class.build_event("spalla_id2", "car_speed", ["value1", "value2"]).should == message
   end
+
+  it "should build a registration message" do
+    message = [ "register", "spallaId12", 8921, ["e1", "e2"], ["e3", "e4"] ].to_json
+    described_class.build_register("spallaId12", 8921, ["e1", "e2"], ["e3", "e4"]).should == message
+  end
+
+  it "should parse what is builds" do
+    serial = described_class.build_register("spallaId12", 8921, ["e1", "e2"], ["e3", "e4"])
+    parsed = described_class.parse(serial)
+    parsed.message_type.should == "register"
+    parsed.spalla_id.should == "spallaId12"
+    parsed.device_type.should be_nil
+    parsed.system_version.should be_nil
+    parsed.callback_port.should == 8921
+    parsed.hears.should == ["e1", "e2"]
+    parsed.plays.should == ["e3", "e4"]
+  end
 end
