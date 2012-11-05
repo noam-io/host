@@ -45,6 +45,14 @@ class MaestroApp < Sinatra::Base
     @@asset_deployer = value
   end
 
+  def self.broadcast_port=( value )
+    @@broadcast_port = value
+  end
+
+  before do
+    @broadcast_port = @@broadcast_port
+  end
+
   get '/' do
     @orchestra = Progenitor::Orchestra.instance
     @values = Statabase
