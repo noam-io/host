@@ -2,19 +2,20 @@ require 'socket'
 
 module Progenitor
   class UdpBroadcaster
-    def initialize(port)
-      @port = port
+    def initialize(broadcast_port, listen_port)
+      @listen_port = listen_port
+      @broadcast_port = broadcast_port
       @socket = UDPSocket.new
       @socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_BROADCAST, true)
     end
 
     def go
-      message_to_broadcast = "[Maestro@#{@port}]"
+      message_to_broadcast = "[Maestro@#{@listen_port}]"
       broadcast_addresses.each do |address|
-        send_message_to( message_to_broadcast, address, @port )
+        send_message_to( message_to_broadcast, address, @broadcast_port )
       end
 
-      send_message_to( message_to_broadcast, '127.0.0.1', @port )
+      send_message_to( message_to_broadcast, '127.0.0.1', @broadcast_port )
     end
 
     private

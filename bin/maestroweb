@@ -19,7 +19,7 @@ RSA_PRIVATE_KEY = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh
 ASSETS_LOCATION = File.expand_path(File.join(File.dirname(__FILE__), "..", "sample-assets"))
 
 server = Progenitor::MaestroServer.new(LISTEN_PORT)
-broadcaster = Progenitor::UdpBroadcaster.new(BROADCAST_PORT)
+broadcaster = Progenitor::UdpBroadcaster.new(BROADCAST_PORT, LISTEN_PORT)
 deployer = Progenitor::AssetDeployer.new( RSA_PRIVATE_KEY, ASSETS_LOCATION )
 
 EM::run do

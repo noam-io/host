@@ -1,12 +1,13 @@
 require 'progenitor/udp_broadcaster'
 
 describe Progenitor::UdpBroadcaster do
-  let(:port) { 24039 }
+  let(:broadcast_port) { 24039 }
+  let(:listen_port) { 24039 }
   let(:broadcast_ip_1) { '3.4.255.255' }
   let(:broadcast_ip_2) { '101.202.255.255' }
   let(:socket){ mock }
 
-  let(:broadcaster) { described_class.new( port ) }
+  let(:broadcaster) { described_class.new( broadcast_port, listen_port ) }
 
   before :each do
     ifconfig_grep_result = [
@@ -62,7 +63,7 @@ describe Progenitor::UdpBroadcaster do
 
   def set_expectation( broadcast_ip )
     socket.should_receive(:send)
-      .with("[Maestro@#{port}]", 0, broadcast_ip, port)
+      .with("[Maestro@#{broadcast_port}]", 0, broadcast_ip, listen_port)
   end
 end
 
