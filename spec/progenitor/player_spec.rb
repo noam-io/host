@@ -30,6 +30,13 @@ describe Progenitor::Player do
     player.port.should == 8943
   end
 
+  it 'has last activity' do
+    player.last_activity.should be_nil
+    now = DateTime.now
+    player.last_activity = now
+    player.last_activity.should == now
+  end
+
   it "hears" do
     hears.each do |event|
       player.hears?(event).should be_true

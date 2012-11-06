@@ -56,6 +56,14 @@ describe Progenitor::Orchestra do
     orchestra.play("listens_for_1", 12.42, 'player_id')
   end
 
+  it 'updates players last activity' do
+    now = mock
+    DateTime.stub( :now ).and_return( now )
+    orchestra.register( connection_1, player_1 )
+    orchestra.play( "plays_3", 12.42, id_1 )
+    player_1.last_activity.should == now
+  end
+
   it "tracks players" do
     orchestra.register( connection_1, player_1 )
     orchestra.players.size.should == 1

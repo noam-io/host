@@ -20,6 +20,15 @@
   </tr>
 
   <tr>
+    <th>Last Activity</th>
+    <td/>
+    <td/>
+    <% @orchestra.players.each do |spalla_id, player| %>
+      <td><%= format_date( player.last_activity ) %></td>
+    <% end %>
+  </tr>
+
+  <tr>
     <th>System Version</th>
     <td/>
     <td/>
