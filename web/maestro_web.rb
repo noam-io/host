@@ -6,13 +6,19 @@ require 'helpers/refresh_helper.rb'
 
 class Statabase
   @@values = {}
+  @@timestamps = {}
 
   def self.set(name, value)
     @@values[name] = value
+    @@timestamps[name] = DateTime.now
   end
 
   def self.get(name)
     @@values[name] || 0
+  end
+
+  def self.timestamp(name)
+    @@timestamps[name]
   end
 end
 

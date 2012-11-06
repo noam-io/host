@@ -3,7 +3,8 @@
   <h4>Last refreshed: <%= Time.now %></h4>
   <tr>
     <th>Spalla Id</th>
-    <th>Spalla Id</th>
+    <th>Last Value</th>
+    <th>Timestamp</th>
     <% @orchestra.players.each do |spalla_id, player| %>
       <td <%= "class=\"active\"" if @last_active_id == spalla_id %> ><strong><%= spalla_id %></strong></td>
     <% end %>
@@ -11,6 +12,7 @@
 
   <tr>
     <th>Device Type</th>
+    <td/>
     <td/>
     <% @orchestra.players.each do |spalla_id, player| %>
       <td><%= player.device_type %></td>
@@ -20,6 +22,7 @@
   <tr>
     <th>System Version</th>
     <td/>
+    <td/>
     <% @orchestra.players.each do |spalla_id, player| %>
       <td><%= player.system_version %></td>
     <% end %>
@@ -27,6 +30,7 @@
 
   <tr>
     <th>Deploy</th>
+    <td/>
     <td/>
     <% @orchestra.players.each do |spalla_id, player| %>
       <% if player.deployable? then %>
@@ -47,7 +51,10 @@
           <span style="display:none" id="<%=event%>_value">
             <%= value_escaped(@values.get(event)) %>
           </span>
+        </td>
 
+        <td>
+          <%= format_date( @values.timestamp(event) ) %>
         </td>
 
       <% @orchestra.players.each do |spalla_id, player| %>

@@ -12,3 +12,7 @@ end
 def value_escaped(value)
     escaped = CGI.escape(value.to_s)
 end
+
+def format_date( date )
+  date.strftime( "%l:%M:%S %p" ) if date
+end
