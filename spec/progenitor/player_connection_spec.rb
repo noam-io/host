@@ -14,13 +14,13 @@ describe Progenitor::PlayerConnection do
   VALUE_2 = "value 2"
 
   it "should hear" do
-
     module TestConnection
       def receive_data(data)
         data.should == wire_message(Orchestra::Messages.build_event( ID_OF_PLAYER, NAME_1, VALUE_1 ))
         EM::stop_event_loop
       end
     end
+
     EM::run do
       server = EventMachine::start_server("127.0.0.1", 5652, TestConnection)
       player = described_class.new( mock("player", :host => "127.0.0.1", :port => 5652) )
@@ -38,6 +38,7 @@ describe Progenitor::PlayerConnection do
         EM::stop_event_loop
       end
     end
+
     EM::run do
       server = EventMachine::start_server("127.0.0.1", 5652, TestConnection)
       player = described_class.new( mock("player", :host => "127.0.0.1", :port => 5652) )

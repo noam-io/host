@@ -22,6 +22,20 @@ module Progenitor
       send_message(message)
     end
 
+    def send_message(message)
+      if @connection
+        send_data(message)
+      else
+        @backlog << message
+        new_connection if @backlog.size == 1
+      end
+    end
+
+    def send_data(data)
+      @connection.send_data("%06d" % data.bytesize)
+      @connection.send_data(data)
+    end
+
     def new_connection
       EventMachine::connect(@host, @port, PlayerHandler) do |connection|
         @connection = connection
@@ -40,19 +54,6 @@ module Progenitor
       @connection.close_connection_after_writing if @connection
     end
 
-    def send_message(message)
-      if @connection
-        send_data(message)
-      else
-        @backlog << message
-        new_connection if @backlog.size == 1
-      end
-    end
-
-    def send_data(data)
-      @connection.send_data("%06d" % data.bytesize)
-      @connection.send_data(data)
-    end
 
   end
 end
