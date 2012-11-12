@@ -29,7 +29,7 @@
 
   $.extend($.timeago, {
     settings: {
-      refreshMillis: 60000,
+      refreshMillis: 15000,
       allowFuture: false,
       strings: {
         prefixAgo: null,
