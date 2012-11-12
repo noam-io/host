@@ -1,7 +1,12 @@
 <script src="/javascripts/maestro-refresh.js" />
-<table cellpadding=0 cellspacing=0>
-  <h4>Last refreshed: <%= Time.now %></h4>
-  <tr>
+
+  <table cellpadding=0 cellspacing=0>
+  	<div id="header_container">
+    <p id="port">port: <%=@broadcast_port%></p>
+    <p id="update">updated <abbr class="timeago" title="<%= Time.now %>"></abbr> </p>
+    <br class="clear" />
+    </div>
+    <tr>
     <th>Spalla Id</th>
     <th>Last Value</th>
     <th>Timestamp</th>
@@ -11,7 +16,7 @@
   </tr>
 
   <tr>
-    <th>Device Type</th>
+    <th>Device</th>
     <td/>
     <td/>
     <% @orchestra.players.each do |spalla_id, player| %>

@@ -6,18 +6,16 @@
     <script src="/javascripts/jquery-ui-1.8.23.custom.min.js"></script>
     <script src="/javascripts/AssetRefresher.js"></script>
     <script src="/javascripts/maestro-web.js"></script>
+    <script src="/javascripts/timeago.js"/></script>
     <title>Progenitor Maestro</title>
   </head>
   <body>
     <div>
       <h1>Progenitor Maestro</h1>
-      <h3>Broadcasting at: <%=@broadcast_port%></h3>
       <div id="real-time-data"></div>
       <hr />
-
       <%= erb :_play_manual_events %>
       <div id="deploy-assets" />
-
     </div>
   </body>
 </html>

@@ -7,7 +7,7 @@ $(function() {
   });
 
 
-  $(".active").effect( "highlight" );
+  $(".active").effect( "highlight",{color:"#FF530D"} );
 
   $(".deploy").click( function() {
     var spalla_id = $(this).data('spalla-id');
@@ -20,5 +20,7 @@ $(function() {
       },
     });
   });
+  
+  $("abbr.timeago").timeago();
 });
 

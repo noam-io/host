@@ -32,5 +32,6 @@ $(function() {
   };
   var refresher = new AssetRefresher( params );
   refresher.go();
+  
 });
 

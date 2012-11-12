@@ -1,24 +1,104 @@
+@import url(http://fonts.googleapis.com/css?family=Arvo:400,700|Droid+Sans+Mono);
+
+h1{
+	font-family: 'Arvo', serif;
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size:2.7em;
+	margin:0px auto;
+	line-height:1em;
+	color:#EFEFEF;
+}
+
+#header_container{
+	width:540px;
+	margin:0 auto 20px auto;
+
+}
+
+#port{
+	font-family: 'Arvo', serif;
+	text-transform: lowercase;
+	font-weight: 400;
+	font-size:1.1em;
+	color:#EFEFEF;
+	margin:10px 20px 0 0;
+	float:left;
+}
+
+#update{
+	font-family: 'Arvo', serif;
+	text-transform: lowercase;
+	font-weight: 400;
+	font-size:1.1em;
+	color:#EFEFEF;
+	margin:10px 0;
+	float:right;
+}
+
+.clear{
+	clear:both;
+}
+
+body {
+	background-color:#111;
+	text-align:center;
+	padding-top:20px;
+}
+
 .icon {
   width: 25px;
   height: 25px;
 }
 
 table {
-  border: 1px solid;
+  border: 3px solid #FF530D;
+  display:block;
+  margin:0 auto;
+  /*-moz-box-shadow: 3px 3px 4px #000;
+  -webkit-box-shadow: 3px 3px 4px #000;*/
+  box-shadow: -4px 4px 0px rgba(0, 0, 0, .5);
+  
+  font-family: 'Droid Sans Mono', sans-serif;
+  font-size:.8em;
 }
 
-td.event, th.event {
-  border-bottom: 1px solid;
+td, th {
+	padding: 8px;
+    border-right: 2px solid rgba(255, 255, 255, .2);
+}
+
+th {
+	text-align: right;
+	color:#FF530D;
+	
+}
+td {
+	color:#EFEFEF;
+	text-align:left;
+}
+
+.event td, .event th {
+  text-align: right;
+  box-shadow: inset 0px 4px 0px rgba(0, 0, 0, .1);
+  color:#EFEFEF;
 }
 
 table tr:nth-child(odd).event {
-  background-color: #ccc;
+  background-color: #3F5765;
 }
 
-th, td {
-  padding: 5px;
-  border-right: 2px solid;
-  text-align: right;
+table tr:nth-child(even).event {
+  background-color: #2B3A42;
+}
+
+
+table td {
+}
+
+.event td:last-of-type {
+  border-right: none;
+  text-align:center;
 }
 
 td.event_value {
