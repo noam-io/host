@@ -12,9 +12,9 @@ module Progenitor
 
     def message_received(message)
       if message.is_a?(::Orchestra::Messages::RegisterMessage)
-        player = Player.new( message.spalla_id, message.device_type, message.system_version, message.hears, message.plays, @ip, message.callback_port)
+        player = Player.new( message.spalla_id, message.device_type, message.system_version, message.hears, message.plays)
 
-        ear = Ear.new( player.host, player.port )
+        ear = Ear.new(@ip, message.callback_port)
         player_connection = PlayerConnection.new( ear )
 
         orchestra.register(player_connection, player)

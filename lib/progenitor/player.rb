@@ -2,7 +2,7 @@
 module Progenitor
   class Player
     attr_accessor :last_activity
-    attr_reader :spalla_id, :device_type, :system_version, :hears, :plays, :host, :port
+    attr_reader :spalla_id, :device_type, :system_version, :hears, :plays
     def device_key
       (@device_type || "").downcase
     end
@@ -13,14 +13,12 @@ module Progenitor
     }
     DeployableDevices.default = {:username => nil, :deploy_path => nil}
 
-    def initialize(spalla_id, device_type, system_version, hears, plays, host, port)
+    def initialize(spalla_id, device_type, system_version, hears, plays )
       @spalla_id = spalla_id
       @device_type = device_type
       @system_version = system_version
       @hears = hears || []
       @plays = plays || []
-      @host = host
-      @port = port
     end
 
     def hears?(event)
