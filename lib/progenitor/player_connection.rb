@@ -1,5 +1,3 @@
-require 'orchestra/messages'
-require 'progenitor/ear'
 
 module Progenitor
   class PlayerConnection
@@ -11,8 +9,8 @@ module Progenitor
       @ear.host
     end
 
-    def initialize(player)
-      @ear = Progenitor::Ear.new(player.host, player.port)
+    def initialize( ear )
+      @ear = ear
       @backlog = []
     end
 
@@ -26,6 +24,10 @@ module Progenitor
     def on_connection
       @backlog.each { |message| @ear.hear( *message )}
       @backlog.clear
+    end
+
+    def terminate
+      @ear.terminate
     end
   end
 end
