@@ -33,13 +33,13 @@ module Progenitor
       @connection.send_data(data)
     end
 
-    def new_connection(&callback)
+    def new_connection
       unless @connection_pending
         @connection_pending = true
         EventMachine::connect(@host, @port, EarHandler) do |connection|
           @connection = connection
           @connection.parent = self
-          callback.call(@connection)
+          yield(@connection) if block_given?
           @connection_pending = false
         end
       end
