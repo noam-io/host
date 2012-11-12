@@ -14,5 +14,5 @@ def value_escaped(value)
 end
 
 def format_date( date )
-  date.strftime( "%l:%M:%S %p" ) if date
+  date.strftime( "%l.%M.%S" ) if date
 end

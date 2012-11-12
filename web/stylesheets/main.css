@@ -78,9 +78,13 @@ td {
 }
 
 .event td, .event th {
-  text-align: right;
+  text-align: center;
   box-shadow: inset 0px 4px 0px rgba(0, 0, 0, .1);
   color:#EFEFEF;
+}
+
+.event th {
+  text-align: right;
 }
 
 table tr:nth-child(odd).event {
@@ -89,10 +93,6 @@ table tr:nth-child(odd).event {
 
 table tr:nth-child(even).event {
   background-color: #2B3A42;
-}
-
-
-table td {
 }
 
 .event td:last-of-type {
