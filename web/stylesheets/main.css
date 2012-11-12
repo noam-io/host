@@ -1,9 +1,10 @@
-@import url(http://fonts.googleapis.com/css?family=Arvo:400,700|Droid+Sans+Mono);
+@font-face { font-family: Droid Sans Mono; src: url('../images/droid.ttf') }
+@font-face { font-family: Arvo; src: url('../images/arvo.ttf') }
+@font-face { font-family: Arvo Bold; src: url('../images/arvo_b.ttf') }
 
 h1{
-	font-family: 'Arvo', serif;
+	font-family: 'Arvo Bold', serif;
 	text-transform: uppercase;
-	font-weight: 700;
 	font-size:2.7em;
 	margin:0px auto;
 	line-height:1em;
@@ -11,7 +12,7 @@ h1{
 }
 
 #header_container{
-	width:540px;
+	width:560px;
 	margin:0 auto 20px auto;
 
 }
@@ -19,7 +20,6 @@ h1{
 #port{
 	font-family: 'Arvo', serif;
 	text-transform: lowercase;
-	font-weight: 400;
 	font-size:1.1em;
 	color:#EFEFEF;
 	margin:10px 20px 0 0;
@@ -29,7 +29,6 @@ h1{
 #update{
 	font-family: 'Arvo', serif;
 	text-transform: lowercase;
-	font-weight: 400;
 	font-size:1.1em;
 	color:#EFEFEF;
 	margin:10px 0;
