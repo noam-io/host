@@ -1,3 +1,5 @@
+require 'orchestra/messages'
+
 module Progenitor
   module EarHandler
     attr_accessor :parent
@@ -16,7 +18,7 @@ module Progenitor
     end
 
 
-    def send_message(id_of_player, event_name, event_value )
+    def hear(id_of_player, event_name, event_value )
       message = ::Orchestra::Messages.build_event( id_of_player, event_name, event_value )
       if @connection
         send_data(message)
