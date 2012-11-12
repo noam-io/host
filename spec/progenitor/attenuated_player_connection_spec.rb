@@ -89,7 +89,7 @@ describe Progenitor::AttenuatedPlayerConnection do
     end
 
     EM::run do
-      player.hear( "id", "name", "value", now + 16*attenuate/12 )
+      player.hear( "id", "name", "value", now + 4*attenuate/3 )
       EM::stop
     end
 
