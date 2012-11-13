@@ -6,7 +6,9 @@ describe Progenitor::Player do
   let(:system_version) { "System Version" }
   let(:hears) { %w(speed rpm cruise_target) }
   let(:plays) { %w(speed volume) }
-  let(:player) { described_class.new( spalla_id, device_type, system_version, hears, plays )}
+  let(:host) { "192.168.0.12" }
+  let(:port) { 8943 }
+  let(:player) { described_class.new( spalla_id, device_type, system_version, hears, plays, host, port )}
 
   it 'has spalla id' do
     player.spalla_id.should == spalla_id
@@ -18,6 +20,14 @@ describe Progenitor::Player do
 
   it 'has system version' do
     player.system_version.should == system_version
+  end
+
+  it 'has host' do
+    player.host.should == "192.168.0.12"
+  end
+
+  it 'has port' do
+    player.port.should == 8943
   end
 
   it 'has last activity' do
@@ -60,17 +70,17 @@ describe Progenitor::Player do
   end
 
   it "should have a username" do
-    player = described_class.new( '', 'pi', '', [], [])
+    player = described_class.new( '', 'pi', '', [], [], 0, 0 )
     player.username.should == "pi"
     player.deploy_path.should == '/home/pi/SpallaApp/qml'
   end
 
   it 'is deployable only when device type is pi, PI, or Pi' do
-    player = described_class.new( '', 'pi', '', [], [])
+    player = described_class.new( '', 'pi', '', [], [], 0, 0 )
     player.deployable?.should be_true
-    player = described_class.new( '', 'PI', '', [], [])
+    player = described_class.new( '', 'PI', '', [], [], 0, 0 )
     player.deployable?.should be_true
-    player = described_class.new( '', 'Pi', '', [], [])
+    player = described_class.new( '', 'Pi', '', [], [], 0, 0 )
     player.deployable?.should be_true
   end
 
@@ -81,7 +91,7 @@ describe Progenitor::Player do
   end
 
   it 'is not deployable without a device type' do
-    player = described_class.new( '', nil, '', [], [])
+    player = described_class.new( '', nil, '', [], [], 0, 0 )
     player.deployable?.should be_false
   end
 end

@@ -22,6 +22,8 @@ describe Progenitor::MessageHandler do
     handler.message_received(message)
 
     orchestra.events["e1"].size.should == 1
+    orchestra.events["e1"]["1234"].port.should == 4423
+    orchestra.events["e1"]["1234"].host.should == "127.0.0.2"
 
     orchestra.players["1234"].spalla_id.should == '1234'
     orchestra.players["1234"].device_type.should == 'device type'
@@ -33,7 +35,7 @@ describe Progenitor::MessageHandler do
     event_value = 'event value'
 
     connection = mock('Connection')
-    player = Progenitor::Player.new( '', '', '', [event_name], [])
+    player = Progenitor::Player.new( '', '', '', [event_name], [], 0, 0)
     orchestra.register( connection, player )
 
     message = Orchestra::Messages::EventMessage.new({})
