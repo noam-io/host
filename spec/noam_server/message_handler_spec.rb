@@ -1,18 +1,18 @@
-require 'noam/orchestra'
-require 'noam/message_handler'
-require 'orchestra/messages'
+require 'noam_server/orchestra'
+require 'noam_server/message_handler'
+require 'noam/messages'
 
-describe Noam::MessageHandler do
+describe NoamServer::MessageHandler do
   let (:handler) { described_class.new("127.0.0.2") }
-  let (:orchestra) { Noam::Orchestra.new }
+  let (:orchestra) { NoamServer::Orchestra.new }
 
   before do
-    Noam::Orchestra.stub!(:instance).and_return(orchestra)
+    NoamServer::Orchestra.stub!(:instance).and_return(orchestra)
   end
 
 
   it "should handle a registration message" do
-    message = ::Orchestra::Messages::RegisterMessage.new({})
+    message = Noam::Messages::RegisterMessage.new({})
     message.spalla_id = "1234"
     message.device_type = "device type"
     message.system_version = "system version"
@@ -35,10 +35,10 @@ describe Noam::MessageHandler do
     event_value = 'event value'
 
     connection = mock('Connection')
-    player = Noam::Player.new( '', '', '', [event_name], [], 0, 0)
+    player = NoamServer::Player.new( '', '', '', [event_name], [], 0, 0)
     orchestra.register( connection, player )
 
-    message = Orchestra::Messages::EventMessage.new({})
+    message = Noam::Messages::EventMessage.new({})
     message.spalla_id = 'player_id'
     message.event_name = event_name
     message.event_value = event_value

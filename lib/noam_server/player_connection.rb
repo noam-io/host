@@ -1,4 +1,4 @@
-module Noam
+module NoamServer
   class PlayerConnection
     def port
       @ear.port

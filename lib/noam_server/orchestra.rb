@@ -1,4 +1,4 @@
-module Noam
+module NoamServer
   class Orchestra
     attr_reader :players, :events
 

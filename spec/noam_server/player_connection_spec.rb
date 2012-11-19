@@ -1,6 +1,6 @@
-require 'noam/player_connection'
+require 'noam_server/player_connection'
 
-describe Noam::PlayerConnection do
+describe NoamServer::PlayerConnection do
   class MockEar
     attr_accessor :hear_returns, :callback
 

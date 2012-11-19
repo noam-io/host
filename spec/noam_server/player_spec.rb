@@ -1,6 +1,6 @@
-require 'noam/player'
+require 'noam_server/player'
 
-describe Noam::Player do
+describe NoamServer::Player do
   let(:spalla_id) { "Spalla ID" }
   let(:device_type) { "Device Type" }
   let(:system_version) { "System Version" }

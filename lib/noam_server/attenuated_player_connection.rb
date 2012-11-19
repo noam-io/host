@@ -1,6 +1,6 @@
 require 'eventmachine'
 
-module Noam
+module NoamServer
   class AttenuatedPlayerConnection
 
     def initialize( ear, min_interval )

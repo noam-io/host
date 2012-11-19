@@ -1,4 +1,4 @@
-module Noam
+module NoamServer
   class Player
     attr_accessor :last_activity
     attr_reader :spalla_id, :device_type, :system_version, :hears, :plays, :host, :port

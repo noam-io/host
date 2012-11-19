@@ -1,11 +1,11 @@
 require 'eventmachine'
-require 'noam/ear'
+require 'noam_server/ear'
 
 def wire_message(expected_message)
   "%06d" % expected_message.size + expected_message
 end
 
-describe Noam::Ear do
+describe NoamServer::Ear do
   let( :host ){ '127.0.0.1' }
   let( :port ){ 5663 }
   let( :ear ){ described_class.new( host, port )}

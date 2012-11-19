@@ -1,10 +1,10 @@
-require 'noam/orchestra'
-require 'orchestra/messages'
-require 'noam/ear'
-require 'noam/player_connection'
-require 'noam/attenuated_player_connection'
-require 'noam/player'
-module Noam
+require 'noam_server/orchestra'
+require 'noam/messages'
+require 'noam_server/ear'
+require 'noam_server/player_connection'
+require 'noam_server/attenuated_player_connection'
+require 'noam_server/player'
+module NoamServer
 
   class MessageHandler
     def initialize(ip)
@@ -12,7 +12,7 @@ module Noam
     end
 
     def message_received(message)
-      if message.is_a?(::Orchestra::Messages::RegisterMessage)
+      if message.is_a?(Noam::Messages::RegisterMessage)
         player = Player.new( message.spalla_id, message.device_type, message.system_version, message.hears, message.plays, @ip, message.callback_port)
 
         ear = Ear.new( player.host, player.port )
@@ -23,7 +23,7 @@ module Noam
         end
 
         orchestra.register(player_connection, player)
-      elsif message.is_a?(::Orchestra::Messages::EventMessage)
+      elsif message.is_a?(Noam::Messages::EventMessage)
         orchestra.play(message.event_name, message.event_value, message.spalla_id)
       end
     end

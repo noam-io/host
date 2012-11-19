@@ -1,15 +1,15 @@
-require 'orchestra/tcp_listener'
-require 'noam/message_handler'
-module Noam
+require 'noam/tcp_listener'
+require 'noam_server/message_handler'
+module NoamServer
   module Listener
     attr_accessor :listener, :spalla_id
 
     def post_init
        @port, @ip = Socket.unpack_sockaddr_in(get_peername)
        handler = MessageHandler.new(@ip)
-       @listener = ::Orchestra::TcpListener.new do |msg|
+       @listener = Noam::TcpListener.new do |msg|
          begin
-           parsed_message = ::Orchestra::Messages.parse(msg)
+           parsed_message = Noam::Messages.parse(msg)
            @spalla_id = parsed_message.spalla_id
            handler.message_received(parsed_message)
          rescue JSON::ParserError

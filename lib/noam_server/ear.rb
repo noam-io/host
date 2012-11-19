@@ -1,6 +1,6 @@
-require 'orchestra/messages'
+require 'noam/messages'
 
-module Noam
+module NoamServer
   module EarHandler
     attr_accessor :parent
     def unbind
@@ -19,7 +19,7 @@ module Noam
 
 
     def hear(id_of_player, event_name, event_value )
-      message = ::Orchestra::Messages.build_event( id_of_player, event_name, event_value )
+      message = Noam::Messages.build_event( id_of_player, event_name, event_value )
       if @connection
         send_data(message)
         return true

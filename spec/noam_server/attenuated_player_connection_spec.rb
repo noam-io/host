@@ -1,7 +1,7 @@
-require 'noam/attenuated_player_connection'
+require 'noam_server/attenuated_player_connection'
 require 'eventmachine'
 
-describe Noam::AttenuatedPlayerConnection do
+describe NoamServer::AttenuatedPlayerConnection do
   class AttenMockEar
     attr_accessor :times_heard, :value, :callback, :hear_returns, :id
     def initialize

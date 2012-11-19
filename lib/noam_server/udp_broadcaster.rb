@@ -1,6 +1,6 @@
 require 'socket'
 
-module Noam
+module NoamServer
   class UdpBroadcaster
     def initialize(broadcast_port, listen_port)
       @listen_port = listen_port

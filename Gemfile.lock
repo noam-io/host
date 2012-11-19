@@ -1,9 +1,3 @@
-GIT
-  remote: https://github.com/8thlight/IdeoOrchestra.git
-  revision: 6fe727e0a57e7e4933094e9703b880ad0e6ab87a
-  specs:
-    ideo_orchestra (0.0.1)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -59,7 +53,6 @@ PLATFORMS
 DEPENDENCIES
   async_sinatra
   eventmachine (= 1.0.0.rc.4)
-  ideo_orchestra!
   jasmine
   rspec
   sinatra

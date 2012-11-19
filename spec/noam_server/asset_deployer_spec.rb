@@ -1,6 +1,6 @@
-require 'noam/asset_deployer'
+require 'noam_server/asset_deployer'
 
-describe Noam::AssetDeployer do
+describe NoamServer::AssetDeployer do
   let(:remote_user_1) { 'dick' }
   let(:remote_user_2) { 'jane' }
   let(:rsa_private_key) { 'some/path' }

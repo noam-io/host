@@ -1,6 +1,6 @@
-require 'noam/udp_broadcaster'
+require 'noam_server/udp_broadcaster'
 
-describe Noam::UdpBroadcaster do
+describe NoamServer::UdpBroadcaster do
   let(:broadcast_port) { 24039 }
   let(:listen_port) { 24039 }
   let(:broadcast_ip_1) { '3.4.255.255' }
@@ -14,7 +14,7 @@ describe Noam::UdpBroadcaster do
       "1.2.3.4 broadcast #{broadcast_ip_1}",
       "100.101.200.202 broadcast #{broadcast_ip_2}"
     ].join($/)
-    Noam::UdpBroadcaster.any_instance
+    NoamServer::UdpBroadcaster.any_instance
       .should_receive(:`)
       .with( 'ifconfig | grep broadcast' )
       .at_least( :once )
