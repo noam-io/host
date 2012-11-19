@@ -1,4 +1,4 @@
-module Progenitor
+module Noam
   class Orchestra
     attr_reader :players, :events
 

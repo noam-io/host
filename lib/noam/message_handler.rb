@@ -4,7 +4,7 @@ require 'noam/ear'
 require 'noam/player_connection'
 require 'noam/attenuated_player_connection'
 require 'noam/player'
-module Progenitor
+module Noam
 
   class MessageHandler
     def initialize(ip)

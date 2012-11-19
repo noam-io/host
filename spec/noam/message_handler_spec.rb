@@ -2,12 +2,12 @@ require 'noam/orchestra'
 require 'noam/message_handler'
 require 'orchestra/messages'
 
-describe Progenitor::MessageHandler do
+describe Noam::MessageHandler do
   let (:handler) { described_class.new("127.0.0.2") }
-  let (:orchestra) { Progenitor::Orchestra.new }
+  let (:orchestra) { Noam::Orchestra.new }
 
   before do
-    Progenitor::Orchestra.stub!(:instance).and_return(orchestra)
+    Noam::Orchestra.stub!(:instance).and_return(orchestra)
   end
 
 
@@ -35,7 +35,7 @@ describe Progenitor::MessageHandler do
     event_value = 'event value'
 
     connection = mock('Connection')
-    player = Progenitor::Player.new( '', '', '', [event_name], [], 0, 0)
+    player = Noam::Player.new( '', '', '', [event_name], [], 0, 0)
     orchestra.register( connection, player )
 
     message = Orchestra::Messages::EventMessage.new({})

@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path(File.join(File.dirname(__FILE__), '..', "lib"))
+$: << File.expand_path(File.join(File.dirname(__FILE__), '..', "web"))
+require "rubygems"
+require "bundler/setup"
+require 'eventmachine'
+require 'sinatra/async'
+require 'maestro_web'
+require 'noam/udp_broadcaster'
+require 'noam/asset_deployer'
+
+BROADCAST_PORT = 9933
+LISTEN_PORT = 8833
+RSA_PRIVATE_KEY = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "maestro-key"))
+ASSETS_LOCATION = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Code/application_versions"
+
+server = Noam::MaestroServer.new(LISTEN_PORT)
+broadcaster = Noam::UdpBroadcaster.new(BROADCAST_PORT, LISTEN_PORT)
+deployer = Noam::AssetDeployer.new( RSA_PRIVATE_KEY, ASSETS_LOCATION )
+
+EM::run do
+  server.start
+  MaestroApp.asset_deployer = deployer
+  MaestroApp.broadcast_port = BROADCAST_PORT
+  MaestroApp.run!
+
+  EventMachine.add_periodic_timer(5) do
+    broadcaster.go
+  end
+end
+

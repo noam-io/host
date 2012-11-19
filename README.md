@@ -1,11 +1,11 @@
-# Progenitor Maestro
+# Noam Server
 ======================================
-Conductor of the Auto Simulator "Orchestra"
+Brains of the Noam system
 
 ## Prerequesits
 
 * Install the XCode "Command Line Tools" from [apple](https://developer.apple.com/downloads/index.action).
-  You'll have to register with your Apple Id.  You can downlaod and install the full version of xCode, but 
+  You'll have to register with your Apple Id.  You can downlaod and install the full version of xCode, but
   it is 20x larger than the command line tools.
 
 * Install [RVM](https://rvm.io/) (Ruby Version Manager) and the latest ruby.
@@ -18,11 +18,11 @@ Conductor of the Auto Simulator "Orchestra"
 
 * clone this repository
 
-        git clone https://github.com/8thlight/ProgenitorMaestro.git
+        git clone https://github.com/ideo/noam.git
 
 * cd (change directory) to this repository
 
-        cd ProgenitorMaestro
+        cd noam
 
 * Install bundler gem
 
@@ -34,7 +34,7 @@ Conductor of the Auto Simulator "Orchestra"
 
 *  Start server
 
-        bin/maestroweb
+        bin/noamweb
 
 * browse to http://localhost:8081 with Chrome or Safari
 

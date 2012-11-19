@@ -1,5 +1,5 @@
 
-module Progenitor
+module Noam
   class AssetDeployer
     def initialize(rsa_private_key, asset_location)
      system('chmod', '600', rsa_private_key)

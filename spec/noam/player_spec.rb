@@ -1,6 +1,6 @@
 require 'noam/player'
 
-describe Progenitor::Player do
+describe Noam::Player do
   let(:spalla_id) { "Spalla ID" }
   let(:device_type) { "Device Type" }
   let(:system_version) { "System Version" }

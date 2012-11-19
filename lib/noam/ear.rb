@@ -1,6 +1,6 @@
 require 'orchestra/messages'
 
-module Progenitor
+module Noam
   module EarHandler
     attr_accessor :parent
     def unbind

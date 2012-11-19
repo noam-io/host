@@ -1,6 +1,6 @@
 require 'orchestra/tcp_listener'
 require 'noam/message_handler'
-module Progenitor
+module Noam
   module Listener
     attr_accessor :listener, :spalla_id
 

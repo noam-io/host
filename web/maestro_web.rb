@@ -60,26 +60,26 @@ class MaestroApp < Sinatra::Base
   end
 
   get '/' do
-    @orchestra = Progenitor::Orchestra.instance
+    @orchestra = Noam::Orchestra.instance
     @values = Statabase
     erb :index
   end
 
   get '/refresh' do
-    @orchestra = Progenitor::Orchestra.instance
+    @orchestra = Noam::Orchestra.instance
     @values = Statabase
     erb :refresh
   end
 
   aget '/show-assets' do
-    @spallas = Progenitor::Orchestra.instance.deployable_spalla_ids
+    @spallas = Noam::Orchestra.instance.deployable_spalla_ids
     @folders = @@asset_deployer.available_assets
     body(erb :_deploy_assets, folders: @folders, spallas: @spallas)
   end
 
   aget '/arefresh' do
     Request.pile do
-      @orchestra = Progenitor::Orchestra.instance
+      @orchestra = Noam::Orchestra.instance
       @values = Statabase
       @last_active_id = $last_active_id
       @last_active_event = $last_active_event
@@ -89,32 +89,32 @@ class MaestroApp < Sinatra::Base
   end
 
   post '/play-event' do
-    Progenitor::Orchestra.instance.play( params[:name], params[:value], "Maestro Web" )
+    Noam::Orchestra.instance.play( params[:name], params[:value], "Maestro Web" )
     body("ok")
   end
 
   post '/deploy-assets' do
-    selected_spalla_players = Progenitor::Orchestra.instance.players_for(params[:spallas])
+    selected_spalla_players = Noam::Orchestra.instance.players_for(params[:spallas])
     EM.defer { @@asset_deployer.deploy( selected_spalla_players, params[:folders] ) }
     redirect '/'
   end
 end
 
-Progenitor::Orchestra.instance.on_play do |name, value, player|
+Noam::Orchestra.instance.on_play do |name, value, player|
   Statabase.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
   Request.respond
 end
 
-Progenitor::Orchestra.instance.on_register do |player|
+Noam::Orchestra.instance.on_register do |player|
   puts "Registration from: #{player.spalla_id}"
   $last_active_id = player.spalla_id if player
   $last_active_event = ""
   Request.respond
 end
 
-Progenitor::Orchestra.instance.on_unregister do |player|
+Noam::Orchestra.instance.on_unregister do |player|
   puts "Spalla disconnected: #{player.spalla_id}" if player
   Request.respond
 end

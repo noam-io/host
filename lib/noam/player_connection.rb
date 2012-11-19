@@ -1,5 +1,4 @@
-
-module Progenitor
+module Noam
   class PlayerConnection
     def port
       @ear.port
