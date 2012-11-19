@@ -27,7 +27,7 @@ module Noam
     end
   end
 
-  class MaestroServer
+  class NoamServer
     def initialize(port)
       @port = port
       @host = "0.0.0.0"

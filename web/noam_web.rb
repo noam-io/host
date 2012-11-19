@@ -1,5 +1,5 @@
 require 'sinatra/async'
-require 'noam/maestro_server'
+require 'noam/noam_server'
 require 'noam/asset_deployer'
 require 'helpers/refresh_helper.rb'
 
@@ -40,7 +40,7 @@ end
 $last_active_id = ""
 $last_active_event = ""
 
-class MaestroApp < Sinatra::Base
+class NoamApp < Sinatra::Base
   register Sinatra::Async
 
   set :server, 'thin'
