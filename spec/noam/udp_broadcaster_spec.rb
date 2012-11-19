@@ -1,4 +1,4 @@
-require 'progenitor/udp_broadcaster'
+require 'noam/udp_broadcaster'
 
 describe Progenitor::UdpBroadcaster do
   let(:broadcast_port) { 24039 }

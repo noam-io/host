@@ -1,6 +1,6 @@
-require 'progenitor/orchestra'
-require 'progenitor/player'
-require 'progenitor/player_connection'
+require 'noam/orchestra'
+require 'noam/player'
+require 'noam/player_connection'
 
 describe Progenitor::Orchestra do
   let(:orchestra) { described_class.new }

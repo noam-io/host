@@ -1,5 +1,5 @@
-require 'progenitor/orchestra'
-require 'progenitor/message_handler'
+require 'noam/orchestra'
+require 'noam/message_handler'
 require 'orchestra/messages'
 
 describe Progenitor::MessageHandler do

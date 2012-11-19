@@ -1,4 +1,4 @@
-require 'progenitor/player_connection'
+require 'noam/player_connection'
 
 describe Progenitor::PlayerConnection do
   class MockEar

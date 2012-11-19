@@ -1,9 +1,9 @@
-require 'progenitor/orchestra'
+require 'noam/orchestra'
 require 'orchestra/messages'
-require 'progenitor/ear'
-require 'progenitor/player_connection'
-require 'progenitor/attenuated_player_connection'
-require 'progenitor/player'
+require 'noam/ear'
+require 'noam/player_connection'
+require 'noam/attenuated_player_connection'
+require 'noam/player'
 module Progenitor
 
   class MessageHandler

@@ -1,5 +1,5 @@
 require 'eventmachine'
-require 'progenitor/ear'
+require 'noam/ear'
 
 def wire_message(expected_message)
   "%06d" % expected_message.size + expected_message

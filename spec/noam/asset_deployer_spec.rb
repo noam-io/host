@@ -1,4 +1,4 @@
-require 'progenitor/asset_deployer'
+require 'noam/asset_deployer'
 
 describe Progenitor::AssetDeployer do
   let(:remote_user_1) { 'dick' }

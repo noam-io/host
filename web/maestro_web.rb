@@ -1,6 +1,6 @@
 require 'sinatra/async'
-require 'progenitor/maestro_server'
-require 'progenitor/asset_deployer'
+require 'noam/maestro_server'
+require 'noam/asset_deployer'
 require 'helpers/refresh_helper.rb'
 
 

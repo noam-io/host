@@ -1,4 +1,4 @@
-require 'progenitor/attenuated_player_connection'
+require 'noam/attenuated_player_connection'
 require 'eventmachine'
 
 describe Progenitor::AttenuatedPlayerConnection do

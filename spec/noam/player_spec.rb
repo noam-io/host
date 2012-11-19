@@ -1,4 +1,4 @@
-require 'progenitor/player'
+require 'noam/player'
 
 describe Progenitor::Player do
   let(:spalla_id) { "Spalla ID" }

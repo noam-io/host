@@ -9,8 +9,8 @@ require 'eventmachine'
 require 'sinatra/async'
 
 require 'maestro_web'
-require 'progenitor/udp_broadcaster'
-require 'progenitor/asset_deployer'
+require 'noam/udp_broadcaster'
+require 'noam/asset_deployer'
 
 BROADCAST_PORT = 9933
 LISTEN_PORT = 8833
