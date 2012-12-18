@@ -9,19 +9,23 @@ require 'sinatra/async'
 require 'noam_web'
 require 'noam_server/udp_broadcaster'
 require 'noam_server/noam_server'
+require 'noam_server/web_socket_server'
 require 'noam_server/asset_deployer'
 
-BROADCAST_PORT = 9933
+BROADCAST_PORT = 9934
 LISTEN_PORT = 8833
+WEB_SOCKET_PORT = 8080
 RSA_PRIVATE_KEY = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "noam-key"))
 ASSETS_LOCATION = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Code/application_versions"
 
 server = NoamServer::NoamServer.new(LISTEN_PORT)
+webserver = NoamServer::WebSocketServer.new(WEB_SOCKET_PORT)
 broadcaster = NoamServer::UdpBroadcaster.new(BROADCAST_PORT, LISTEN_PORT)
 deployer = NoamServer::AssetDeployer.new( RSA_PRIVATE_KEY, ASSETS_LOCATION )
 
 EM::run do
   server.start
+  webserver.start
   NoamApp.asset_deployer = deployer
   NoamApp.broadcast_port = BROADCAST_PORT
   NoamApp.run!

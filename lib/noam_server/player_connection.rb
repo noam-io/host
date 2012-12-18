@@ -1,5 +1,7 @@
 module NoamServer
   class PlayerConnection
+    attr_reader :ear
+
     def port
       @ear.port
     end
