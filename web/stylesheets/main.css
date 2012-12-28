@@ -121,3 +121,53 @@ input[type='text'] {
   width: 200px;
 }
 
+.ui-dialog-titlebar{
+	border-radius: 0 !important;
+	border:1px solid #555 !important;
+	background: #2B3A42 !important;
+	margin:5px !important;
+	padding:5px 10px !important;	
+}
+
+.ui-dialog-title{
+	font-family: 'Arvo Bold', serif;
+	text-transform: uppercase;
+	font-size:1em;
+	margin:0px auto;
+	line-height:1em;
+	color:#EFEFEF;
+	letter-spacing:1;
+}
+.ui-dialog-content{
+	overflow:hidden !important;
+	padding: 20px 0px !important;
+	margin: 0 !important;
+}
+
+.ui-dialog{
+	background: #111 !important;
+	border: 3px solid #FF530D !important;
+	width:600 !important;
+}
+.ui-dialog image{
+	width:50% !important;
+}
+#manual-event-form{
+	margin:0 !important;
+}
+#manual-event-form input {
+	display:block !important;
+	float:left !important;
+	margin-left: 35px !important;
+}
+#manual-event-form input[type="image"] {
+	width:40px !important;
+}
+.editor-field select
+{
+    margin-left: 250px;
+}
+.ui-widget-overlay{
+	background: #000!important;
+	opacity:.5 !important;
+}
