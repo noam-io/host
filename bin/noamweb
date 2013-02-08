@@ -12,9 +12,9 @@ require 'noam_server/noam_server'
 require 'noam_server/web_socket_server'
 require 'noam_server/asset_deployer'
 
-BROADCAST_PORT = 9934
+BROADCAST_PORT = 1030
 LISTEN_PORT = 7733
-WEB_SOCKET_PORT = 8080
+WEB_SOCKET_PORT = 8089
 RSA_PRIVATE_KEY = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "noam-key"))
 ASSETS_LOCATION = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Code/application_versions"
 
