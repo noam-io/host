@@ -170,9 +170,9 @@ describe NoamServer::Orchestra do
       orchestra.persistor.should be_a(NoamServer::Persistence::Riak)
     end
     
-    it "persists the message" do
+    it "persists the message in memory" do
       orchestra.play("event", 'value', 'player_id' )
-      orchestra.persistor.load('event').should == ['value']
+      orchestra.persistor.get_bucket('event').keys.should include('value')
     end
   end
 end

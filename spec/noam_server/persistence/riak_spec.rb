@@ -1,34 +1,34 @@
 require "noam_server/persistence/riak"
 
-
 describe NoamServer::Persistence::Riak do
   
   let(:persistence) { NoamServer::Persistence::Riak.new }
+  let(:test_data) { {'id' => '1', 'timestamp' => 'timestamp'} }
   
-  before(:each) do
-    persistence.clear('bucket'  )
+  after(:each) do
+    persistence.clear('bucket')
   end
   
   it "saves data" do
-    persistence.save('bucket', '1', 'timestamp')
-    persistence.load('bucket', '1').should == ['timestamp']
+    result = persistence.save('bucket', test_data)
+    key = result.key
+    
+    persistence.load('bucket', key).should == test_data
   end
   
-  it "saves mulitiple datas" do
-    persistence.save('bucket', '1', 'timestamp')
-    persistence.save('bucket', '1', 'timestamp2')
-    persistence.load('bucket', '1').should == ['timestamp', 'timestamp2']
-  end
-  
-  it "loads all data in a bucket data" do
-    persistence.save('bucket', '1', 'timestamp')
-    persistence.load('bucket', '1').should == ['timestamp']
+  it "loads all data in a bucket" do
+    result = persistence.save('bucket', test_data)
+    key = result.key
+    
+    persistence.load('bucket', key).should == test_data
   end
   
   it "clears data" do
-    persistence.save('bucket', '1', 'timestamp')
+    result = persistence.save('bucket', test_data)    
+    key = result.key
+    
     persistence.clear('bucket')
-    persistence.load('bucket', '1').should == []    
+    persistence.load('bucket', key).should == []    
   end
     
 end

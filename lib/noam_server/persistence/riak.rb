@@ -2,41 +2,39 @@ require 'riak'
 require "riak/robject"
 require "riak/failed_request"
 
-RIAK = Riak::Client
-
 module NoamServer
   module Persistence
     class Riak
       
       def initialize
-        @client = RIAK.new
+        @client = ::Riak::Client.new
       end
       
-      def save(bucket_name, user_id, value)
+      def save(bucket_name, data)
         bucket = get_bucket(bucket_name)
-        
-        object = bucket.get_or_new(user_id)
-        if !bucket.exists?(user_id)
-          object.data = []
-        end
-          
-        object.data << value
+        object = ::Riak::RObject.new(bucket)        
+
+        object.data = data
+        object.content_type = "application/json"
         object.store
       end
 
-      def load(bucket, user_id)
-        @client[bucket][user_id].data
+      def load(bucket_name, key)
+        @client[bucket_name][key].data
       rescue ::Riak::HTTPFailedRequest
         []
       end
       
-      def get_bucket(bucket)
-        return @client.bucket(bucket)
+      def get_bucket(bucket_name)
+        return @client.bucket(bucket_name)
       end
       
       def clear(bucket_name)
         bucket = get_bucket(bucket_name)
-        bucket.keys.each {|k| bucket[k].delete }        
+
+        bucket.keys.each do |key|
+          bucket[key].delete if bucket.exists?(key)
+        end       
       end
       
     end
