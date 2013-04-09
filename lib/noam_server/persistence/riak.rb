@@ -2,12 +2,14 @@ require 'riak'
 require "riak/robject"
 require "riak/failed_request"
 
+require 'noam_server/config'
+
 module NoamServer
   module Persistence
     class Riak
       
       def initialize
-        @client = ::Riak::Client.new({:host => '54.235.198.53'})
+        @client = ::Riak::Client.new(CONFIG[:riak])
       end
       
       def save(bucket_name, data)        
@@ -43,14 +45,10 @@ module NoamServer
       private
       
       def parse(data)
-        if data.is_a?(Hash)
+        begin
+          JSON.parse(data)
+        rescue
           data
-        else
-          begin
-            JSON.parse(data)
-          rescue
-            data
-          end
         end
       end
       

@@ -1,6 +1,6 @@
 require "noam_server/persistence/riak"
 
-describe NoamServer::Persistence::Riak do
+describe NoamServer::Persistence::Riak, :integration => true do
   
   let(:persistence) { NoamServer::Persistence::Riak.new }
   let(:test_data) { '{"user_id": "1", "group_id": "3"}' }

@@ -4,7 +4,11 @@ require 'noam_server/player_connection'
 require "noam_server/persistence/riak"
 
 describe NoamServer::Orchestra do
-  let(:orchestra) { described_class.new }
+  let(:orchestra) { 
+    orchestra = described_class.new
+    # orchestra.persistor = NoamServer::Persistence::Memory.new 
+    # orchestra
+  }
 
   let(:id_1) { 'Arduino #1' }
   let(:id_2) { 'Raspberry Pi #2' }
