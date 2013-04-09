@@ -9,7 +9,7 @@ require 'noam_server/persistence/memory'
 CONFIG[:persistor_class] = NoamServer::Persistence::Memory
 # NOTE: to run riak, use:
 # require 'noam_server/persistence/riak'
-# CONFIG[:persistor_class] = Persistence::Riak
+# CONFIG[:persistor_class] = NoamServer::Persistence::Riak
 
 CONFIG[:riak] = {:host => 'localhost'}
 # NOTE: when using riak, point it at the host (or nodes!)
