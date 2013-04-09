@@ -1,4 +1,5 @@
 require "noam_server/persistence/memory"
+require "noam_server/persistence/riak"
 
 module NoamServer  
   class Orchestra
@@ -16,7 +17,7 @@ module NoamServer
       @play_callbacks = []
       @register_callbacks = []
       @unregister_callbacks = []
-      @persistor = Persistence::Memory.new
+      @persistor = Persistence::Riak.new
     end
 
     def register(player_connection, player)

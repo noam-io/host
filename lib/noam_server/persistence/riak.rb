@@ -7,14 +7,17 @@ module NoamServer
     class Riak
       
       def initialize
-        @client = ::Riak::Client.new
+        @client = ::Riak::Client.new({:host => '54.235.198.53'})
       end
       
-      def save(bucket_name, data)
+      def save(bucket_name, data)        
         bucket = get_bucket(bucket_name)
-        object = ::Riak::RObject.new(bucket)        
-
-        object.data = data
+        object = ::Riak::RObject.new(bucket)
+        
+        parsed_data = parse(data)
+        timestamped_data = set_timestamp(parsed_data)
+        
+        object.data = timestamped_data
         object.content_type = "application/json"
         object.store
       end
@@ -35,6 +38,29 @@ module NoamServer
         bucket.keys.each do |key|
           bucket[key].delete if bucket.exists?(key)
         end       
+      end
+      
+      private
+      
+      def parse(data)
+        if data.is_a?(Hash)
+          data
+        else
+          begin
+            JSON.parse(data)
+          rescue
+            data
+          end
+        end
+      end
+      
+      def set_timestamp(data)
+        if data.is_a?(Hash)
+          data["timestamp"] = Time.now
+          data
+        else
+          data
+        end
       end
       
     end

@@ -161,16 +161,17 @@ describe NoamServer::Orchestra do
   
   context "persistance" do
     
-    it "persists in memory by default" do
-      orchestra.persistor.should be_a(NoamServer::Persistence::Memory)
-    end
-    
-    it "sets persistence to riak" do
-      orchestra.persistor = NoamServer::Persistence::Riak.new
+    it "persists in Riak by default" do
       orchestra.persistor.should be_a(NoamServer::Persistence::Riak)
     end
     
+    it "sets persistence to memory" do
+      orchestra.persistor = NoamServer::Persistence::Memory.new
+      orchestra.persistor.should be_a(NoamServer::Persistence::Memory)
+    end
+    
     it "persists the message in memory" do
+      orchestra.persistor = NoamServer::Persistence::Memory.new
       orchestra.play("event", 'value', 'player_id' )
       orchestra.persistor.get_bucket('event').keys.should include('value')
     end
