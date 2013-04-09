@@ -6,12 +6,14 @@ require "rubygems"
 require "bundler/setup"
 require 'eventmachine'
 require 'sinatra/async'
+
+require 'noam_server/config'
+
 require 'noam_web'
 require 'noam_server/udp_broadcaster'
 require 'noam_server/noam_server'
 require 'noam_server/web_socket_server'
 require 'noam_server/asset_deployer'
-require 'noam_server/config'
 
 server = NoamServer::NoamServer.new(CONFIG[:listen_port])
 webserver = NoamServer::WebSocketServer.new(CONFIG[:web_socket_port])
