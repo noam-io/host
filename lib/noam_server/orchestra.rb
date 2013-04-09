@@ -1,11 +1,10 @@
 require "noam_server/persistence/memory"
-require "noam_server/persistence/riak"
 
-module NoamServer  
+module NoamServer
   class Orchestra
     attr_reader :players, :events
     attr_accessor :persistor
-    
+
     def self.instance
       @instance ||= self.new
     end
@@ -17,7 +16,7 @@ module NoamServer
       @play_callbacks = []
       @register_callbacks = []
       @unregister_callbacks = []
-      @persistor = Persistence::Riak.new
+      @persistor = CONFIG[:persistor_class].new
     end
 
     def register(player_connection, player)
@@ -62,7 +61,7 @@ module NoamServer
       player.last_activity = DateTime.now unless player.nil?
 
       persistor.save(event, value)
-      
+
       @events[event] ||= {}
 
       @events[event].each do |id, player|

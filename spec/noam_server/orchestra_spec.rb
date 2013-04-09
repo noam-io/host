@@ -4,9 +4,9 @@ require 'noam_server/player_connection'
 require "noam_server/persistence/riak"
 
 describe NoamServer::Orchestra do
-  let(:orchestra) { 
+  let(:orchestra) {
     orchestra = described_class.new
-    # orchestra.persistor = NoamServer::Persistence::Memory.new 
+    # orchestra.persistor = NoamServer::Persistence::Memory.new
     # orchestra
   }
 
@@ -60,7 +60,7 @@ describe NoamServer::Orchestra do
     connection_2.should_receive(:hear).with( 'player_id', "listens_for_1", 12.42)
     orchestra.play("listens_for_1", 12.42, 'player_id')
   end
-  
+
   it 'updates players last activity' do
     now = mock
     DateTime.stub( :now ).and_return( now )
@@ -162,18 +162,18 @@ describe NoamServer::Orchestra do
       end
     end
   end
-  
+
   context "persistance" do
-    
-    it "persists in Riak by default" do
-      orchestra.persistor.should be_a(NoamServer::Persistence::Riak)
-    end
-    
-    it "sets persistence to memory" do
-      orchestra.persistor = NoamServer::Persistence::Memory.new
+
+    it "persists in memory by default" do
       orchestra.persistor.should be_a(NoamServer::Persistence::Memory)
     end
-    
+
+    it "sets persistence to riak" do
+      orchestra.persistor = NoamServer::Persistence::Riak.new
+      orchestra.persistor.should be_a(NoamServer::Persistence::Riak)
+    end
+
     it "persists the message in memory" do
       orchestra.persistor = NoamServer::Persistence::Memory.new
       orchestra.play("event", 'value', 'player_id' )

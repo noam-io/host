@@ -11,25 +11,20 @@ require 'noam_server/udp_broadcaster'
 require 'noam_server/noam_server'
 require 'noam_server/web_socket_server'
 require 'noam_server/asset_deployer'
-
-BROADCAST_PORT = 1030
-LISTEN_PORT = 7733
-WEB_SOCKET_PORT = 8089
-RSA_PRIVATE_KEY = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "noam-key"))
-ASSETS_LOCATION = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Code/application_versions"
-
 require 'noam_server/config'
 
-server = NoamServer::NoamServer.new(LISTEN_PORT)
-webserver = NoamServer::WebSocketServer.new(WEB_SOCKET_PORT)
-broadcaster = NoamServer::UdpBroadcaster.new(BROADCAST_PORT, LISTEN_PORT)
-deployer = NoamServer::AssetDeployer.new( RSA_PRIVATE_KEY, ASSETS_LOCATION )
+server = NoamServer::NoamServer.new(CONFIG[:listen_port])
+webserver = NoamServer::WebSocketServer.new(CONFIG[:web_socket_port])
+broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],
+                                             CONFIG[:listen_port])
+deployer = NoamServer::AssetDeployer.new(CONFIG[:rsa_private_key],
+                                         CONFIG[:assets_location])
 
 EM::run do
   server.start
   webserver.start
   NoamApp.asset_deployer = deployer
-  NoamApp.broadcast_port = BROADCAST_PORT
+  NoamApp.broadcast_port = CONFIG[:broadcast_port]
   NoamApp.run!
 
   EventMachine.add_periodic_timer(5) do
