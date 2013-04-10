@@ -5,7 +5,7 @@ describe NoamServer::Persistence::Null do
   let(:persistence) { NoamServer::Persistence::Memory.new }
 
   it "saves data to a black hole and doesn't fail" do
-    persistence.save('bucket', 'object')
+    persistence.save('bucket', 'object', 'player')
   end
 
   it "query result is empty" do

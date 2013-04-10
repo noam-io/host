@@ -5,8 +5,8 @@ describe NoamServer::Persistence::Memory do
   let(:persistence) { NoamServer::Persistence::Memory.new }
 
   it "saves data" do
-    key = persistence.save('bucket', 'a')
-    persistence.load('bucket', key).should == 'a'
+    key = persistence.save('bucket', 'user_id', 'group_id')
+    persistence.load('bucket', key).should == ['user_id', 'group_id']
   end
 
   it "queries on an unknown bucket is empty" do
@@ -14,14 +14,14 @@ describe NoamServer::Persistence::Memory do
   end
 
   it "clears a bucket" do
-    key = persistence.save('bucket', 'a')
+    key = persistence.save('bucket', 'user_id', 'group_id')
     persistence.clear('bucket')
     persistence.load('bucket', key).should == []
   end
 
   it "gets a bucket" do
-    persistence.save('bucket', 'a')
-    persistence.get_bucket('bucket').should == {'a' => 'a'}
+    persistence.save('bucket', 'user_id', 'group_id')
+    persistence.get_bucket('bucket').should == {'user_id' => ['user_id', 'group_id']}
   end
 
 end

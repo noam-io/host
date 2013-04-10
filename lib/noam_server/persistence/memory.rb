@@ -6,10 +6,10 @@ module NoamServer
         @data_store ||= {}
       end
       
-      def save(bucket_name, data)
-        init(bucket_name)
-        key = data.to_s
-        get_bucket(bucket_name)[key] = data
+      def save(event_name, event_value, player_id)
+        init(event_name)
+        key = event_value.to_s
+        get_bucket(event_name)[key] = [event_value, player_id]
         return key
       end
       
