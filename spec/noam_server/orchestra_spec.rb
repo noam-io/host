@@ -165,8 +165,8 @@ describe NoamServer::Orchestra do
 
   context "persistance" do
 
-    it "persists in memory by default" do
-      orchestra.persistor.should be_a(NoamServer::Persistence::Memory)
+    it "does not persist by default (avoid memory leaks)" do
+      orchestra.persistor.should be_a(NoamServer::Persistence::Null)
     end
 
     it "sets persistence to riak" do
