@@ -9,7 +9,6 @@ require 'noam_server/persistence/null'
 CONFIG[:persistor_class] = NoamServer::Persistence::Null
 #
 # NOTE: to run riak, use:
-#
 # require 'noam_server/persistence/riak'
 # CONFIG[:persistor_class] = NoamServer::Persistence::Riak
 
@@ -18,5 +17,5 @@ CONFIG[:riak] = {:host => 'localhost'}
 # NOTE: when using riak, you can point it at a single host:
 # CONFIG[:riak] = {:host => '54.235.198.53'}
 #
-# NOTE: when using riak, you can point it at a set of nodes:
-# CONFIG[:riak] = [{:host => '54.235.198.53'}, {:host => '54.235.198.52'}, {:host => '54.235.198.51'}]
+# or point it at a set of nodes that will be round-robin retried on failure:
+# CONFIG[:riak] = {:nodes => [{:host => '54.225.87.37'}, {:host => '54.225.98.124'}, {:host => '54.225.202.245'}]}
