@@ -7,10 +7,16 @@ CONFIG[:assets_location] = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Co
 
 require 'noam_server/persistence/null'
 CONFIG[:persistor_class] = NoamServer::Persistence::Null
+#
 # NOTE: to run riak, use:
+#
 # require 'noam_server/persistence/riak'
 # CONFIG[:persistor_class] = NoamServer::Persistence::Riak
 
 CONFIG[:riak] = {:host => 'localhost'}
-# NOTE: when using riak, point it at the host (or nodes!)
+#
+# NOTE: when using riak, you can point it at a single host:
 # CONFIG[:riak] = {:host => '54.235.198.53'}
+#
+# NOTE: when using riak, you can point it at a set of nodes:
+# CONFIG[:riak] = [{:host => '54.235.198.53'}, {:host => '54.235.198.52'}, {:host => '54.235.198.51'}]
