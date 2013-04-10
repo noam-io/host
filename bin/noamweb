@@ -24,7 +24,10 @@ deployer = NoamServer::AssetDeployer.new(CONFIG[:rsa_private_key],
 
 NoamServer::Orchestra.instance.on_play do |name, value, player|
   persistor = CONFIG[:persistor_class].new
-  persistor.save(name, value)
+  begin
+    persistor.save(name, value)
+  rescue => e
+  end
 end
 
 EM::run do
