@@ -165,22 +165,22 @@ describe NoamServer::Orchestra do
 
   context "persistence" do
 
-    it "does not persist by default (avoid memory leaks)" do
+    xit "does not persist by default (avoid memory leaks)" do
       orchestra.persistor.should be_a(NoamServer::Persistence::Null)
     end
 
-    it "sets persistence to riak" do
+    xit "sets persistence to riak" do
       orchestra.persistor = NoamServer::Persistence::Riak.new
       orchestra.persistor.should be_a(NoamServer::Persistence::Riak)
     end
 
-    it "persists the message in memory" do
+    xit "persists the message in memory" do
       orchestra.persistor = NoamServer::Persistence::Memory.new
       orchestra.play("event", 'value', 'player_id' )
       orchestra.persistor.get_bucket('event').keys.should include('value')
     end
 
-    it "doesn't blow up on persistor exceptions" do
+    xit "doesn't blow up on persistor exceptions" do
       failing_persistor = double("failing persistor")
       failing_persistor.stub(:save).and_raise(StandardError)
       orchestra.persistor = failing_persistor

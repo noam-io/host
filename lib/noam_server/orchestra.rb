@@ -1,9 +1,6 @@
-require "noam_server/persistence/memory"
-
 module NoamServer
   class Orchestra
     attr_reader :players, :events
-    attr_accessor :persistor
 
     def self.instance
       @instance ||= self.new
@@ -16,7 +13,6 @@ module NoamServer
       @play_callbacks = []
       @register_callbacks = []
       @unregister_callbacks = []
-      @persistor = CONFIG[:persistor_class].new
     end
 
     def register(player_connection, player)
@@ -59,11 +55,6 @@ module NoamServer
       player = players[player_id]
       player.learn_to_play(event) unless player.nil?
       player.last_activity = DateTime.now unless player.nil?
-
-      begin
-        persistor.save(event, value)
-      rescue => e
-      end
 
       @events[event] ||= {}
 

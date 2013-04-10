@@ -22,6 +22,11 @@ broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],
 deployer = NoamServer::AssetDeployer.new(CONFIG[:rsa_private_key],
                                          CONFIG[:assets_location])
 
+NoamServer::Orchestra.instance.on_play do |name, value, player|
+  persistor = CONFIG[:persistor_class].new
+  persistor.save(name, value)
+end
+
 EM::run do
   server.start
   webserver.start
