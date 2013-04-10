@@ -60,7 +60,10 @@ module NoamServer
       player.learn_to_play(event) unless player.nil?
       player.last_activity = DateTime.now unless player.nil?
 
-      persistor.save(event, value)
+      begin
+        persistor.save(event, value)
+      rescue => e
+      end
 
       @events[event] ||= {}
 

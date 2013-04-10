@@ -163,7 +163,7 @@ describe NoamServer::Orchestra do
     end
   end
 
-  context "persistance" do
+  context "persistence" do
 
     it "does not persist by default (avoid memory leaks)" do
       orchestra.persistor.should be_a(NoamServer::Persistence::Null)
@@ -178,6 +178,16 @@ describe NoamServer::Orchestra do
       orchestra.persistor = NoamServer::Persistence::Memory.new
       orchestra.play("event", 'value', 'player_id' )
       orchestra.persistor.get_bucket('event').keys.should include('value')
+    end
+
+    it "doesn't blow up on persistor exceptions" do
+      failing_persistor = double("failing persistor")
+      failing_persistor.stub(:save).and_raise(StandardError)
+      orchestra.persistor = failing_persistor
+
+      lambda {
+        orchestra.play("event", 'value', 'player_id' )
+      }.should_not raise_error
     end
   end
 end
