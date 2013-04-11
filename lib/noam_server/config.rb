@@ -11,15 +11,13 @@ CONFIG[:assets_location] = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Co
 # NOTE: to run riak, use:
 # require 'noam_server/persistence/riak'
 # CONFIG[:persistor_class] = NoamServer::Persistence::Riak
-
-CONFIG[:riak] = {:host => 'localhost'}
 #
 require 'noam_server/persistence/riak'
 CONFIG[:persistor_class] = NoamServer::Persistence::Riak
-# CONFIG[:riak] = {:host => 'localhost'}
+CONFIG[:riak] = {:host => 'localhost'}
 #
 # NOTE: when using riak, you can point it at a single host:
-CONFIG[:riak] = {:host => '54.235.198.53'}
+# CONFIG[:riak] = {:host => '54.235.198.53'}
 #
 # or point it at a set of nodes that will be round-robin retried on failure:
 # CONFIG[:riak] = {:nodes => [{:host => '54.225.87.37'}, {:host => '54.225.98.124'}, {:host => '54.225.202.245'}]}
