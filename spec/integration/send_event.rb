@@ -2,9 +2,11 @@ require 'socket'
 require 'json'
 
 def sendEvent(sock)
-  event_name = ARGV[2]
-  event_value = ARGV[3]
-  event = ["event", "spalla_id", event_name, event_value]
+  spalla_id = ARGV[2]
+  event_name = ARGV[3]
+  event_value = ARGV[4]
+
+  event = ["event", spalla_id, event_name, event_value]
   dataToSend = "%06d"% event.to_json.length
   dataToSend += event.to_json
   puts dataToSend

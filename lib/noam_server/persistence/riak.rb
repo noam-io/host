@@ -12,15 +12,15 @@ module NoamServer
         @client = ::Riak::Client.new(CONFIG[:riak])
       end
       
-      def save(event_name, event_value, player_id)
+      def save(event_name, event_value, player)
         bucket = get_bucket(event_name)
         object = ::Riak::RObject.new(bucket)
         
         data = {}
         data['user_id'] = event_value
-        data['group_id'] = player_id
+        data['group_id'] = player.spalla_id
         data['timestamp'] = Time.now.to_i
-        
+                
         object.data = data
         object.content_type = "application/json"
         object.store
