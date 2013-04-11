@@ -21,18 +21,16 @@ def sendRegistration(sock)
 end
 
 def sendCheckinRegistration(sock)
-  event = ["register", "spalla_id", 7833, [], ["checkin", "checkout"]]
+  event = ["register", "spalla_id", 7833, [], ["in", "out"]]
   dataToSend = "%06d"% event.to_json.length
   dataToSend += event.to_json
   sock.write dataToSend
   sock.flush
 end
 
-
-
 ip = ARGV[0]
 port = ARGV[1]
 sock = TCPSocket.new(ip, port)
 
+sendCheckinRegistration sock
 sendEvent sock
-# sendCheckinRegistration sock
