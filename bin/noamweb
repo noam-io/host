@@ -6,6 +6,7 @@ require "rubygems"
 require "bundler/setup"
 require 'eventmachine'
 require 'sinatra/async'
+require 'timeout'
 
 require 'noam_server/config'
 
@@ -22,13 +23,19 @@ broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],
 deployer = NoamServer::AssetDeployer.new(CONFIG[:rsa_private_key],
                                          CONFIG[:assets_location])
 
-NoamServer::Orchestra.instance.on_play do |name, value, player|
+NoamServer::Orchestra.instance.on_play do |name, value, player|  
   persistor = CONFIG[:persistor_class].new
-  begin
-    player_id = player.spalla_id
-    persistor.save(name, value, player)
-  rescue => e
-  end
+
+  EM::defer {
+    begin
+      Timeout::timeout(15) {
+        persistor.save(name, value, player.spalla_id)
+      }
+    rescue => error
+      p error
+      p 'Unstored Data Entry: [' + name.to_s + ', ' + value.to_s + ', timestamp:' + Time.now.to_i.to_s + ']'
+    end
+  }
 end
 
 EM::run do

@@ -101,6 +101,7 @@ class NoamApp < Sinatra::Base
 end
 
 NoamServer::Orchestra.instance.on_play do |name, value, player|
+  puts "Event: #{player.spalla_id}, #{name}, #{value}"
   Statabase.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name

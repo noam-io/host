@@ -51,7 +51,7 @@ module NoamServer
       @events.keys.sort
     end
 
-    def play(event, value, player_id )
+    def play(event, value, player_id)
       player = players[player_id]
       player.learn_to_play(event) unless player.nil?
       player.last_activity = DateTime.now unless player.nil?

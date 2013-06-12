@@ -7,6 +7,10 @@ describe NoamServer::Persistence::Riak, :integration => true do
   let(:user_id) { '2' }
   let(:group_id) { '1' }
   
+  before(:each) do
+    CONFIG[:riak] = {:host => 'localhost'}
+  end
+  
   after(:each) do
     persistence.clear('bucket')
   end

@@ -34,5 +34,5 @@ ip = ARGV[0]
 port = ARGV[1]
 sock = TCPSocket.new(ip, port)
 
-sendCheckinRegistration sock
+sendRegistration sock
 sendEvent sock
