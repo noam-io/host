@@ -36,6 +36,7 @@ module NoamServer
     def new_connection
       unless @connection_pending
         @connection_pending = true
+#        p "testing" + @host.to_s + " : " + @port.to_s
         EventMachine::connect(@host, @port, EarHandler) do |connection|
           @connection = connection
           @connection.parent = self

@@ -15,6 +15,7 @@ module NoamServer
       def save(event_name, event_value, player_spalla_id)
         bucket = get_bucket(event_name)
         object = ::Riak::RObject.new(bucket)
+        #object = bucket.new('testKey')
 
         data = {}
         data['user_id'] = event_value

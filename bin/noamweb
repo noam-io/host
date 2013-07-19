@@ -27,9 +27,13 @@ NoamServer::Orchestra.instance.on_play do |name, value, player|
   persistor = CONFIG[:persistor_class].new
 
   EM::defer {
+    # p 'name: ' + name
+    # p 'value: ' + value.to_s
+    # p 'id: ' + player.spalla_id unless player.nil?
     begin
       Timeout::timeout(15) {
-        persistor.save(name, value, player.spalla_id)
+        persistor.save(name, value, player.spalla_id) unless player.nil? #This ignores saving of messages from noam server
+                                                                          #Should create player for web view
       }
     rescue => error
       p error
@@ -45,7 +49,7 @@ EM::run do
   NoamApp.broadcast_port = CONFIG[:broadcast_port]
   NoamApp.run!
 
-  EventMachine.add_periodic_timer(5) do
+  EventMachine.add_periodic_timer(2) do
     broadcaster.go
   end
 end

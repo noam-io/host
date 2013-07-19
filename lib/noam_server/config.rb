@@ -1,20 +1,25 @@
 CONFIG = {}
-CONFIG[:broadcast_port] = 1030
+CONFIG[:broadcast_port] = 1033
 CONFIG[:listen_port] = 7733
 CONFIG[:web_socket_port] = 8089
 CONFIG[:rsa_private_key] = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "noam-key"))
 CONFIG[:assets_location] = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Code/application_versions"
 
-# require 'noam_server/persistence/null'
-# CONFIG[:persistor_class] = NoamServer::Persistence::Null
-#
+require 'noam_server/persistence/null'
+CONFIG[:persistor_class] = NoamServer::Persistence::Null
+
 # NOTE: to run riak, use:
 # require 'noam_server/persistence/riak'
 # CONFIG[:persistor_class] = NoamServer::Persistence::Riak
+
 #
-require 'noam_server/persistence/riak'
-CONFIG[:persistor_class] = NoamServer::Persistence::Riak
-CONFIG[:riak] = {:host => 'localhost'}
+# require 'noam_server/persistence/riak'
+# CONFIG[:persistor_class] = NoamServer::Persistence::Riak
+# CONFIG[:riak] = {:host => 'localhost'}
+
+# require 'noam_server/persistence/riak'
+# CONFIG[:persistor_class] = NoamServer::Persistence::Riak
+# CONFIG[:riak] = {:host => 'ec2-54-226-249-215.compute-1.amazonaws.com'}
 #
 # NOTE: when using riak, you can point it at a single host:
 # CONFIG[:riak] = {:host => '1.1.1.1'}

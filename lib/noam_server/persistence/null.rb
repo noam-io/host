@@ -2,7 +2,7 @@ module NoamServer
   module Persistence
     class Null
 
-      def save(bucket_name, data)
+      def save(bucket_name, data, player_spalla_id)
       end
 
       def load(bucket_name, key)

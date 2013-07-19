@@ -11,7 +11,7 @@ module NoamServer
       @ip = ip
     end
 
-    def message_received(message)
+    def message_received(message)      
       if message.is_a?(Noam::Messages::RegisterMessage)
         player = Player.new( message.spalla_id, message.device_type, message.system_version, message.hears, message.plays, @ip, message.callback_port)
 

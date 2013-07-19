@@ -8,6 +8,7 @@ module NoamServer
        port, @ip = Socket.unpack_sockaddr_in(get_peername)
        handler = MessageHandler.new(@ip)
        @listener = Noam::TcpListener.new do |msg|
+        # puts 'received raw message: ' + msg
          begin
            parsed_message = Noam::Messages.parse(msg)
            @spalla_id = parsed_message.spalla_id
