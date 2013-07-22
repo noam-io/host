@@ -1,5 +1,5 @@
 CONFIG = {}
-CONFIG[:broadcast_port] = 1033
+CONFIG[:broadcast_port] = 1030
 CONFIG[:listen_port] = 7733
 CONFIG[:web_socket_port] = 8089
 CONFIG[:rsa_private_key] = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "noam-key"))
