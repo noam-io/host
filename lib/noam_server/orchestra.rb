@@ -58,9 +58,9 @@ module NoamServer
 
       @events[event] ||= {}
 
-      @events[event].each do |id, player|
-        player.hear(player_id, event, value)
-      end if @events[event]
+      @events[event].each do |id, player_connection|
+        player_connection.hear(player_id, event, value)
+      end
 
       @play_callbacks.each do |callback|
         callback.call(event, value, player)
