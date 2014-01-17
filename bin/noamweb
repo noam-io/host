@@ -48,6 +48,12 @@ EM::run do
   NoamApp.broadcast_port = CONFIG[:broadcast_port]
   NoamApp.run!
 
+  if defined?($noam_server_started_action)
+    EM::defer do
+      $noam_server_started_action.call
+    end
+  end
+
   ["INT", "TERM", "QUIT"].each do |signal|
     trap(signal) do
       EM.next_tick do

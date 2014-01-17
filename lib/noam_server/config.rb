@@ -1,4 +1,5 @@
 CONFIG = {}
+CONFIG[:web_server_port] = 8081
 CONFIG[:broadcast_port] = 1030
 CONFIG[:listen_port] = 7733
 CONFIG[:web_socket_port] = 8089

@@ -151,6 +151,10 @@ end
 
 OSX_EXECUTABLE_FOLDER = File.expand_path("../../..", __FILE__)
 
+$noam_server_started_action = lambda do
+  system("open", "http://localhost:" + CONFIG[:web_server_port].to_s)
+end
+
 Dir.chdir 'application'
 load '#{project.executable}'
 END_TEXT

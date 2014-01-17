@@ -45,7 +45,7 @@ class NoamApp < Sinatra::Base
 
   set :server, 'thin'
   set :public_folder, File.dirname(__FILE__)
-  set :port, 8081
+  set :port, CONFIG[:web_server_port]
 
   def self.asset_deployer=( value )
     @@asset_deployer = value
