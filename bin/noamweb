@@ -48,6 +48,14 @@ EM::run do
   NoamApp.broadcast_port = CONFIG[:broadcast_port]
   NoamApp.run!
 
+  ["INT", "TERM", "QUIT"].each do |signal|
+    trap(signal) do
+      EM.next_tick do
+        EM.stop
+      end
+    end
+  end
+
   EventMachine.add_periodic_timer(2) do
     broadcaster.go
   end

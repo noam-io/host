@@ -93,6 +93,13 @@ class NoamApp < Sinatra::Base
     body("ok")
   end
 
+  post '/stop-server' do
+    puts "Stopping server from web interface..."
+    EM.next_tick do
+      EM.stop
+    end
+  end
+
   post '/deploy-assets' do
     selected_spalla_players = NoamServer::Orchestra.instance.players_for(params[:spallas])
     EM.defer { @@asset_deployer.deploy( selected_spalla_players, params[:folders] ) }
