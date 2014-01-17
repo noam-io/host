@@ -1,3 +1,5 @@
 Gemfile.lock
 sample-assets
 .DS_Store
+/pkg
+/wrappers
