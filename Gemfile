@@ -2,10 +2,10 @@ source "https://rubygems.org"
 
 gem 'async_sinatra'
 gem 'eventmachine', '1.0.3'
-gem 'sinatra'
+gem 'sinatra', '1.3.3'
 gem 'thin'
 gem 'multi_json', '1.7.2'
-gem 'em-websocket'
+gem 'em-websocket', '0.3.8'
 
 group :riak do
   gem 'riak-client', '1.1.1'

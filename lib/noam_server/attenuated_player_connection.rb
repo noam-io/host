@@ -1,4 +1,4 @@
-require 'eventmachine'
+require 'em/pure_ruby'
 
 module NoamServer
   class AttenuatedPlayerConnection

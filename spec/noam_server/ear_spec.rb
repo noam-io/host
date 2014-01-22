@@ -1,4 +1,4 @@
-require 'eventmachine'
+require 'em/pure_ruby'
 require 'noam_server/ear'
 
 def wire_message(expected_message)

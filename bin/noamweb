@@ -3,7 +3,7 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "lib"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "web"))
 require "rubygems"
-require 'eventmachine'
+require 'em/pure_ruby'
 require 'sinatra/async'
 require 'timeout'
 
