@@ -15,7 +15,7 @@ GEM
     em-websocket (0.3.8)
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
-    eventmachine (1.0.0.rc.4)
+    eventmachine (1.0.3)
     faster_xml_simple (0.5.0)
       libxml-ruby (>= 0.3.8.4)
     ffi (1.1.5)
@@ -89,7 +89,7 @@ PLATFORMS
 DEPENDENCIES
   async_sinatra
   em-websocket
-  eventmachine (= 1.0.0.rc.4)
+  eventmachine (= 1.0.3)
   jasmine
   multi_json (= 1.7.2)
   releasy

@@ -9,7 +9,7 @@ module Noam
     end
 
     def receive_data(data)
-     enum = data.bytes
+     enum = data.each_byte
      while true
        read_length(enum) if self.message_length.nil?
        read_payload(enum) unless self.message_length.nil?

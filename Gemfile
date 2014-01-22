@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem 'async_sinatra'
-gem 'eventmachine', '1.0.0.rc.4'
+gem 'eventmachine', '1.0.3'
 gem 'sinatra'
 gem 'thin'
 gem 'multi_json', '1.7.2'
