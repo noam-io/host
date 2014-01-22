@@ -98,6 +98,7 @@ class NoamApp < Sinatra::Base
     EM.next_tick do
       EM.stop
     end
+    body("ok")
   end
 
   post '/deploy-assets' do

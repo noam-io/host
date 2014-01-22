@@ -30,10 +30,10 @@ Releasy::Project.new do
     url "com.ideo.noam_server"
 
     # After cloning & building https://github.com/trptcolin/ruby_app we expect
-    # this wrapper to be the output of `tar -zcvf ruby-mac-wrapper-2014-01-17.tar.gz ./Ruby.app`
+    # this wrapper to be the output of `tar -zcvf ruby-mac-wrapper-YYYY-MM-DD.tar.gz ./Ruby.app`
     # in that directory. The .tar.gz filename is flexible as long as it matches
     # between the actual file and this wrapper specification.
-    wrapper "wrappers/ruby-mac-wrapper-2014-01-17.tar.gz"
+    wrapper "wrappers/ruby-mac-wrapper-2014-01-22.tar.gz"
     add_package :tar_gz
   end
 

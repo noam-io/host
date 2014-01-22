@@ -61,6 +61,9 @@ module Releasy
         raise ConfigError, "#wrapper file does not exist: #{wrapper}" unless File.exists? wrapper
 
         new_app = File.join folder, app_name
+        if File.exists?(new_app)
+          rm_r new_app
+        end
 
         # Copy the app files.
         execute_command %[7z x -so -bd "#{wrapper}" 2>#{null_file} | 7z x -si -mmt -bd -ttar -o"#{folder}"]
@@ -102,6 +105,7 @@ module Releasy
             file.puts <<END
 #!/bin/sh
 chmod a+x "./#{app_name}/Contents/MacOS/#{project.name}"
+chmod a+x "./#{app_name}/Contents/Resources/ruby"
 echo "Made #{app_name} executable"
 END
 
@@ -121,6 +125,7 @@ END
         new_executable = "#{app}/Contents/MacOS/#{project.name}"
         mv "#{app}/Contents/MacOS/Ruby" , new_executable, fileutils_options
         chmod 0755, new_executable, fileutils_options
+        chmod 0755, "#{app}/Contents/Resources/ruby", fileutils_options
       end
 
       protected

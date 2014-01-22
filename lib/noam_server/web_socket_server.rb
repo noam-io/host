@@ -40,7 +40,7 @@ module NoamServer
         ws.onopen    { connection.post_init(ws) }
         ws.onmessage { |msg| connection.receive_data(msg) }
         ws.onclose   { connection.close }
-        ws.onerror { |err| puts "Web Socket Error: #{err}" }
+        ws.onerror { |err| puts "Web Socket Error: #{err}"; puts err.backtrace.join("\n") }
       end
     end
   end
