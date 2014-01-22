@@ -43,6 +43,19 @@ describe NoamServer::Orchestra do
     orchestra.players.has_key?( id_1 ).should be_false
   end
 
+  it "updates events when a player is fired" do
+    orchestra.register( connection_1, player_1 )
+    player_3 = NoamServer::Player.new( "Web #3", 'Virtual Machine', 'System Version',
+                                      ["listens_for_1", "listens_for_2"],
+                                      ["plays_1", "plays_2"] , "1.2.3.4", 333)
+    connection_3 = NoamServer::PlayerConnection.new( player_3 )
+    orchestra.register(connection_3, player_3)
+
+    orchestra.fire_player( id_1 )
+
+    orchestra.events["listens_for_1"].should == {"Web #3" => connection_3}
+  end
+
   it "should update plays when an event is sent" do
     orchestra.register( connection_1, player_1 )
 

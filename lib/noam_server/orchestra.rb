@@ -42,8 +42,12 @@ module NoamServer
       player = players.delete(spalla_id)
       @connections.delete(spalla_id)
 
+      player.hears.each do |event|
+        @events[event].delete(spalla_id)
+      end
+
       @unregister_callbacks.each do |callback|
-        callback.call( player )
+        callback.call(player)
       end
     end
 
@@ -53,6 +57,7 @@ module NoamServer
 
     def play(event, value, player_id)
       player = players[player_id]
+
       player.learn_to_play(event) unless player.nil?
       player.last_activity = DateTime.now unless player.nil?
 
