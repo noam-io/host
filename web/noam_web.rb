@@ -24,17 +24,27 @@ class Statabase
 end
 
 class Request
-  @@r = []
+  @@r = Queue.new
+  @@pending_responses = false
 
   def self.pile(&callback)
     @@r << callback
   end
 
+  def self.enqueue_response
+    @@pending_responses = true
+  end
+
+  def self.pending_responses?
+    @@pending_responses
+  end
+
   def self.respond
-    @@r.each do |r|
+    while !@@r.empty?
+      r = @@r.pop
       r.call
     end
-    @@r.clear
+    @@pending_responses = false
   end
 end
 
@@ -54,6 +64,16 @@ class NoamApp < Sinatra::Base
 
   def self.broadcast_port=( value )
     @@broadcast_port = value
+  end
+
+  def self.run!
+    EM::add_periodic_timer(1) do
+      if Request.pending_responses?
+        Request.respond
+      end
+    end
+
+    super
   end
 
   before do
@@ -114,18 +134,18 @@ NoamServer::Orchestra.instance.on_play do |name, value, player|
   Statabase.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
-  Request.respond
+  Request.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_register do |player|
   CONFIG[:logger].info "Registration from: #{player.spalla_id}"
   $last_active_id = player.spalla_id if player
   $last_active_event = ""
-  Request.respond
+  Request.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_unregister do |player|
   CONFIG[:logger].info "Spalla disconnected: #{player.spalla_id}" if player
-  Request.respond
+  Request.enqueue_response
 end
 
