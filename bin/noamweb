@@ -56,9 +56,7 @@ EM::run do
 
   ["INT", "TERM", "QUIT"].each do |signal|
     trap(signal) do
-      EM.next_tick do
-        EM.stop
-      end
+      EM.stop
     end
   end
 
