@@ -1,9 +1,20 @@
+require 'logger'
+require 'noam_server/config'
 require 'noam_server/orchestra'
 require 'noam_server/player'
 require 'noam_server/player_connection'
 require "noam_server/persistence/riak"
 
 describe NoamServer::Orchestra do
+  around(:each) do |example|
+    original_logger = CONFIG[:logger]
+    this_logger = Logger.new(STDOUT)
+    this_logger.level = Logger::ERROR
+    CONFIG[:logger] = this_logger
+    example.run
+    CONFIG[:logger] = original_logger
+  end
+
   let(:orchestra) {
     orchestra = described_class.new
     # orchestra.persistor = NoamServer::Persistence::Memory.new
@@ -21,7 +32,6 @@ describe NoamServer::Orchestra do
 
   let(:connection_1) { NoamServer::PlayerConnection.new( player_1 )}
   let(:connection_2) { NoamServer::PlayerConnection.new( player_2 )}
-
 
   it "plays a note noone has registered for" do
     -> {orchestra.play( 'player', 'listens_for_1', 12.42 )}.should_not raise_error
@@ -54,6 +64,13 @@ describe NoamServer::Orchestra do
     orchestra.fire_player( id_1 )
 
     orchestra.events["listens_for_1"].should == {"Web #3" => connection_3}
+  end
+
+  it "fires a player when there's an exception trying to talk to it" do
+    orchestra.register( connection_1, player_1)
+    connection_1.stub(:hear).and_raise("unknown send_data target")
+    orchestra.play("listens_for_1", 12.42, 'player_id' )
+    orchestra.players.should == {}
   end
 
   it "should update plays when an event is sent" do

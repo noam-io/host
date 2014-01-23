@@ -1,3 +1,5 @@
+require 'noam_server/config'
+
 module NoamServer
   class Orchestra
     attr_reader :players, :events
@@ -63,8 +65,14 @@ module NoamServer
 
       @events[event] ||= {}
 
-      @events[event].each do |id, player_connection|
-        player_connection.hear(player_id, event, value)
+      # We need to dup here since #fire_player can mutate the underlying hashes
+      @events[event].dup.each do |id, player_connection|
+        begin
+          player_connection.hear(player_id, event, value)
+        rescue => e
+          CONFIG[:logger].warn "Error trying to notify player (#{id}) of event (#{event}). Firing them."
+          fire_player(id)
+        end
       end
 
       @play_callbacks.each do |callback|
