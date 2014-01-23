@@ -9,6 +9,9 @@ CONFIG[:assets_location] = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Co
 require 'noam_server/persistence/null'
 CONFIG[:persistor_class] = NoamServer::Persistence::Null
 
+require 'logger'
+CONFIG[:logger] = Logger.new(STDOUT)
+
 # NOTE: to run riak, use:
 # require 'noam_server/persistence/riak'
 # CONFIG[:persistor_class] = NoamServer::Persistence::Riak

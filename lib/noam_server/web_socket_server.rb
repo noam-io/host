@@ -1,4 +1,5 @@
 require 'em-websocket'
+require 'noam_server/config'
 require 'noam_server/web_socket_message_handler'
 require 'noam/tcp_listener'
 
@@ -14,7 +15,7 @@ module NoamServer
           @spalla_id = parsed_message.spalla_id
           handler.message_received(parsed_message)
         rescue JSON::ParserError
-          puts "invalid message received:  #{msg}"
+          CONFIG[:logger].error "invalid message received:  #{msg}"
         end
       end
     end
@@ -40,7 +41,9 @@ module NoamServer
         ws.onopen    { connection.post_init(ws) }
         ws.onmessage { |msg| connection.receive_data(msg) }
         ws.onclose   { connection.close }
-        ws.onerror { |err| puts "Web Socket Error: #{err}"; puts err.backtrace.join("\n") }
+        ws.onerror do |err|
+          CONFIG[:logger].error "Web Socket Error: #{err}"
+        end
       end
     end
   end

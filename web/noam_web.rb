@@ -1,6 +1,7 @@
 require 'sinatra/async'
 require 'noam_server/noam_server'
 require 'noam_server/asset_deployer'
+require 'noam_server/config'
 require 'helpers/refresh_helper.rb'
 
 
@@ -94,7 +95,7 @@ class NoamApp < Sinatra::Base
   end
 
   post '/stop-server' do
-    puts "Stopping server from web interface..."
+    CONFIG[:logger].info "Stopping server from web interface..."
     EM.next_tick do
       EM.stop
     end
@@ -109,7 +110,7 @@ class NoamApp < Sinatra::Base
 end
 
 NoamServer::Orchestra.instance.on_play do |name, value, player|
-  #puts "Event: #{player.spalla_id}, #{name}, #{value}"
+  CONFIG[:logger].debug "Event: #{player.spalla_id}, #{name}, #{value}"
   Statabase.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
@@ -117,14 +118,14 @@ NoamServer::Orchestra.instance.on_play do |name, value, player|
 end
 
 NoamServer::Orchestra.instance.on_register do |player|
-  puts "Registration from: #{player.spalla_id}"
+  CONFIG[:logger].info "Registration from: #{player.spalla_id}"
   $last_active_id = player.spalla_id if player
   $last_active_event = ""
   Request.respond
 end
 
 NoamServer::Orchestra.instance.on_unregister do |player|
-  puts "Spalla disconnected: #{player.spalla_id}" if player
+  CONFIG[:logger].info "Spalla disconnected: #{player.spalla_id}" if player
   Request.respond
 end
 

@@ -1,5 +1,7 @@
 require 'noam/tcp_listener'
+require 'noam_server/config'
 require 'noam_server/message_handler'
+
 module NoamServer
   module Listener
     attr_accessor :listener, :spalla_id
@@ -14,7 +16,7 @@ module NoamServer
            @spalla_id = parsed_message.spalla_id
            handler.message_received(parsed_message)
          rescue JSON::ParserError
-           puts "invalid message received:  #{msg}"
+           CONFIG[:logger].error "invalid message received:  #{msg}"
          end
        end
     end
