@@ -5,7 +5,7 @@ gem 'eventmachine', '1.0.3'
 gem 'sinatra', '1.3.3'
 gem 'thin'
 gem 'multi_json', '1.7.2'
-gem 'em-websocket', '0.3.8'
+gem 'em-websocket', '0.5.0'
 
 group :riak do
   gem 'riak-client', '1.1.1'

@@ -42,8 +42,8 @@ module NoamServer
       player = players.delete(spalla_id)
       @connections.delete(spalla_id)
 
-      player.hears.each do |event|
-        @events[event].delete(spalla_id)
+      @events.each do |event, actors|
+        actors.delete(spalla_id)
       end
 
       @unregister_callbacks.each do |callback|
