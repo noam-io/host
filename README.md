@@ -41,7 +41,8 @@ Brains of the Noam system
 ## Building for distribution
 
 * Prerequisite
-  - clone and build https://github.com/trptcolin/ruby_app following the steps in its README
+  - download the tar.gz archive at https://github.com/trptcolin/ruby_app/releases/tag/0.0.1-em
+    - (or build it yourself following the instructions in that repo)
 
 * Once the .tar.gz archive described in `Rakefile` (on this project) is in
   place, `rake build:noam:osx:app` will inject the NoamServer code into the
