@@ -1,6 +1,7 @@
 require 'sinatra/async'
 require 'noam_server/noam_server'
 require 'noam_server/asset_deployer'
+require 'noam_server/config'
 require 'helpers/refresh_helper.rb'
 
 
@@ -23,17 +24,27 @@ class Statabase
 end
 
 class Request
-  @@r = []
+  @@r = Queue.new
+  @@pending_responses = false
 
   def self.pile(&callback)
     @@r << callback
   end
 
+  def self.enqueue_response
+    @@pending_responses = true
+  end
+
+  def self.pending_responses?
+    @@pending_responses
+  end
+
   def self.respond
-    @@r.each do |r|
+    while !@@r.empty?
+      r = @@r.pop
       r.call
     end
-    @@r.clear
+    @@pending_responses = false
   end
 end
 
@@ -45,7 +56,7 @@ class NoamApp < Sinatra::Base
 
   set :server, 'thin'
   set :public_folder, File.dirname(__FILE__)
-  set :port, 8081
+  set :port, CONFIG[:web_server_port]
 
   def self.asset_deployer=( value )
     @@asset_deployer = value
@@ -53,6 +64,16 @@ class NoamApp < Sinatra::Base
 
   def self.broadcast_port=( value )
     @@broadcast_port = value
+  end
+
+  def self.run!
+    EM::add_periodic_timer(1) do
+      if Request.pending_responses?
+        Request.respond
+      end
+    end
+
+    super
   end
 
   before do
@@ -93,6 +114,14 @@ class NoamApp < Sinatra::Base
     body("ok")
   end
 
+  post '/stop-server' do
+    CONFIG[:logger].info "Stopping server from web interface..."
+    EM.next_tick do
+      EM.stop
+    end
+    body("ok")
+  end
+
   post '/deploy-assets' do
     selected_spalla_players = NoamServer::Orchestra.instance.players_for(params[:spallas])
     EM.defer { @@asset_deployer.deploy( selected_spalla_players, params[:folders] ) }
@@ -101,22 +130,22 @@ class NoamApp < Sinatra::Base
 end
 
 NoamServer::Orchestra.instance.on_play do |name, value, player|
-  #puts "Event: #{player.spalla_id}, #{name}, #{value}"
+  CONFIG[:logger].debug "Event: #{player.spalla_id}, #{name}, #{value}"
   Statabase.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
-  Request.respond
+  Request.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_register do |player|
-  puts "Registration from: #{player.spalla_id}"
+  CONFIG[:logger].info "Registration from: #{player.spalla_id}"
   $last_active_id = player.spalla_id if player
   $last_active_event = ""
-  Request.respond
+  Request.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_unregister do |player|
-  puts "Spalla disconnected: #{player.spalla_id}" if player
-  Request.respond
+  CONFIG[:logger].info "Spalla disconnected: #{player.spalla_id}" if player
+  Request.enqueue_response
 end
 

@@ -3,8 +3,7 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "lib"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "web"))
 require "rubygems"
-require "bundler/setup"
-require 'eventmachine'
+require 'em/pure_ruby'
 require 'sinatra/async'
 require 'timeout'
 
@@ -23,7 +22,7 @@ broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],
 deployer = NoamServer::AssetDeployer.new(CONFIG[:rsa_private_key],
                                          CONFIG[:assets_location])
 
-NoamServer::Orchestra.instance.on_play do |name, value, player|  
+NoamServer::Orchestra.instance.on_play do |name, value, player|
   persistor = CONFIG[:persistor_class].new
 
   EM::defer {
@@ -48,6 +47,18 @@ EM::run do
   NoamApp.asset_deployer = deployer
   NoamApp.broadcast_port = CONFIG[:broadcast_port]
   NoamApp.run!
+
+  if defined?($noam_server_started_action)
+    EM::defer do
+      $noam_server_started_action.call
+    end
+  end
+
+  ["INT", "TERM", "QUIT"].each do |signal|
+    trap(signal) do
+      EM.stop
+    end
+  end
 
   EventMachine.add_periodic_timer(2) do
     broadcaster.go

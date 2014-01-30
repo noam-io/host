@@ -34,7 +34,17 @@ Brains of the Noam system
 
 *  Start server
 
-        bin/noamweb
+        bundle exec bin/noamweb
 
 * browse to http://localhost:8081 with Chrome or Safari
 
+## Building for distribution
+
+* Prerequisite
+  - download the tar.gz archive at https://github.com/trptcolin/ruby_app/releases/tag/0.0.1-em
+    - (or build it yourself following the instructions in that repo)
+
+* Once the .tar.gz archive described in `Rakefile` (on this project) is in
+  place, `rake build:noam:osx:app` will inject the NoamServer code into the
+  base .app. Adding new native gems or upgrading Ruby will require changes to
+  the ruby_app project.

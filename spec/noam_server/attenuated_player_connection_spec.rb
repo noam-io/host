@@ -1,5 +1,5 @@
 require 'noam_server/attenuated_player_connection'
-require 'eventmachine'
+require 'em/pure_ruby'
 
 describe NoamServer::AttenuatedPlayerConnection do
   class AttenMockEar

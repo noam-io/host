@@ -1,3 +1,5 @@
+require 'noam_server/config'
+
 module NoamServer
   class Orchestra
     attr_reader :players, :events
@@ -42,8 +44,12 @@ module NoamServer
       player = players.delete(spalla_id)
       @connections.delete(spalla_id)
 
+      @events.each do |event, actors|
+        actors.delete(spalla_id)
+      end
+
       @unregister_callbacks.each do |callback|
-        callback.call( player )
+        callback.call(player)
       end
     end
 
@@ -53,13 +59,20 @@ module NoamServer
 
     def play(event, value, player_id)
       player = players[player_id]
+
       player.learn_to_play(event) unless player.nil?
       player.last_activity = DateTime.now unless player.nil?
 
       @events[event] ||= {}
 
-      @events[event].each do |id, player_connection|
-        player_connection.hear(player_id, event, value)
+      # We need to dup here since #fire_player can mutate the underlying hashes
+      @events[event].dup.each do |id, player_connection|
+        begin
+          player_connection.hear(player_id, event, value)
+        rescue => e
+          CONFIG[:logger].warn "Error trying to notify player (#{id}) of event (#{event}). Firing them."
+          fire_player(id)
+        end
       end
 
       @play_callbacks.each do |callback|
