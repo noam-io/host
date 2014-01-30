@@ -172,7 +172,7 @@ END_TEXT
         # Edit the info file to be specific for my game.
         info "Editing init"
         info = File.read(file)
-        info.sub!('<string>Ruby</string>', "<string>#{project.name}</string>")
+        info.gsub!('<string>Ruby</string>', "<string>#{project.name}</string>")
         info.sub!('<string>com.example.Ruby</string>', "<string>#{url}</string>")
         File.open(file, "w") {|f| f.puts info }
       end

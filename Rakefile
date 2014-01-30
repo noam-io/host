@@ -16,7 +16,7 @@ rescue LoadError
 end
 
 Releasy::Project.new do
-  name "Noam Server"
+  name "Noam"
   version "0.0.1"
   verbose
 
@@ -28,6 +28,8 @@ Releasy::Project.new do
 
   add_build :noam_osx_app do
     url "com.ideo.noam_server"
+
+    icon "Noam.icns"
 
     # After cloning & building https://github.com/trptcolin/ruby_app we expect
     # this wrapper to be the output of `tar -zcvf ruby-mac-wrapper-YYYY-MM-DD.tar.gz ./Ruby.app`
