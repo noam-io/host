@@ -38,11 +38,11 @@ Brains of the Noam system
 
 * browse to http://localhost:8081 with Chrome or Safari
 
-## Building for distribution
+## Building for distribution (OSX)
 
 * Use Ruby 2.1.0 (this *might* not be necessary, but is probably safest because of native gems, to match the Ruby version we bundle)
 * Download the tar.gz archive at https://github.com/trptcolin/ruby_app/releases/tag/0.0.1-em
   - This is just a thin wrapper around a statically-compiled Ruby with EventMachine and Thin native gem dependencies bundled. Don't bother to un-tar it, just download the archive (or build it yourself via the directions in that repo).
 * Copy that .tar.gz archive into `./wrappers` (creating that directory if necessary)
-* Run `rake build:noam:osx:app` - this will unpack the .tar.gz and insert all the Noam-specific code
+* Run `rake installer:osx` - this will unpack the .tar.gz, insert all the Noam-specific code, and build an installer at `./pkg/Noam.pkg`
 * NOTE: Adding new native gems (depending on what native dependencies they have) or upgrading Ruby will require changes to the ruby_app project.

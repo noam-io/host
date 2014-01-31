@@ -15,19 +15,23 @@ rescue LoadError
   end
 end
 
+NOAM_VERSION = "0.0.1"
+NOAM_OSX_ID = "com.ideo.noam_server"
+NOAM_OSX_APP_NAME = "Noam"
+
 Releasy::Project.new do
-  name "Noam"
-  version "0.0.1"
+  name NOAM_OSX_APP_NAME
+  version NOAM_VERSION
   verbose
 
   executable "bin/noamweb"
   files ["bin/noamweb", "lib/**/*.rb", "web/**/*.*"]
-  exposed_files "README.md"
+  exposed_files []
   add_link "https://github.com/ideo/noam", "Noam Server code"
   exclude_encoding # Applications that don't use advanced encoding (e.g. Japanese characters) can save build size with this.
 
   add_build :noam_osx_app do
-    url "com.ideo.noam_server"
+    url NOAM_OSX_ID
 
     icon "Noam.icns"
 
@@ -40,4 +44,21 @@ Releasy::Project.new do
   end
 
   add_deploy :local # Only deploy locally (no rsync).
+end
+
+namespace :installer do
+  desc "Create OSX Installer for Noam"
+  task :osx => ["build:noam:osx:app"] do
+    version = NOAM_VERSION
+    folder_containing_app = "./pkg/noam_#{version.gsub(".", "_")}_OSX"
+    # NOTE: Once we need to run scripts, the --scripts flag lets us specify a
+    # scripts directory for bash scripts named things like preflight,
+    # postflight, etc. to run at those times.
+    system %[pkgbuild --root "#{folder_containing_app}/#{NOAM_OSX_APP_NAME}.app" \\
+                      --install-location "/Applications/#{NOAM_OSX_APP_NAME}.app" \\
+                      --version #{version} \\
+                      --identifier #{NOAM_OSX_ID} \\
+                      ./pkg/#{NOAM_OSX_APP_NAME}.pkg]
+
+  end
 end
