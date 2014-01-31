@@ -66,7 +66,7 @@ module Releasy
         end
 
         # Copy the app files.
-        execute_command %[7z x -so -bd "#{wrapper}" 2>#{null_file} | 7z x -si -mmt -bd -ttar -o"#{folder}"]
+        execute_command %[tar -ozxvf "#{wrapper}" -C "#{folder}"]
         mv File.join(folder, "Ruby.app"), new_app, fileutils_options
 
         ## Copy my source files.
