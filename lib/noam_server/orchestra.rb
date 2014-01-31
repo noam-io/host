@@ -70,7 +70,7 @@ module NoamServer
         begin
           player_connection.hear(player_id, event, value)
         rescue => e
-          CONFIG[:logger].warn "Error trying to notify player (#{id}) of event (#{event}). Firing them."
+          Logging.logger[self].warn { "Error trying to notify player (#{id}) of event (#{event}). Firing them." }
           fire_player(id)
         end
       end
@@ -104,5 +104,40 @@ module NoamServer
     def deployable_spalla_ids
       players.values.select( &:deployable? ).map( &:spalla_id )
     end
+  end
+end
+
+####
+# Default Noam Callbacks
+##########################
+NoamServer::Orchestra.instance.on_play do |name, value, player|
+  unless CONFIG[:persistor_class].nil?
+    persistor = CONFIG[:persistor_class].instance
+    EM::defer {
+      begin
+        Timeout::timeout(15) {
+          # This ignores saving of messages from noam server
+          # TODO : should create player for web view
+          persistor.save(name, value, player.spalla_id) unless player.nil?
+          Logging.logger['Persistor'].debug { "Stored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]" }
+        }
+      rescue => error
+        Logging.logger['Persistor'].error { "Unstored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]" }
+      end
+    }
+  else
+    Logging.logger['Orchestra'].debug { "#{player.spalla_id} sent '#{name}' = #{value}" }
+  end
+end
+
+NoamServer::Orchestra.instance.on_register do |player|
+  EventMachine.defer do ||
+    Logging.logger['Orchestra'].info { "[Registration] From #{player.spalla_id}" }
+  end
+end
+
+NoamServer::Orchestra.instance.on_unregister do |player|
+  EventMachine.defer do ||
+    Logging.logger['Orchestra'].info { "[Disconnection] #{player.spalla_id}" if player }
   end
 end

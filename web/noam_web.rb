@@ -23,6 +23,24 @@ class Statabase
   end
 end
 
+# Store value and time of last message per player for web interface
+NoamServer::Orchestra.instance.on_play do |name, value, player|
+  Statabase.set( name, value )
+  $last_active_id = player.spalla_id if player
+  $last_active_event = name
+  Request.enqueue_response
+end
+
+NoamServer::Orchestra.instance.on_register do |player|
+  $last_active_id = player.spalla_id if player
+  $last_active_event = ""
+  Request.enqueue_response
+end
+
+NoamServer::Orchestra.instance.on_unregister do |player|
+  Request.enqueue_response
+end
+
 class Request
   @@r = Queue.new
   @@pending_responses = false
@@ -128,24 +146,3 @@ class NoamApp < Sinatra::Base
     redirect '/'
   end
 end
-
-NoamServer::Orchestra.instance.on_play do |name, value, player|
-  CONFIG[:logger].debug "Event: #{player.spalla_id}, #{name}, #{value}"
-  Statabase.set( name, value )
-  $last_active_id = player.spalla_id if player
-  $last_active_event = name
-  Request.enqueue_response
-end
-
-NoamServer::Orchestra.instance.on_register do |player|
-  CONFIG[:logger].info "Registration from: #{player.spalla_id}"
-  $last_active_id = player.spalla_id if player
-  $last_active_event = ""
-  Request.enqueue_response
-end
-
-NoamServer::Orchestra.instance.on_unregister do |player|
-  CONFIG[:logger].info "Spalla disconnected: #{player.spalla_id}" if player
-  Request.enqueue_response
-end
-

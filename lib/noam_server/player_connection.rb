@@ -25,6 +25,9 @@ module NoamServer
     def on_connection
       @backlog.each { |message| @ear.hear( *message )}
       @backlog.clear
+      EventMachine.defer do ||
+        Logging.logger[self].debug { "Player reconnected for lemma '#{id_of_player}' sending '#{event_name}' = #{event_value}" }
+      end
     end
 
     def terminate

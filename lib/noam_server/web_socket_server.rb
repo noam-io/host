@@ -15,7 +15,7 @@ module NoamServer
           @spalla_id = parsed_message.spalla_id
           handler.message_received(parsed_message)
         rescue JSON::ParserError
-          CONFIG[:logger].error "invalid message received:  #{msg}"
+          Logging.logger[self].error { "invalid message received:  #{msg}" }
         end
       end
     end
@@ -36,14 +36,20 @@ module NoamServer
     end
 
     def start
-      EventMachine::WebSocket.start(:host => @host, :port => @port) do |ws|
-        connection = WsConnection.new
-        ws.onopen    { connection.post_init(ws) }
-        ws.onmessage { |msg| connection.receive_data(msg) }
-        ws.onclose   { connection.close }
-        ws.onerror do |err|
-          CONFIG[:logger].error "Web Socket Error: #{err}"
+      Logging.logger[self].info { "Starting Socket Server at #{@host}:#{@port}" }
+      begin
+          EventMachine::WebSocket.start(:host => @host, :port => @port) do |ws|
+          connection = WsConnection.new
+          ws.onopen    { connection.post_init(ws) }
+          ws.onmessage { |msg| connection.receive_data(msg) }
+          ws.onclose   { connection.close }
+          ws.onerror do |err|
+            Logging.logger[self].error { "Web Socket Error: #{err}" }
+          end
         end
+      rescue Exception => e
+        Logging.logger[self].fatal { "Unable to start Socket Server - Port already in use." }
+        raise
       end
     end
   end

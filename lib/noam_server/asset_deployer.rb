@@ -1,9 +1,13 @@
 module NoamServer
   class AssetDeployer
     def initialize(rsa_private_key, asset_location)
-     system('chmod', '600', rsa_private_key)
-     @rsa_private_key = rsa_private_key
-     @asset_location = asset_location
+      unless @rsa_private_key.nil?
+        system('chmod', '600', rsa_private_key)
+        @rsa_private_key = rsa_private_key
+        @asset_location = asset_location
+      else
+        Logging.logger[self].warn { "No RSA private key found." }
+      end
    end
 
     def deploy( players, folders )
