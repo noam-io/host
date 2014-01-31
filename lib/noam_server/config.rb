@@ -6,11 +6,10 @@ CONFIG[:web_socket_port] = 8089
 CONFIG[:rsa_private_key] = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "noam-key"))
 CONFIG[:assets_location] = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Code/application_versions"
 
-require 'noam_server/persistence/null'
-CONFIG[:persistor_class] = NoamServer::Persistence::Null
-
-require 'logger'
-CONFIG[:logger] = Logger.new(STDOUT)
+# NOTE: to run mongo, use:
+# require 'noam_server/persistence/mongodb'
+# CONFIG[:persistor_class] = NoamServer::Persistence::MongoDB
+# CONFIG[:mongodb] = { :ip => 'localhost', :port => 27017, :db => 'noam-server-data' }
 
 # NOTE: to run riak, use:
 # require 'noam_server/persistence/riak'

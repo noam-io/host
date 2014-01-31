@@ -7,6 +7,11 @@ gem 'thin'
 gem 'multi_json', '1.7.2'
 gem 'em-websocket', '0.5.0'
 
+group :mongo do
+  gem 'mongo'
+  gem 'bson_ext'
+end
+
 group :riak do
   gem 'riak-client', '1.1.1'
 end
