@@ -10,12 +10,12 @@ module NoamServer
     end
 
     def start
-      Logging.logger[self].info { "Using Persistence Class: #{CONFIG[:persistor_class]}" }
-      Logging.logger[self].info { "Starting Noam Server at #{@host}:#{@port}" }
+      NoamLogging.info(self, "Using Persistence Class: #{CONFIG[:persistor_class]}")
+      NoamLogging.info(self, "Starting Noam Server at #{@host}:#{@port}")
       begin
         EventMachine::start_server(@host, @port, Listener)    		
       rescue Errno::EADDRINUSE
-        Logging.logger[self].fatal { "Unable to start Noam Server - Server port already in use." }
+        NoamLogging.fatal(self, "Unable to start Noam Server - Server port already in use.")
         raise
       end
     end

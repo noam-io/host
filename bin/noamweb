@@ -9,6 +9,7 @@ require 'timeout'
 require 'noam_server/config'
 
 require 'noam_web'
+require 'noam_server/noam_logging'
 require 'noam_server/udp_broadcaster'
 require 'noam_server/noam_server'
 require 'noam_server/web_socket_server'
@@ -23,9 +24,7 @@ ARGV.each do |a|
 end
 
 # Set Logging Attributes from CONFIG object
-
-Logging.logger.root.level = CONFIG[:logging][:level]
-Logging.logger.root.appenders = CONFIG[:logging][:appenders]
+NoamServer::NoamLogging.start_up()
 
 server = NoamServer::NoamServer.new(CONFIG[:listen_port])
 webserver = NoamServer::WebSocketServer.new(CONFIG[:web_socket_port])
@@ -39,7 +38,7 @@ EM::run do
     server.start
     webserver.start
   rescue Exception => e
-    Logging.logger["NoamServer"].fatal { "Exiting due to bad startup." }
+    NoamServer::NoamLogging.fatal("NoamServer", "Exiting due to bad startup.")
     exit
   end
   NoamApp.asset_deployer = deployer
@@ -54,7 +53,8 @@ EM::run do
 
   ["INT", "TERM", "QUIT"].each do |signal|
     trap(signal) do
-      Logging.logger["NoamServer"].info { "Closing Noam Server." }
+      NoamServer::NoamLogging.info("NoamServer", "Closing Noam Server.")
+      NoamServer::NoamLogging.shutdown
       EM.stop
     end
   end

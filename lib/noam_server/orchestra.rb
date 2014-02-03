@@ -70,7 +70,7 @@ module NoamServer
         begin
           player_connection.hear(player_id, event, value)
         rescue => e
-          Logging.logger[self].warn { "Error trying to notify player (#{id}) of event (#{event}). Firing them." }
+          NoamLogging.warn(self, "Error trying to notify player (#{id}) of event (#{event}). Firing them.")
           fire_player(id)
         end
       end
@@ -119,25 +119,21 @@ NoamServer::Orchestra.instance.on_play do |name, value, player|
           # This ignores saving of messages from noam server
           # TODO : should create player for web view
           persistor.save(name, value, player.spalla_id) unless player.nil?
-          Logging.logger['Persistor'].debug { "Stored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]" }
+          NoamServer::NoamLogging.debug('Persistor', "Stored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]")
         }
       rescue => error
-        Logging.logger['Persistor'].error { "Unstored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]" }
+        NoamServer::NoamLogging.error('Persistor', "Unstored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]")
       end
     }
   else
-    Logging.logger['Orchestra'].debug { "#{player.spalla_id} sent '#{name}' = #{value}" }
+    NoamServer::NoamLogging.debug('Orchestra', "#{player.spalla_id} sent '#{name}' = #{value}")
   end
 end
 
 NoamServer::Orchestra.instance.on_register do |player|
-  EventMachine.defer do ||
-    Logging.logger['Orchestra'].info { "[Registration] From #{player.spalla_id}" }
-  end
+  NoamServer::NoamLogging.info('Orchestra', "[Registration] From #{player.spalla_id}")
 end
 
 NoamServer::Orchestra.instance.on_unregister do |player|
-  EventMachine.defer do ||
-    Logging.logger['Orchestra'].info { "[Disconnection] #{player.spalla_id}" if player }
-  end
+  NoamServer::NoamLogging.info('Orchestra', "[Disconnection] #{player.spalla_id}") if player
 end

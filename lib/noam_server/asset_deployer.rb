@@ -6,7 +6,7 @@ module NoamServer
         @rsa_private_key = rsa_private_key
         @asset_location = asset_location
       else
-        Logging.logger[self].warn { "No RSA private key found." }
+        NoamLogging.warn(self, "No RSA private key found.")
       end
    end
 

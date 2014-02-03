@@ -16,7 +16,7 @@ module NoamServer
            @spalla_id = parsed_message.spalla_id
            handler.message_received(parsed_message)
          rescue JSON::ParserError
-            Logging.logger[self].error { "Invalid message received:  #{msg}" }
+            NoamLogging.error(self, "Invalid message received:  #{msg}")
          end
        end
     end
