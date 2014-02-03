@@ -26,8 +26,7 @@ module NoamServer
 			@@loggerClass.root.level = CONFIG[:logging][:level]
 			@@loggerClass.root.appenders = CONFIG[:logging][:appenders]
 
-			@@mutex = Mutex.new()
-			@@queue ||= Array.new()
+			@@queue ||= Queue.new
 			@@shutdown = false
 			
 			@@thread = Thread.new do
@@ -36,16 +35,12 @@ module NoamServer
 		end
 
 		def self.process_queue()
-			while !@@shutdown
-				numLeft = [0, @@queue.length - @@MaxPerIteration].max
-				while @@queue.length > numLeft
-					val = ""
-					@@mutex.synchronize do
-						val = @@queue.shift()
-					end
-					@@loggerClass[val[0]].add(val[1], val[2])
+			while true
+				val = @@queue.pop
+				if val == :stop
+					break
 				end
-				sleep(@@SecondsBetweenIteration)
+				@@loggerClass[val[0]].add(val[1], val[2])
 			end
 		end
 
@@ -53,15 +48,8 @@ module NoamServer
 			if @@shutdown
 				return
 			end
-
-			while @@queue.length > 0
-				val = ""
-				@@mutex.synchronize do
-					val = @@queue.shift()
-				end
-				@@loggerClass[val[0]].add(val[1], val[2])
-			end
 			@@shutdown = true
+			@@queue << :stop
 			@@thread.join
 		end
 
@@ -69,9 +57,7 @@ module NoamServer
 			if @@shutdown
 				return
 			end
-			@@mutex.synchronize do
-				@@queue.push([obj, severity, msg])
-			end
+			@@queue << [obj, severity, msg]
 		end
 
 		def self.debug(obj, msg=nil)
