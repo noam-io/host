@@ -16,8 +16,11 @@ require 'logging'
 module NoamServer
 	class NoamLogging
 
+		# Exposed to facilitate testing
 		@@loggerClass = Logging.logger
+
 		@@MaxPerIteration = 10
+		@@SecondsBetweenIteration = 0.1
 
 		def self.start_up()
 			@@loggerClass.root.level = CONFIG[:logging][:level]
@@ -42,7 +45,7 @@ module NoamServer
 					end
 					@@loggerClass[val[0]].add(val[1], val[2])
 				end
-				sleep(0.1)
+				sleep(@@SecondsBetweenIteration)
 			end
 		end
 
