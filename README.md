@@ -2,7 +2,7 @@
 ======================================
 Brains of the Noam system
 
-## Prerequesits
+## Prerequisites
 
 * Install the XCode "Command Line Tools" from [apple](https://developer.apple.com/downloads/index.action).
   You'll have to register with your Apple Id.  You can downlaod and install the full version of xCode, but
@@ -37,6 +37,17 @@ Brains of the Noam system
         bundle exec bin/noamweb
 
 * browse to http://localhost:8081 with Chrome or Safari
+
+
+## Running unit tests
+
+### Ruby
+- `bundle exec rspec`: skips integration tests like the Riak ones, since they require a running riak server
+- `bundle exec rspec --tag integration`: runs only integration tests (described above)
+- `bundle exec rspec -O .rspec-no-tags`: runs all tests, including integration ones
+
+### JavaScript
+- `rake jasmine`: starts a jasmine server on http://0.0.0.0:8888 - browse to it to run tests
 
 ## Building for distribution (OSX)
 
