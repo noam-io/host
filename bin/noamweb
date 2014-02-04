@@ -23,7 +23,7 @@ ARGV.each do |a|
   end
 end
 
-NoamServer::NoamLogging.start_up()
+NoamServer::NoamLogging.start_up
 server = NoamServer::NoamServer.new(CONFIG[:listen_port])
 webserver = NoamServer::WebSocketServer.new(CONFIG[:web_socket_port])
 broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],

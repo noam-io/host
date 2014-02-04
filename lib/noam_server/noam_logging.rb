@@ -15,53 +15,6 @@ require 'logging'
 
 module NoamServer
   class NoamLogging
-
-    # Exposed to facilitate testing
-    @@loggerClass = Logging.logger
-
-    @@MaxPerIteration = 10
-    @@SecondsBetweenIteration = 0.1
-
-    @@shutdown = false
-    @@queue = Queue.new
-
-    def self.start_up()
-      @@loggerClass.root.level = CONFIG[:logging][:level]
-      @@loggerClass.root.appenders = CONFIG[:logging][:appenders]
-
-      @@shutdown = false
-
-      @@thread = Thread.new do
-        process_queue
-      end
-    end
-
-    def self.process_queue()
-      while true
-        val = @@queue.pop
-        if val == :stop
-          break
-        end
-        @@loggerClass[val[0]].add(val[1], val[2])
-      end
-    end
-
-    def self.shutdown()
-      if @@shutdown
-        return
-      end
-      @@shutdown = true
-      @@queue << :stop
-      @@thread.join
-    end
-
-    def self.add(obj, severity, msg = nil)
-      if @@shutdown
-        return
-      end
-      @@queue << [obj, severity, msg]
-    end
-
     def self.debug(obj, msg=nil)
       add(obj, ::Logging::LEVELS["debug"], msg)
     end
@@ -81,6 +34,64 @@ module NoamServer
     def self.fatal(obj, msg=nil)
       add(obj, ::Logging::LEVELS["fatal"], msg)
       shutdown
+    end
+
+    def self.add(*args)
+      instance.add(*args)
+    end
+
+    def self.start_up
+      instance.start_up
+    end
+
+    def self.shutdown
+      instance.shutdown
+    end
+
+    def self.instance
+      @instance ||= self.new
+    end
+
+    def initialize(logging_config = CONFIG[:logging])
+      @logger_class = Logging.logger
+      @logger_class.root.level = logging_config[:level]
+      @logger_class.root.appenders = logging_config[:appenders]
+
+      @queue = Queue.new
+    end
+
+    def add(obj, severity, msg)
+      if @shutdown
+        return
+      end
+      @queue << [obj, severity, msg]
+    end
+
+    def start_up
+      @shutdown = false
+      @thread = Thread.new do
+        process_queue
+      end
+    end
+
+    def shutdown()
+      if @shutdown
+        return
+      end
+      @shutdown = true
+      @queue << :stop
+      @thread.join
+    end
+
+    private
+    def process_queue
+      while true
+        val = @queue.pop
+        if val == :stop
+          break
+        end
+        @logger_class[val[0]].add(val[1], val[2])
+      end
     end
   end
 end
