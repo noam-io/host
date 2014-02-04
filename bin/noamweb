@@ -13,7 +13,6 @@ require 'noam_server/noam_logging'
 require 'noam_server/udp_broadcaster'
 require 'noam_server/noam_server'
 require 'noam_server/web_socket_server'
-require 'noam_server/asset_deployer'
 
 ARGV.each do |a|
   if a == '--debug'
@@ -28,8 +27,6 @@ server = NoamServer::NoamServer.new(CONFIG[:listen_port])
 webserver = NoamServer::WebSocketServer.new(CONFIG[:web_socket_port])
 broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],
                                              CONFIG[:listen_port])
-deployer = NoamServer::AssetDeployer.new(CONFIG[:rsa_private_key],
-                                         CONFIG[:assets_location])
 
 EM::run do
   begin
@@ -39,7 +36,6 @@ EM::run do
     NoamServer::NoamLogging.fatal("NoamServer", "Exiting due to bad startup.")
     exit
   end
-  NoamApp.asset_deployer = deployer
   NoamApp.broadcast_port = CONFIG[:broadcast_port]
   NoamApp.run!
 

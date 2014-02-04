@@ -1,6 +1,5 @@
 require 'sinatra/async'
 require 'noam_server/noam_server'
-require 'noam_server/asset_deployer'
 require 'noam_server/config'
 require 'helpers/refresh_helper.rb'
 
@@ -76,10 +75,6 @@ class NoamApp < Sinatra::Base
   set :public_folder, File.dirname(__FILE__)
   set :port, CONFIG[:web_server_port]
 
-  def self.asset_deployer=( value )
-    @@asset_deployer = value
-  end
-
   def self.broadcast_port=( value )
     @@broadcast_port = value
   end
@@ -110,12 +105,6 @@ class NoamApp < Sinatra::Base
     erb :refresh
   end
 
-  aget '/show-assets' do
-    @spallas = NoamServer::Orchestra.instance.deployable_spalla_ids
-    @folders = @@asset_deployer.available_assets
-    body(erb :_deploy_assets, folders: @folders, spallas: @spallas)
-  end
-
   aget '/arefresh' do
     Request.pile do
       @orchestra = NoamServer::Orchestra.instance
@@ -138,11 +127,5 @@ class NoamApp < Sinatra::Base
       EM.stop
     end
     body("ok")
-  end
-
-  post '/deploy-assets' do
-    selected_spalla_players = NoamServer::Orchestra.instance.players_for(params[:spallas])
-    EM.defer { @@asset_deployer.deploy( selected_spalla_players, params[:folders] ) }
-    redirect '/'
   end
 end

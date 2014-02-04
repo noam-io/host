@@ -170,11 +170,6 @@ describe NoamServer::Orchestra do
         orchestra.fire_player( id_1 )
         orchestra.spalla_ids.should == [id_2]
       end
-
-      it 'has deployable spalla ids' do
-        player_2.deployable?.should be_true
-        orchestra.deployable_spalla_ids.should == [id_2]
-      end
     end
 
     context "Players" do

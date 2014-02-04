@@ -3,8 +3,6 @@ CONFIG[:web_server_port] = 8081
 CONFIG[:broadcast_port] = 1030
 CONFIG[:listen_port] = 7733
 CONFIG[:web_socket_port] = 8089
-CONFIG[:rsa_private_key] = File.expand_path(File.join(File.dirname(__FILE__), "..", ".ssh", "noam-key"))
-CONFIG[:assets_location] = "/Users/progenitor/Dropbox/Ford Progenitor/Phase 2/Code/application_versions"
 
 # NOTE: to run riak, use:
 # require 'noam_server/persistence/riak'

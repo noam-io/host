@@ -101,10 +101,6 @@ module NoamServer
     def spalla_ids
       players.values.map( &:spalla_id )
     end
-
-    def deployable_spalla_ids
-      players.values.select( &:deployable? ).map( &:spalla_id )
-    end
   end
 end
 

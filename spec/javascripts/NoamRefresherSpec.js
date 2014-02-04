@@ -1,4 +1,4 @@
-describe( "AssetRefresher", function() {
+describe( "NoamRefresher", function() {
   var divId = 'someDiv';
   var refreshRoute = '/some-route';
   var asyncRefreshRoute = '/asynch-route';
@@ -25,7 +25,7 @@ describe( "AssetRefresher", function() {
       asyncRefreshRoute: asyncRefreshRoute,
       errorMessage: errorMessage
     };
-    refresher = new AssetRefresher( params );
+    refresher = new NoamRefresher( params );
     jasmine.Clock.useMock();
   });
 
