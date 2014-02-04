@@ -1,4 +1,5 @@
 require 'noam_server/config'
+require 'noam_server/noam_logging'
 
 module NoamServer
   class Orchestra

@@ -33,6 +33,10 @@ GEM
     libwebsocket (0.1.5)
       addressable
     libxml-ruby (2.7.0)
+    little-plugger (1.1.3)
+    logging (1.8.1)
+      little-plugger (>= 1.1.3)
+      multi_json (>= 1.3.6)
     mini_portile (0.5.2)
     multi_json (1.7.2)
     net-github-upload (0.0.8)
@@ -92,6 +96,7 @@ DEPENDENCIES
   em-websocket (= 0.5.0)
   eventmachine (= 1.0.3)
   jasmine
+  logging
   multi_json (= 1.7.2)
   releasy
   riak-client (= 1.1.1)

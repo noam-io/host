@@ -1,3 +1,5 @@
+require 'noam_server/noam_logging'
+
 module NoamServer
   class PlayerConnection
     attr_reader :ear
@@ -18,14 +20,16 @@ module NoamServer
     def hear( id_of_player, event_name, event_value )
       if ( !@ear.hear( id_of_player, event_name, event_value ) )
         @backlog << [id_of_player, event_name, event_value]
-        @ear.new_connection { on_connection }
+        @ear.new_connection do
+          NoamLogging.debug(self, "Player reconnected for lemma '#{id_of_player}' sending '#{event_name}' = #{event_value}")
+          on_connection
+        end
       end
     end
 
     def on_connection
       @backlog.each { |message| @ear.hear( *message )}
       @backlog.clear
-      NoamLogging.debug(self, "Player reconnected for lemma '#{id_of_player}' sending '#{event_name}' = #{event_value}")
     end
 
     def terminate

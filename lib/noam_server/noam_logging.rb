@@ -5,7 +5,7 @@
 #  Allows for longer I/O logging such as files and databases by separating out the calls to
 #  a threaded event loop.  Uses the 'logging' gem to facilitate multiple outputs and better
 #  logging context.
-#  
+#
 #  See config.rb for configuration details. Uses CONFIG['logging'].
 #
 
@@ -22,13 +22,15 @@ module NoamServer
 		@@MaxPerIteration = 10
 		@@SecondsBetweenIteration = 0.1
 
+    @@shutdown = false
+    @@queue = Queue.new
+
 		def self.start_up()
 			@@loggerClass.root.level = CONFIG[:logging][:level]
 			@@loggerClass.root.appenders = CONFIG[:logging][:appenders]
 
-			@@queue ||= Queue.new
 			@@shutdown = false
-			
+
 			@@thread = Thread.new do
 				process_queue
 			end

@@ -1,4 +1,5 @@
 require 'socket'
+require 'noam_server/noam_logging'
 
 module NoamServer
   class UdpBroadcaster

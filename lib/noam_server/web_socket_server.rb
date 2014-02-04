@@ -1,5 +1,6 @@
 require 'em-websocket'
 require 'noam_server/config'
+require 'noam_server/noam_logging'
 require 'noam_server/web_socket_message_handler'
 require 'noam/tcp_listener'
 

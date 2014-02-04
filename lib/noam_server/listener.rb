@@ -1,6 +1,7 @@
 require 'noam/tcp_listener'
 require 'noam_server/config'
 require 'noam_server/message_handler'
+require 'noam_server/noam_logging'
 
 module NoamServer
   module Listener
