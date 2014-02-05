@@ -57,7 +57,7 @@ table {
   /*-moz-box-shadow: 3px 3px 4px #000;
   -webkit-box-shadow: 3px 3px 4px #000;*/
   box-shadow: -4px 4px 0px rgba(0, 0, 0, .5);
-  
+
   font-family: 'Droid Sans Mono', sans-serif;
   font-size:.8em;
 }
@@ -70,7 +70,7 @@ td, th {
 th {
 	text-align: right;
 	color:#FF530D;
-	
+
 }
 td {
 	color:#EFEFEF;
@@ -113,10 +113,6 @@ input[type='text'] {
   cursor: pointer;
 }
 
-.deploy:hover {
-  cursor: pointer;
-}
-
 .confirm {
   width: 200px;
 }
@@ -126,7 +122,7 @@ input[type='text'] {
 	border:1px solid #555 !important;
 	background: #2B3A42 !important;
 	margin:5px !important;
-	padding:5px 10px !important;	
+	padding:5px 10px !important;
 }
 
 .ui-dialog-title{

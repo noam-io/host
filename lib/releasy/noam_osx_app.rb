@@ -79,6 +79,7 @@ module Releasy
 
         copy_gems vendored_gem_names(BINARY_GEMS), File.join(new_app, 'Contents/Resources/vendor')
         create_main new_app
+        create_relauncher new_app
         edit_init new_app
         remove_gems new_app
         rename_executable new_app
@@ -163,6 +164,13 @@ end
 Dir.chdir 'application'
 load '#{project.executable}'
 END_TEXT
+        end
+      end
+
+      def create_relauncher(app)
+        info "Creating relaunch.rb"
+        File.open("#{app}/Contents/Resources/relaunch.rb", "w") do |file|
+          file.puts "load 'main.rb'"
         end
       end
 

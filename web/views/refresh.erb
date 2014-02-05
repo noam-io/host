@@ -42,21 +42,6 @@
     <% end %>
   </tr>
 
-  <tr>
-    <th>Deploy</th>
-    <td/>
-    <td/>
-    <% @orchestra.players.each do |spalla_id, player| %>
-      <% if player.deployable? then %>
-        <td class="deploy" data-spalla-id="<%= spalla_id.gsub(/\s/, "") %>">
-          Deploy
-        </td>
-      <% else %>
-        <td>N/A</td>
-      <% end %>
-    <% end %>
-  </tr>
-
   <% @orchestra.event_names.each do |event| %>
     <tr class="event">
       <th> <div> <%= event %> </div> </th>

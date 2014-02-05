@@ -15,14 +15,6 @@ $(function() {
       height: 120,
       title: "Play Event"
        });
-  $("#deploy-assets").dialog({
-      autoOpen:false,
-      modal: true,
-      position: [100, 100],
-      width: 800,
-      height: 550,
-      title: "Deploy Assets"
-       });
 
   var params = {
     divToPopulate: 'real-time-data',
@@ -30,8 +22,8 @@ $(function() {
     asyncRefreshRoute: '/arefresh',
     errorMessage: 'Contacting Maestro &hellip;'
   };
-  var refresher = new AssetRefresher( params );
+  var refresher = new NoamRefresher( params );
   refresher.go();
-  
+
 });
 

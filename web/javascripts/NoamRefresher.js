@@ -1,8 +1,8 @@
-function AssetRefresher( params ) {
+function NoamRefresher( params ) {
   this.params = params;
 }
 
-AssetRefresher.prototype.go = function( ) {
+NoamRefresher.prototype.go = function( ) {
   var params = this.params;
   var div = $("#" + params.divToPopulate);
 

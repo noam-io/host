@@ -1,4 +1,5 @@
 require 'socket'
+require 'noam_server/noam_logging'
 
 module NoamServer
   class UdpBroadcaster
@@ -7,6 +8,12 @@ module NoamServer
       @broadcast_port = broadcast_port
       @socket = UDPSocket.new
       @socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_BROADCAST, true)
+      NoamLogging.info(self, "UDP Broadcaster broadcasting on port #{@broadcast_port}")
+      NoamLogging.info(self, "UDP Broadcaster listening on port #{@listen_port}")
+      NoamLogging.debug(self, "UDP Broadcaster broadcasting to 127.0.0.1")
+      broadcast_addresses.each do |address|
+        NoamLogging.debug(self, "UDP Broadcaster broadcasting to #{address}")
+      end
     end
 
     def go
@@ -17,6 +24,7 @@ module NoamServer
       end
 
       send_message_to( message_to_broadcast, '127.0.0.1', @broadcast_port )
+      NoamLogging.debug(self, "Broadcasting UDP Message: '#{message_to_broadcast}'")
     end
 
     private
@@ -28,7 +36,7 @@ module NoamServer
 
 
     def broadcast_addresses
-      `ifconfig | grep broadcast`.split($/).map(&:split).map(&:last)
+      `ifconfig | grep broadcast`.split($/).map(&:split).map(&:last).uniq
     end
   end
 end

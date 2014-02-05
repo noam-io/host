@@ -6,21 +6,8 @@ $(function() {
     $("#play-event-value").focus();
   });
 
-
   $(".active").effect( "highlight",{color:"#FF530D"} );
 
-  $(".deploy").click( function() {
-    var spalla_id = $(this).data('spalla-id');
-    $.ajax({
-      url: "/show-assets",
-      success: function(e) {
-        $("#deploy-assets").html(e);
-        $("#spalla-" + spalla_id).attr("checked", "true");
-        $("#deploy-assets").dialog('open');
-      },
-    });
-  });
-  
   $("abbr.timeago").timeago();
 });
 

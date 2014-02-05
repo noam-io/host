@@ -6,15 +6,6 @@ require 'noam_server/player_connection'
 require "noam_server/persistence/riak"
 
 describe NoamServer::Orchestra do
-  around(:each) do |example|
-    original_logger = CONFIG[:logger]
-    this_logger = Logger.new(STDOUT)
-    this_logger.level = Logger::ERROR
-    CONFIG[:logger] = this_logger
-    example.run
-    CONFIG[:logger] = original_logger
-  end
-
   let(:orchestra) {
     orchestra = described_class.new
     # orchestra.persistor = NoamServer::Persistence::Memory.new
@@ -169,11 +160,6 @@ describe NoamServer::Orchestra do
       it 'drops fired spallas' do
         orchestra.fire_player( id_1 )
         orchestra.spalla_ids.should == [id_2]
-      end
-
-      it 'has deployable spalla ids' do
-        player_2.deployable?.should be_true
-        orchestra.deployable_spalla_ids.should == [id_2]
       end
     end
 

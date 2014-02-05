@@ -69,29 +69,4 @@ describe NoamServer::Player do
     player.plays.size.should == size
   end
 
-  it "should have a username" do
-    player = described_class.new( '', 'pi', '', [], [], 0, 0 )
-    player.username.should == "pi"
-    player.deploy_path.should == '/home/pi/SpallaApp/qml'
-  end
-
-  it 'is deployable only when device type is pi, PI, or Pi' do
-    player = described_class.new( '', 'pi', '', [], [], 0, 0 )
-    player.deployable?.should be_true
-    player = described_class.new( '', 'PI', '', [], [], 0, 0 )
-    player.deployable?.should be_true
-    player = described_class.new( '', 'Pi', '', [], [], 0, 0 )
-    player.deployable?.should be_true
-  end
-
-  it 'is not deployable in other cases' do
-    player.deployable?.should be_false
-    player.username.should == nil
-    player.deploy_path.should == nil
-  end
-
-  it 'is not deployable without a device type' do
-    player = described_class.new( '', nil, '', [], [], 0, 0 )
-    player.deployable?.should be_false
-  end
 end
