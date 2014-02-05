@@ -1,6 +1,7 @@
 require 'sinatra/async'
-require 'noam_server/noam_server'
 require 'noam_server/config'
+require 'noam_server/noam_logging'
+require 'noam_server/noam_server'
 require 'helpers/refresh_helper.rb'
 
 
@@ -122,7 +123,7 @@ class NoamApp < Sinatra::Base
   end
 
   post '/stop-server' do
-    CONFIG[:logger].info "Stopping server from web interface..."
+    NoamServer::NoamLogging.info "Stopping server from web interface..."
     EM.next_tick do
       EM.stop
     end

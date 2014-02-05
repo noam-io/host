@@ -6,15 +6,6 @@ require 'noam_server/player_connection'
 require "noam_server/persistence/riak"
 
 describe NoamServer::Orchestra do
-  around(:each) do |example|
-    original_logger = CONFIG[:logger]
-    this_logger = Logger.new(STDOUT)
-    this_logger.level = Logger::ERROR
-    CONFIG[:logger] = this_logger
-    example.run
-    CONFIG[:logger] = original_logger
-  end
-
   let(:orchestra) {
     orchestra = described_class.new
     # orchestra.persistor = NoamServer::Persistence::Memory.new
