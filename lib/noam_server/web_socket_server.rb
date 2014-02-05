@@ -48,7 +48,7 @@ module NoamServer
             NoamLogging.error(self, "Web Socket Error: #{err}")
           end
         end
-      rescue Exception => e
+      rescue Errno::EADDRINUSE => e
         NoamLogging.fatal(self, "Unable to start Socket Server - Port already in use.")
         raise
       end

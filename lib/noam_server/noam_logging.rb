@@ -74,7 +74,7 @@ module NoamServer
       end
     end
 
-    def shutdown()
+    def shutdown
       if @shutdown
         return
       end

@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "lib"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "web"))
 require "rubygems"
@@ -28,6 +27,11 @@ webserver = NoamServer::WebSocketServer.new(CONFIG[:web_socket_port])
 broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],
                                              CONFIG[:listen_port])
 
+def fire_server_started_callback
+  if defined?($noam_server_started_action)
+    $noam_server_started_action.call
+  end
+end
 
 def shutdown_cleanly
   NoamServer::NoamLogging.info("NoamServer", "Closing Noam Server.")
@@ -39,6 +43,9 @@ EM::run do
   begin
     server.start
     webserver.start
+  rescue Errno::EADDRINUSE
+    fire_server_started_callback
+    exit
   rescue Exception => e
     NoamServer::NoamLogging.fatal("NoamServer", "Exiting due to bad startup.")
     exit
@@ -46,10 +53,8 @@ EM::run do
   NoamApp.broadcast_port = CONFIG[:broadcast_port]
   NoamApp.run!
 
-  if defined?($noam_server_started_action)
-    EM::defer do
-      $noam_server_started_action.call
-    end
+  EM::defer do
+    fire_server_started_callback
   end
 
   ["INT", "TERM", "QUIT"].each do |signal|
