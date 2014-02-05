@@ -28,6 +28,13 @@ webserver = NoamServer::WebSocketServer.new(CONFIG[:web_socket_port])
 broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],
                                              CONFIG[:listen_port])
 
+
+def shutdown_cleanly
+  NoamServer::NoamLogging.info("NoamServer", "Closing Noam Server.")
+  NoamServer::NoamLogging.shutdown
+  EM.stop
+end
+
 EM::run do
   begin
     server.start
@@ -47,14 +54,19 @@ EM::run do
 
   ["INT", "TERM", "QUIT"].each do |signal|
     trap(signal) do
-      NoamServer::NoamLogging.info("NoamServer", "Closing Noam Server.")
-      NoamServer::NoamLogging.shutdown
-      EM.stop
+      shutdown_cleanly
     end
   end
 
   EventMachine.add_periodic_timer(2) do
     broadcaster.go
+  end
+
+  EventMachine.add_periodic_timer(3) do
+    if Process.ppid == 1
+      # the parent process has died
+      shutdown_cleanly
+    end
   end
 end
 
