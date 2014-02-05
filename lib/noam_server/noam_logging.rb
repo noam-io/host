@@ -9,7 +9,6 @@
 #  See config.rb for configuration details. Uses CONFIG['logging'].
 #
 
-require 'noam_server/config'
 require 'thread'
 require 'logging'
 
@@ -48,16 +47,23 @@ module NoamServer
       instance.shutdown
     end
 
-    def self.instance
-      @instance ||= self.new
+    def self.instance(logging_config = {})
+      @instance ||= self.new(logging_config)
     end
 
-    def initialize(logging_config = CONFIG[:logging])
+    def initialize(logging_config)
       @logger_class = Logging.logger
-      @logger_class.root.level = logging_config[:level]
-      @logger_class.root.appenders = logging_config[:appenders]
-
+      setLevel(logging_config[:level])
+      setAppenders(logging_config[:appenders])
       @queue = Queue.new
+    end
+
+    def setLevel(level)
+      @logger_class.root.level = level
+    end
+
+    def setAppenders(appenders)
+      @logger_class.root.appenders = appenders
     end
 
     def add(obj, severity, msg)

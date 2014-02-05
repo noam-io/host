@@ -1,5 +1,4 @@
 require 'noam/tcp_listener'
-require 'noam_server/config'
 require 'noam_server/message_handler'
 require 'noam_server/noam_logging'
 
@@ -18,6 +17,9 @@ module NoamServer
            handler.message_received(parsed_message)
          rescue JSON::ParserError
             NoamLogging.error(self, "Invalid message received:  #{msg}")
+         rescue => error
+            stackTrace = error.backtrace.join("\n  == ")
+            NoamLogging.warn(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stackTrace}")
          end
        end
     end

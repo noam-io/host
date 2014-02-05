@@ -1,5 +1,5 @@
 require 'sinatra/async'
-require 'noam_server/config'
+require 'config'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'helpers/refresh_helper.rb'
@@ -76,6 +76,10 @@ class NoamApp < Sinatra::Base
   set :public_folder, File.dirname(__FILE__)
   set :port, CONFIG[:web_server_port]
 
+  def self.log_info() 
+    NoamServer::NoamLogging.info("NoamApp", "Start Web Server: localhost@#{CONFIG[:web_server_port]}")
+  end
+
   def self.broadcast_port=( value )
     @@broadcast_port = value
   end
@@ -91,7 +95,7 @@ class NoamApp < Sinatra::Base
   end
 
   before do
-    @broadcast_port = @@broadcast_port
+    @broadcast_port = CONFIG[:broadcast_port]
   end
 
   get '/' do
@@ -123,7 +127,7 @@ class NoamApp < Sinatra::Base
   end
 
   post '/stop-server' do
-    NoamServer::NoamLogging.info "Stopping server from web interface..."
+    NoamServer::NoamLogging.info(self, "Stopping server from web interface...")
     EM.next_tick do
       EM.stop
     end

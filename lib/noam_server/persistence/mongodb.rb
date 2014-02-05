@@ -1,26 +1,22 @@
-require 'noam_server/config'
+require 'noam_server/persistence/base'
 require 'mongo'
 
 module NoamServer
   module Persistence
-    class MongoDB
-      attr_accessor :connected, :ip, :port, :db
-      attr_reader :connected
+    class MongoDB < Base
 
-      def self.instance
-        if @instance.nil?
-          @instance = self.new
-        elsif not @instance.connected
-          @instance.connect
-        end
-        @instance
-      end
+      @@name = :mongodb
 
-      def initialize
+      attr_accessor :ip, :port, :db
+
+      def initialize(config)
+        puts config
         @connected = false
-        @ip = CONFIG[:mongodb][:ip] || 'localhost'
-        @port = CONFIG[:mongodb][:port] || 27017
-        @db = CONFIG[:mongodb][:db] || 'noam-server-data'
+        @ip = config[:ip] || 'localhost'
+        @port = config[:port] || 27017
+        @db = config[:db] || 'noam-server-data'
+        NoamLogging.info(self, "Using MongoDB database '#{@db}' as Persistent Store")
+        NoamLogging.info(self, "Server at #{@ip}:#{@port}")
         connect
       end
 
@@ -29,9 +25,9 @@ module NoamServer
           @client = ::Mongo::MongoClient.new(@ip, @port)          
           @db = @client.db(@db)
           @connected = true
-          Logging.logger[self].info { "Connected to MongoDB database '#{@db}' at #{@ip}:#{@port}" }
+          NoamLogging.info(self, "Connected to MongoDB database '#{@db}' at #{@ip}:#{@port}")
         rescue Exception => e
-          Logging.logger[self].fatal { "Unable to connect to MongoDB at #{@ip}:#{@port}" }
+          NoamLogging.fatal(self, "Unable to connect to MongoDB at #{@ip}:#{@port}")
         end
       end
 
@@ -51,7 +47,7 @@ module NoamServer
       end
 
       def get_bucket(bucket_name)
-        @db.create_collection(bucket_name, { :capped => true, :size => 10 * 1024, :max => 10 } ) unless @db.nil
+        @db.create_collection(bucket_name, { :capped => true, :size => 10 * 1024, :max => 10 } ) unless @db.nil?
       end
 
       def clear(bucket_name)

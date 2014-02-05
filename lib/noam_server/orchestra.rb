@@ -1,4 +1,3 @@
-require 'noam_server/config'
 require 'noam_server/noam_logging'
 
 module NoamServer
@@ -72,6 +71,8 @@ module NoamServer
           player_connection.hear(player_id, event, value)
         rescue => e
           NoamLogging.warn(self, "Error trying to notify player (#{id}) of event (#{event}). Firing them.")
+          stackTrace = e.backtrace.join("\n  == ")
+          NoamLogging.warn(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stackTrace}")
           fire_player(id)
         end
       end
@@ -102,35 +103,4 @@ module NoamServer
       players.values.map( &:spalla_id )
     end
   end
-end
-
-####
-# Default Noam Callbacks
-##########################
-NoamServer::Orchestra.instance.on_play do |name, value, player|
-  unless CONFIG[:persistor_class].nil?
-    persistor = CONFIG[:persistor_class].instance
-    EM::defer {
-      begin
-        Timeout::timeout(15) {
-          # This ignores saving of messages from noam server
-          # TODO : should create player for web view
-          persistor.save(name, value, player.spalla_id) unless player.nil?
-          NoamServer::NoamLogging.debug('Persistor', "Stored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]")
-        }
-      rescue => error
-        NoamServer::NoamLogging.error('Persistor', "Unstored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]")
-      end
-    }
-  else
-    NoamServer::NoamLogging.debug('Orchestra', "#{player.spalla_id} sent '#{name}' = #{value}")
-  end
-end
-
-NoamServer::Orchestra.instance.on_register do |player|
-  NoamServer::NoamLogging.info('Orchestra', "[Registration] From #{player.spalla_id}")
-end
-
-NoamServer::Orchestra.instance.on_unregister do |player|
-  NoamServer::NoamLogging.info('Orchestra', "[Disconnection] #{player.spalla_id}") if player
 end

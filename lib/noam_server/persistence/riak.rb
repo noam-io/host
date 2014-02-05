@@ -2,14 +2,25 @@ require "riak"
 require "riak/robject"
 require "riak/failed_request"
 
-require 'noam_server/config'
+require 'noam_server/persistence/base'
 
 module NoamServer
   module Persistence
-    class Riak
+    class Riak < Base
 
-      def initialize
-        @client = ::Riak::Client.new(CONFIG[:riak])
+      @@name = "Riak"
+
+      def initialize(config)
+        @client = ::Riak::Client.new(config)
+        if @client.ping
+          @connected = true
+          NoamLogging.info(@@name, "Using Riak as Persistent Store")
+          NoamLogging.info(@@name, "Settings: #{config}")
+        else
+          @connected = false
+          NoamLogging.info(@@name, "Uable to connect to Riak Server")
+          NoamLogging.info(@@name, "Riak Settings: #{config}")
+        end
       end
 
       def save(event_name, event_value, player_spalla_id)

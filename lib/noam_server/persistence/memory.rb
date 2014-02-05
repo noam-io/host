@@ -1,9 +1,13 @@
+require 'noam_server/persistence/base'
+
 module NoamServer
   module Persistence
-    class Memory
+    class Memory < Base
       
-      def initialize
+      def initialize(config)
         @data_store ||= {}
+        @connected = true
+        NoamLogging.info(self, "Using Memory as Persistent Store")
       end
       
       def save(event_name, event_value, player_id)

@@ -1,31 +1,24 @@
 #!/usr/bin/env ruby
+$: << File.expand_path(File.join(File.dirname(__FILE__), '..', "config"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "lib"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "web"))
 require "rubygems"
 require 'em/pure_ruby'
 require 'timeout'
 
-require 'noam_server/config'
-
 require 'noam_web'
+require 'noam_server/noam_main'
 require 'noam_server/noam_logging'
-require 'noam_server/udp_broadcaster'
-require 'noam_server/noam_server'
-require 'noam_server/web_socket_server'
+
+server = NoamServer::NoamMain.new()
 
 ARGV.each do |a|
   if a == '--debug'
-    CONFIG[:logging][:level] = :debug
+    NoamServer::NoamLogging.instance.setLevel(:debug)
   elsif a == '--info'
-    CONFIG[:logging][:level] = :info
+    NoamServer::NoamLogging.instance.setLevel(:info)
   end
 end
-
-NoamServer::NoamLogging.start_up
-server = NoamServer::NoamServer.new(CONFIG[:listen_port])
-webserver = NoamServer::WebSocketServer.new(CONFIG[:web_socket_port])
-broadcaster = NoamServer::UdpBroadcaster.new(CONFIG[:broadcast_port],
-                                             CONFIG[:listen_port])
 
 def fire_server_started_callback
   if defined?($noam_server_started_action)
@@ -40,17 +33,8 @@ def shutdown_cleanly
 end
 
 EM::run do
-  begin
-    server.start
-    webserver.start
-  rescue Errno::EADDRINUSE
-    fire_server_started_callback
-    exit
-  rescue Exception => e
-    NoamServer::NoamLogging.fatal("NoamServer", "Exiting due to bad startup.")
-    exit
-  end
-  NoamApp.broadcast_port = CONFIG[:broadcast_port]
+  server.start
+  NoamApp.log_info
   NoamApp.run!
 
   EM::defer do
@@ -61,10 +45,6 @@ EM::run do
     trap(signal) do
       shutdown_cleanly
     end
-  end
-
-  EventMachine.add_periodic_timer(2) do
-    broadcaster.go
   end
 
   EventMachine.add_periodic_timer(3) do
