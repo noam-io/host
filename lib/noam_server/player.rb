@@ -1,5 +1,8 @@
 module NoamServer
   class Player
+
+    @@name = self.to_s.split("::").last
+
     attr_accessor :last_activity
     attr_reader :spalla_id, :device_type, :system_version, :hears, :plays, :host, :port
     def device_key
@@ -14,6 +17,9 @@ module NoamServer
       @plays = plays || []
       @host = host
       @port = port
+      NoamLogging.debug(@@name, "New Player:")
+      NoamLogging.debug(@@name, "   Hears: #{@hears}")
+      NoamLogging.debug(@@name, "   Plays: #{@plays}")
     end
 
     def hears?(event)

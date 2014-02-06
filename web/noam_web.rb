@@ -1,4 +1,5 @@
 require 'sinatra/async'
+require 'json'
 require 'config'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
@@ -62,7 +63,7 @@ class Request
       r = @@r.pop
       begin
         r.call
-      rescue Exception => e
+      rescue RuntimeError => e
         # This error happens when a page that requested an asynchronous response
         # is no longer active / available to receive the response.
         NoamServer::NoamLogging.debug("Respond", "Queued Request has not receiver.")
@@ -91,7 +92,8 @@ class NoamApp < Sinatra::Base
   end
 
   def self.run!
-    EM::add_periodic_timer(1) do
+    EM::set_timer_quantum(30);
+    EM::add_periodic_timer do
       if Request.pending_responses?
         Request.respond
       end
@@ -109,8 +111,52 @@ class NoamApp < Sinatra::Base
   get '/' do
     @orchestra = NoamServer::Orchestra.instance
     @values = Statabase
-    erb :index
+    erb :indexBootstrap
   end
+
+
+  aget '/arefresh_json' do
+    Request.pile do
+      
+      @orchestra = NoamServer::Orchestra.instance
+      @values = Statabase
+
+      players = {}
+      events = {}
+
+      @orchestra.players.each do |spalla_id, player|
+        players[spalla_id] = {
+          :spalla_id => spalla_id,
+          :device_type => player.device_type,
+          :last_activity => format_date( player.last_activity ),
+          :system_version => player.system_version,
+          :hears => player.hears,
+          :plays => player.plays
+        }
+      end
+
+      @orchestra.event_names.each do |event|
+        events[event.to_s] = {
+          :value_escaped => value_escaped(@values.get(event)),
+          :timestamp => format_date( @values.timestamp(event) )
+        }
+      end
+
+      result = {
+        :players => players,
+        :events => events
+      }
+      content_type :json
+      puts body
+      body(result.to_json)
+    end
+  end
+
+
+
+
+
+
 
   get '/refresh' do
     @orchestra = NoamServer::Orchestra.instance
