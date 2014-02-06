@@ -25,7 +25,7 @@ Releasy::Project.new do
   verbose
 
   executable "bin/noamweb"
-  files ["bin/noamweb", "lib/**/*.rb", "web/**/*.*"]
+  files ["bin/noamweb", "config/**/*", "lib/**/*.rb", "web/**/*.*"]
   exposed_files []
   add_link "https://github.com/ideo/noam", "Noam Server code"
   exclude_encoding # Applications that don't use advanced encoding (e.g. Japanese characters) can save build size with this.
