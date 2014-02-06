@@ -51,7 +51,7 @@ CONFIG[:logging][:appenders] = [
 
   # Log Messages to a single file
   Logging.appenders.file(
-    'noam.log',
+    '/tmp/noam.log',
     :layout => Logging.layouts.pattern(:pattern => CONFIG[:logging][:pattern])
   ),
 
