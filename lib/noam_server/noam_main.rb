@@ -1,8 +1,3 @@
-
-require 'noam_server/persistence/riak'
-require 'noam_server/persistence/memory'
-require 'noam_server/persistence/mongodb'
-
 require 'config'
 require 'noam_server/persistence/factory'
 require 'noam_server/noam_logging'
@@ -22,7 +17,7 @@ module NoamServer
 			@config = CONFIG
 			NoamLogging.instance(@config[:logging])
 			NoamLogging.start_up
-			
+
 			unless CONFIG[:persistor_class].nil?
 				NoamLogging.info(@@name, "Using Persistence Class: #{CONFIG[:persistor_class]}")
 				unless Persistence::Factory.get(@config).connected

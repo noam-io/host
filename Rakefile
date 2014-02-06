@@ -25,14 +25,15 @@ Releasy::Project.new do
   verbose
 
   executable "bin/noamweb"
-  files ["bin/noamweb", "lib/**/*.rb", "web/**/*.*"]
+  files ["bin/noamweb", "config/**/*", "lib/**/*.rb", "web/**/*.*"]
   exposed_files []
   add_link "https://github.com/ideo/noam", "Noam Server code"
   exclude_encoding # Applications that don't use advanced encoding (e.g. Japanese characters) can save build size with this.
 
   add_build :noam_osx_app do
-    url NOAM_OSX_ID
+    gemspecs Bundler.definition.specs_for([:default, :mongo]).to_a
 
+    url NOAM_OSX_ID
     icon "Noam.icns"
 
     # After cloning & building https://github.com/trptcolin/ruby_app we expect

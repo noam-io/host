@@ -2,56 +2,63 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "config"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "lib"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "web"))
-require "rubygems"
-require 'em/pure_ruby'
-require 'timeout'
 
-require 'noam_web'
-require 'noam_server/noam_main'
-require 'noam_server/noam_logging'
+begin
+  require "rubygems"
+  require 'em/pure_ruby'
+  require 'timeout'
 
-server = NoamServer::NoamMain.new()
+  require 'noam_web'
+  require 'noam_server/noam_main'
+  require 'noam_server/noam_logging'
 
-ARGV.each do |a|
-  if a == '--debug'
-    NoamServer::NoamLogging.instance.setLevel(:debug)
-  elsif a == '--info'
-    NoamServer::NoamLogging.instance.setLevel(:info)
-  end
-end
+  server = NoamServer::NoamMain.new()
 
-def fire_server_started_callback
-  if defined?($noam_server_started_action)
-    $noam_server_started_action.call
-  end
-end
-
-def shutdown_cleanly
-  NoamServer::NoamLogging.info("NoamServer", "Closing Noam Server.")
-  NoamServer::NoamLogging.shutdown
-  EM.stop
-end
-
-EM::run do
-  server.start
-  NoamApp.log_info
-  NoamApp.run!
-
-  EM::defer do
-    fire_server_started_callback
-  end
-
-  ["INT", "TERM", "QUIT"].each do |signal|
-    trap(signal) do
-      shutdown_cleanly
+  ARGV.each do |a|
+    if a == '--debug'
+      NoamServer::NoamLogging.instance.setLevel(:debug)
+    elsif a == '--info'
+      NoamServer::NoamLogging.instance.setLevel(:info)
     end
   end
 
-  EventMachine.add_periodic_timer(3) do
-    if Process.ppid == 1
-      # the parent process has died
-      shutdown_cleanly
+  def fire_server_started_callback
+    if defined?($noam_server_started_action)
+      $noam_server_started_action.call
     end
   end
-end
 
+  def shutdown_cleanly
+    NoamServer::NoamLogging.info("NoamServer", "Closing Noam Server.")
+    NoamServer::NoamLogging.shutdown
+    EM.stop
+  end
+
+  EM::run do
+    server.start
+    NoamApp.log_info
+    NoamApp.run!
+
+    EM::defer do
+      fire_server_started_callback
+    end
+
+    ["INT", "TERM", "QUIT"].each do |signal|
+      trap(signal) do
+        shutdown_cleanly
+      end
+    end
+
+    EventMachine.add_periodic_timer(3) do
+      if Process.ppid == 1
+        # the parent process has died
+        shutdown_cleanly
+      end
+    end
+  end
+rescue Exception => e
+  system("echo '#{e}' >> noam.log")
+  e.backtrace.each do |line|
+    system("echo '#{line.gsub(/'/, '"')}' >> noam.log")
+  end
+end

@@ -5,7 +5,7 @@ describe NoamServer::UdpBroadcaster do
   let(:listen_port) { 24039 }
   let(:broadcast_ip_1) { '3.4.255.255' }
   let(:broadcast_ip_2) { '101.202.255.255' }
-  let(:socket){ mock }
+  let(:socket){ double }
 
   let(:broadcaster) { described_class.new( broadcast_port, listen_port ) }
 

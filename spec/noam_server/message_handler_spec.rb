@@ -7,9 +7,8 @@ describe NoamServer::MessageHandler do
   let (:orchestra) { NoamServer::Orchestra.new }
 
   before do
-    NoamServer::Orchestra.stub!(:instance).and_return(orchestra)
+    NoamServer::Orchestra.stub(:instance).and_return(orchestra)
   end
-
 
   it "should handle a registration message" do
     message = Noam::Messages::RegisterMessage.new({})
@@ -34,7 +33,7 @@ describe NoamServer::MessageHandler do
     event_name = 'event name'
     event_value = 'event value'
 
-    connection = mock('Connection')
+    connection = double('Connection')
     player = NoamServer::Player.new( '', '', '', [event_name], [], 0, 0)
     orchestra.register( connection, player )
 
