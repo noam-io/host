@@ -2,7 +2,7 @@ require "noam_server/persistence/memory"
 
 describe NoamServer::Persistence::Memory do
 
-  let(:persistence) { NoamServer::Persistence::Memory.new }
+  let(:persistence) { NoamServer::Persistence::Memory.new({}) }
 
   it "saves data" do
     key = persistence.save('bucket', 'user_id', 'group_id')

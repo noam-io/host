@@ -1,5 +1,5 @@
 require 'logger'
-require 'noam_server/config'
+require 'config'
 require 'noam_server/orchestra'
 require 'noam_server/player'
 require 'noam_server/player_connection'
@@ -83,7 +83,7 @@ describe NoamServer::Orchestra do
   end
 
   it 'updates players last activity' do
-    now = mock
+    now = double
     DateTime.stub( :now ).and_return( now )
     orchestra.register( connection_1, player_1 )
     orchestra.play( "plays_3", 12.42, id_1 )

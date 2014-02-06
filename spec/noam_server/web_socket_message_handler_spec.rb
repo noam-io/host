@@ -3,12 +3,12 @@ require 'noam_server/web_socket_message_handler'
 require 'noam/messages'
 
 describe NoamServer::WebSocketMessageHandler do
-  let (:ws) { mock("ws") }
+  let (:ws) { double("ws") }
   let (:handler) { described_class.new(ws) }
   let (:orchestra) { NoamServer::Orchestra.new }
 
   before do
-    NoamServer::Orchestra.stub!(:instance).and_return(orchestra)
+    NoamServer::Orchestra.stub(:instance).and_return(orchestra)
   end
 
 
@@ -34,7 +34,7 @@ describe NoamServer::WebSocketMessageHandler do
     event_name = 'event name'
     event_value = 'event value'
 
-    connection = mock('Connection')
+    connection = double('Connection')
     player = NoamServer::Player.new( '', '', '', [event_name], [], 0, 0)
     orchestra.register( connection, player )
 

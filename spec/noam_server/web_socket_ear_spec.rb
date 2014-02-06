@@ -5,12 +5,12 @@ def wire_message(expected_message)
 end
 
 describe NoamServer::WebSocketEar do
-  let( :ws ) { mock("web socket") }
+  let( :ws ) { double("web socket") }
   let( :ear ){ described_class.new( ws ) }
 
   it "should hear" do
     message = ""
-    ws.should_receive(:send).any_number_of_times do | data |
+    ws.stub(:send) do | data |
       message << data
     end
 
