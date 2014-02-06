@@ -98,4 +98,4 @@ DEPENDENCIES
   riak-client (= 1.1.1)
   rspec
   sinatra (= 1.3.3)
-  thin (= 1.4.1)
+  thin
