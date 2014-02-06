@@ -8,9 +8,6 @@ require 'noam_server/web_socket_server'
 module NoamServer
 	class NoamMain
 		attr_accessor :config
-		attr_reader :config
-
-		@@name = self.to_s.split("::").last
 
 		def initialize()
 
@@ -19,13 +16,13 @@ module NoamServer
 			NoamLogging.start_up
 
 			unless CONFIG[:persistor_class].nil?
-				NoamLogging.info(@@name, "Using Persistence Class: #{CONFIG[:persistor_class]}")
+				NoamLogging.info(self, "Using Persistence Class: #{CONFIG[:persistor_class]}")
 				unless Persistence::Factory.get(@config).connected
-					NoamLogging.fatal(@@name, "Unable to connect to persistent store.")
+					NoamLogging.fatal(self, "Unable to connect to persistent store.")
 					exit
 				end
 			else
-				NoamLogging.info(@@name, "Not using Persistent Storage.")
+				NoamLogging.info(self, "Not using Persistent Storage.")
 			end
 
 			@server = NoamServer.new(@config[:listen_port])
@@ -42,8 +39,8 @@ module NoamServer
 				fire_server_started_callback
 				exit
 			rescue Exception => e
-				NoamLogging.fatal(@@name, "Exiting due to bad startup.")
-				NoamLogging.error(@@name, "Startup Error: " + e.to_s)
+				NoamLogging.fatal(self, "Exiting due to bad startup.")
+				NoamLogging.error(self, "Startup Error: " + e.to_s)
 				raise
 			end
 

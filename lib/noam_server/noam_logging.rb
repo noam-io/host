@@ -70,6 +70,11 @@ module NoamServer
       if @shutdown
         return
       end
+
+      unless obj.is_a? String
+        obj = obj.class.to_s.split("::").last
+      end
+
       @queue << [obj, severity, msg]
     end
 

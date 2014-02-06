@@ -8,8 +8,6 @@ module NoamServer
   class WsConnection
     attr_accessor :listener, :spalla_id
 
-    @@name = self.to_s.split("::").last
-
     def post_init(web_socket)
       handler = WebSocketMessageHandler.new(web_socket)
       @listener = Noam::TcpListener.new do |msg|
@@ -18,7 +16,7 @@ module NoamServer
           @spalla_id = parsed_message.spalla_id
           handler.message_received(parsed_message)
         rescue JSON::ParserError
-          NoamLogging.error(@@name, "invalid message received:  #{msg}")
+          NoamLogging.error(self, "invalid message received:  #{msg}")
         end
       end
     end
@@ -32,9 +30,8 @@ module NoamServer
     end
   end
 
-  class WebSocketServer
 
-    @@name = self.to_s.split("::").last
+  class WebSocketServer
 
     def initialize(port)
       @port = port
@@ -42,7 +39,7 @@ module NoamServer
     end
 
     def start
-      NoamLogging.info(@@name, "Starting Socket Server at #{@host}:#{@port}")
+      NoamLogging.info(self, "Starting Socket Server at #{@host}:#{@port}")
       begin
           EventMachine::WebSocket.start(:host => @host, :port => @port) do |ws|
           connection = WsConnection.new
@@ -50,11 +47,11 @@ module NoamServer
           ws.onmessage { |msg| connection.receive_data(msg) }
           ws.onclose   { connection.close }
           ws.onerror do |err|
-            NoamLogging.error(@@name, "Web Socket Error: #{err}")
+            NoamLogging.error(self, "Web Socket Error: #{err}")
           end
         end
       rescue Errno::EADDRINUSE => e
-        NoamLogging.fatal(@@name, "Unable to start Socket Server - Port already in use.")
+        NoamLogging.fatal(self, "Unable to start Socket Server - Port already in use.")
         raise
       end
     end

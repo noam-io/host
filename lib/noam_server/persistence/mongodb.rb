@@ -5,8 +5,6 @@ module NoamServer
   module Persistence
     class MongoDB < Base
 
-      @@name = :mongodb
-
       attr_accessor :ip, :port, :db
 
       def initialize(config)
