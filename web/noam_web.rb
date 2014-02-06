@@ -60,7 +60,13 @@ class Request
   def self.respond
     while !@@r.empty?
       r = @@r.pop
-      r.call
+      begin
+        r.call
+      rescue Exception => e
+        # This error happens when a page that requested an asynchronous response
+        # is no longer active / available to receive the response.
+        NoamServer::NoamLogging.debug("Respond", "Queued Request has not receiver.")
+      end
     end
     @@pending_responses = false
   end
@@ -95,6 +101,8 @@ class NoamApp < Sinatra::Base
   end
 
   before do
+    # Prevent Thin Logging since we will do our own
+    Thin::Logging.silent = true
     @broadcast_port = CONFIG[:broadcast_port]
   end
 
