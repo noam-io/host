@@ -72,8 +72,10 @@ NoamServer::Orchestra.instance.on_play do |name, value, player|
         Timeout::timeout(15) {
           # This ignores saving of messages from noam server
           # TODO : should create player for web view
-          persistor.save(name, value, player.spalla_id) unless player.nil?
-          NoamServer::NoamLogging.debug('Persistor', "Stored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]")
+          unless player.nil?
+	          persistor.save(name, value, player.spalla_id)
+	          NoamServer::NoamLogging.debug('Persistor', "Stored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]")
+	      end
         }
       rescue => error
         NoamServer::NoamLogging.error('Persistor', "Unstored Data Entry in '#{player.spalla_id}' : [" + value.to_s + ", timestamp:" + Time.now.to_i.to_s + "]")

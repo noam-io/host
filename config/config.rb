@@ -6,6 +6,12 @@ CONFIG[:broadcast_port] = 1030
 CONFIG[:listen_port] = 7733
 CONFIG[:web_socket_port] = 8089
 
+# Web Server Config
+CONFIG[:web_server] = {
+	:time_to_timeout => 10
+}
+
+
 # Persistor Types
 CONFIG[:persistor_class] = :riak
 #CONFIG[:persistor_class] = :memory

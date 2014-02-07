@@ -47,7 +47,7 @@ class Request
   @@pending_responses = false
 
   def self.pile(&callback)
-    @@r << callback
+    @@r << [callback, Time.now.getutc]
   end
 
   def self.enqueue_response
@@ -62,7 +62,7 @@ class Request
     while !@@r.empty?
       r = @@r.pop
       begin
-        r.call
+        r[0].call :good
       rescue RuntimeError => e
         # This error happens when a page that requested an asynchronous response
         # is no longer active / available to receive the response.
@@ -71,6 +71,27 @@ class Request
     end
     @@pending_responses = false
   end
+
+  def self.checktimeouts
+    num_requests = @@r.size
+    timeout_time = CONFIG[:web_server][:time_to_timeout] || 10
+    num_requests.times do |i|
+      r = @@r.pop
+      if Time.now.getutc - r[1] > timeout_time
+        begin
+          r[0].call :timeout
+        rescue RuntimeError => e
+          # This error happens when a page that requested an asynchronous response
+          # is no longer active / available to receive the response.
+          NoamServer::NoamLogging.debug("Respond", "Queued Request has not receiver.")
+        end
+      else
+        @@r << r
+      end
+    end
+
+  end
+
 end
 
 $last_active_id = ""
@@ -92,12 +113,18 @@ class NoamApp < Sinatra::Base
   end
 
   def self.run!
-    EM::set_timer_quantum(30);
+    EM::set_timer_quantum(30)
     EM::add_periodic_timer do
       if Request.pending_responses?
         Request.respond
       end
     end
+
+    EM::add_periodic_timer(1) do
+      Request.checktimeouts
+    end
+
+    @@ips = `ifconfig | grep 'inet ' | awk '{ print $2}'`
 
     super
   end
@@ -109,74 +136,31 @@ class NoamApp < Sinatra::Base
   end
 
   get '/' do
+    @ips = @@ips.split("\n").join(",")
     @orchestra = NoamServer::Orchestra.instance
     @values = Statabase
     erb :indexBootstrap
   end
 
-
-  aget '/arefresh_json' do
-    Request.pile do
-      
-      @orchestra = NoamServer::Orchestra.instance
-      @values = Statabase
-
-      players = {}
-      events = {}
-
-      @orchestra.players.each do |spalla_id, player|
-        players[spalla_id] = {
-          :spalla_id => spalla_id,
-          :device_type => player.device_type,
-          :last_activity => format_date( player.last_activity ),
-          :system_version => player.system_version,
-          :hears => player.hears,
-          :plays => player.plays
-        }
-      end
-
-      @orchestra.event_names.each do |event|
-        events[event.to_s] = {
-          :value_escaped => value_escaped(@values.get(event)),
-          :timestamp => format_date( @values.timestamp(event) )
-        }
-      end
-
-      result = {
-        :players => players,
-        :events => events
-      }
+  aget '/arefresh' do
+    Request.pile do |type|
+      state = getOrchestraState()
+      state[:type] = type
       content_type :json
-      puts body
-      body(result.to_json)
+      body(state.to_json)
     end
   end
-
-
-
-
-
-
 
   get '/refresh' do
-    @orchestra = NoamServer::Orchestra.instance
-    @values = Statabase
-    erb :refresh
-  end
-
-  aget '/arefresh' do
-    Request.pile do
-      @orchestra = NoamServer::Orchestra.instance
-      @values = Statabase
-      @last_active_id = $last_active_id
-      @last_active_event = $last_active_event
-
-      body(erb :refresh)
-    end
+    state = getOrchestraState()
+    state[:type] = :good
+    content_type :json
+    body(state.to_json)
   end
 
   post '/play-event' do
-    NoamServer::Orchestra.instance.play( params[:name], params[:value], "Maestro Web" )
+    puts params
+    NoamServer::Orchestra.instance.play( params["name"], params["value"], "Maestro Web" )
     body("ok")
   end
 
@@ -187,4 +171,47 @@ class NoamApp < Sinatra::Base
     end
     body("ok")
   end
+
+
+  ####
+  # Helper function to return dict of the players and events in the Orchestra
+  #
+  # {
+  #   'player' => players in orchestra,
+  #   'events' => events in orchestra
+  # }
+  #
+  ####
+  def getOrchestraState()
+    @orchestra = NoamServer::Orchestra.instance
+    @values = Statabase
+
+    players = {}
+    events = {}
+
+    @orchestra.players.each do |spalla_id, player|
+      players[spalla_id] = {
+        :spalla_id => spalla_id,
+        :device_type => player.device_type,
+        :last_activity => format_date( player.last_activity ),
+        :system_version => player.system_version,
+        :hears => player.hears,
+        :plays => player.plays
+      }
+    end
+
+    @orchestra.event_names.each do |event|
+      events[event.to_s] = {
+        :value_escaped => value_escaped(@values.get(event)),
+        :timestamp => format_date( @values.timestamp(event) )
+      }
+    end
+
+    result = {
+      :players => players,
+      :events => events,
+    }
+  end
+
+
 end
