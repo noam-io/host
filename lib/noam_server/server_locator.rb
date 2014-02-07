@@ -50,8 +50,8 @@ module NoamServer
 
       def add_server(id, data)
         @servers[id] = data.merge(:last_timestamp => Time.now.to_i)
-        NoamLogging.info(self, "Upserted server id: #{id.inspect}")
-        NoamLogging.info(self, "ServerRepository: #{@servers.inspect}")
+        NoamLogging.debug(self, "Upserted server id: #{id.inspect}")
+        NoamLogging.debug(self, "ServerRepository: #{@servers.inspect}")
       end
     end
 
