@@ -1,3 +1,5 @@
+require 'noam_server/noam_logging'
+
 module Noam
   class TcpListener
     attr_accessor :message_length, :message_payload
@@ -9,11 +11,11 @@ module Noam
     end
 
     def receive_data(data)
-     enum = data.each_byte
-     while true
-       read_length(enum) if self.message_length.nil?
-       read_payload(enum) unless self.message_length.nil?
-     end
+      enum = data.each_byte
+      while true
+        read_length(enum) if self.message_length.nil?
+        read_payload(enum) unless self.message_length.nil?
+      end
     rescue StopIteration
     end
 

@@ -41,7 +41,7 @@ module NoamServer
     def start
       NoamLogging.info(self, "Starting Socket Server at #{@host}:#{@port}")
       begin
-          EventMachine::WebSocket.start(:host => @host, :port => @port) do |ws|
+        EventMachine::WebSocket.start(:host => @host, :port => @port) do |ws|
           connection = WsConnection.new
           ws.onopen    { connection.post_init(ws) }
           ws.onmessage { |msg| connection.receive_data(msg) }
