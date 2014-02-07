@@ -2,6 +2,7 @@ require 'config'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'noam_server/persistence/factory'
+require 'noam_server/server_locator'
 require 'noam_server/udp_broadcaster'
 require 'noam_server/web_socket_server'
 
@@ -29,12 +30,14 @@ module NoamServer
       @webserver = WebSocketServer.new(@config[:web_socket_port])
       @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],
                                         @config[:listen_port])
+      @server_locator = ServerLocator.new(@config[:broadcast_port])
     end
 
     def start
       begin
         @server.start
         @webserver.start
+        @server_locator.start
       rescue Errno::EADDRINUSE
         fire_server_started_callback
         exit
