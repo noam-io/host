@@ -1,3 +1,4 @@
+require 'em/pure_ruby'
 require 'noam/tcp_listener'
 require 'noam_server/listener'
 require 'noam_server/message_handler'

@@ -12,7 +12,7 @@ begin
   require 'noam_server/noam_main'
   require 'noam_server/noam_logging'
 
-  server = NoamServer::NoamMain.new()
+  server = NoamServer::NoamMain.new
 
   ARGV.each do |a|
     if a == '--debug'
@@ -58,7 +58,9 @@ begin
   end
 rescue Exception => e
   system("echo '#{e}' >> noam.log")
+  puts e
   e.backtrace.each do |line|
     system("echo '#{line.gsub(/'/, '"')}' >> noam.log")
+    puts line
   end
 end
