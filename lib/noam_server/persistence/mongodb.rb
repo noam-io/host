@@ -20,12 +20,13 @@ module NoamServer
 
       def connect
         begin
-          @client = ::Mongo::MongoClient.new(@ip, @port)          
+          @client = ::Mongo::MongoClient.new(@ip, @port)
           @db = @client.db(@db)
           @connected = true
           NoamLogging.info(self, "Connected to MongoDB database '#{@db}' at #{@ip}:#{@port}")
         rescue Exception => e
-          NoamLogging.fatal(self, "Unable to connect to MongoDB at #{@ip}:#{@port}")
+          NoamLogging.error(self, "Unable to connect to MongoDB at #{@ip}:#{@port}")
+          raise
         end
       end
 
@@ -51,7 +52,7 @@ module NoamServer
       def clear(bucket_name)
 
       end
-      
+
     end
   end
 end

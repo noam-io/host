@@ -24,7 +24,6 @@ module NoamServer
         require 'noam_server/persistence/memory'
         return Memory.instance(config[:memory])
       end
-
     end
   end
 end

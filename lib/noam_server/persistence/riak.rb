@@ -16,8 +16,9 @@ module NoamServer
           NoamLogging.info(self, "Settings: #{config}")
         else
           @connected = false
-          NoamLogging.info(self, "Uable to connect to Riak Server")
-          NoamLogging.info(self, "Riak Settings: #{config}")
+          NoamLogging.error(self, "Unable to connect to Riak Server")
+          NoamLogging.error(self, "Riak Settings: #{config}")
+          raise "Could not connect to Riak Server"
         end
       end
 
@@ -54,7 +55,7 @@ module NoamServer
           bucket[key].delete if bucket.exists?(key)
         end
       end
-      
+
     end
   end
 end
