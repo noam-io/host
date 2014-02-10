@@ -1,4 +1,6 @@
 require 'logging'
+require 'noam_server/server_name'
+require 'socket'
 
 CONFIG = {}
 CONFIG[:web_server_port] = 8081
@@ -11,6 +13,7 @@ CONFIG[:web_server] = {
 	:time_to_timeout => 10
 }
 
+CONFIG[:server_name] = NoamServer::ServerName.new("#{Socket.gethostname} - Noam Moderator")
 
 # Persistor Types
 #CONFIG[:persistor_class] = :riak

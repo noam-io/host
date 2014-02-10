@@ -104,7 +104,7 @@ class NoamApp < Sinatra::Base
   set :public_folder, File.dirname(__FILE__)
   set :port, CONFIG[:web_server_port]
 
-  def self.log_info() 
+  def self.log_info
     NoamServer::NoamLogging.info("NoamApp", "Start Web Server: localhost@#{CONFIG[:web_server_port]}")
   end
 
@@ -136,6 +136,7 @@ class NoamApp < Sinatra::Base
   end
 
   get '/' do
+    @server_name = CONFIG[:server_name]
     @ips = @@ips.split("\n").join(",")
     @orchestra = NoamServer::Orchestra.instance
     @values = Statabase
@@ -144,7 +145,7 @@ class NoamApp < Sinatra::Base
 
   aget '/arefresh' do
     Request.pile do |type|
-      state = getOrchestraState()
+      state = get_orchestra_state
       state[:type] = type
       content_type :json
       body(state.to_json)
@@ -152,7 +153,7 @@ class NoamApp < Sinatra::Base
   end
 
   get '/refresh' do
-    state = getOrchestraState()
+    state = get_orchestra_state
     state[:type] = :good
     content_type :json
     body(state.to_json)
@@ -182,7 +183,7 @@ class NoamApp < Sinatra::Base
   # }
   #
   ####
-  def getOrchestraState()
+  def get_orchestra_state
     @orchestra = NoamServer::Orchestra.instance
     @values = Statabase
 
