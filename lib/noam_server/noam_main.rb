@@ -10,8 +10,7 @@ module NoamServer
   class NoamMain
     attr_accessor :config
 
-    def initialize()
-
+    def initialize
       @config = CONFIG
       NoamLogging.instance(@config[:logging])
       NoamLogging.start_up
@@ -39,6 +38,7 @@ module NoamServer
         @webserver.start
         @server_locator.start
       rescue Errno::EADDRINUSE
+        NoamLogging.warn("Exiting due to ports already being occupied")
         fire_server_started_callback
         exit
       rescue Exception => e

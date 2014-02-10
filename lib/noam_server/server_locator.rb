@@ -5,7 +5,21 @@ require 'singleton'
 require 'socket'
 
 module EventMachine
-  class EvmaUDPSocket
+  class EvmaUDPSocket < DatagramObject
+    class << self
+      # We need to override this to allow us to listen to UDP on ports that
+      # lemmas are already listening on. Lemmas should be set up as
+      # SO_REUSEPORT/SO_REUSEADDR where they're intended to run on the same
+      # machine.
+      def create host, port
+        sd = Socket.new(Socket::AF_INET, Socket::SOCK_DGRAM, 0)
+        sd.setsockopt(Socket::SOL_SOCKET, Socket::SO_REUSEADDR, true)
+        sd.setsockopt(Socket::SOL_SOCKET, Socket::SO_REUSEPORT, true)
+        sd.bind Socket::pack_sockaddr_in(port, host)
+        EvmaUDPSocket.new sd
+      end
+    end
+
     # We need to override this because the pure_ruby version returns a nil
     # peername by default - which makes sense since UDP is connectionless.
     # Calling this is really only meaningful in the context of #receive_data,
