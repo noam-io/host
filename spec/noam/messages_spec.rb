@@ -2,6 +2,11 @@ require 'json'
 require 'noam/messages'
 
 describe Noam::Messages do
+  it "should handle a badly formed message" do
+    parsed = described_class.parse("crap message]")
+    parsed.message_type.should == "null"
+  end
+
   it "should parse an event message" do
     message = [ "event", "spalla_id2", "car_speed", 65.32 ].to_json
     parsed = described_class.parse(message)
@@ -69,5 +74,26 @@ describe Noam::Messages do
     parsed.callback_port.should == 8921
     parsed.hears.should == ["e1", "e2"]
     parsed.plays.should == ["e3", "e4"]
+  end
+
+  it "should build and parse a polo message" do
+    message = ["polo", "Room Name", 1423].to_json
+    built = described_class.build_polo("Room Name", 1423)
+    built.should == message
+    parsed = described_class.parse(message)
+    parsed.room_name.should == "Room Name"
+    parsed.message_type.should == "polo"
+    parsed.callback_port.should == 1423
+  end
+
+  it "should parse a marco message" do
+    message = "[\"marco\",\"lemma_id\",\"Room Name\",6678,\"java\",\"1.1\"]"
+    parsed = described_class.parse(message)
+    parsed.message_type.should == "marco"
+    parsed.spalla_id.should == "lemma_id"
+    parsed.room_name.should == "Room Name"
+    parsed.device_type.should == "java"
+    parsed.system_version.should == "1.1"
+
   end
 end
