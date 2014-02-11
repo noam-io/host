@@ -1,33 +1,6 @@
-@import 'models/exhibit';
-@import 'models/utils';
-@import 'models/nav';
+$icon-font-path: "/bower_components/sass-bootstrap/fonts/";
 
-@import 'ui';
-@import 'models/vignette';
-@import 'models/intro';
-@import 'models/quinine';
-@import 'models/penicillin';
-@import 'models/coartem';
-@import 'models/aspirin';
-@import 'models/galantamine';
-@import 'models/exenatide';
-@import 'models/morphine';
-@import 'models/digitalis';
-@import 'models/taxol';
-@import 'models/cyclosporin';
-@import 'models/cladosporin';
-@import 'models/lsd';
-
-body{
-    height: 100%;
-    width: 100%;
-}
-
-@mixin topLeft($position: absolute){
-	position: $position;
-	top: 0;
-	left: 0;	
-}
+@import '/bower_components/sass-bootstrap/lib/bootstrap';
 
 .browsehappy {
     margin: 0.2em 0;
@@ -36,22 +9,83 @@ body{
     padding: 0.2em 0;
 }
 
-#intro, #about{
-	@include topLeft($position: fixed);
-	height: 100%;
-	width: 100%;
-	z-index: 1031;
-	color: white;
-	padding: 100px;
-	.video{
-		@include topLeft();
-	}
+/* Space out content a bit */
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
-/*STYLES FOR CARDS WITHOUT WHITE BG*/
-.asclepius {
-  color: #FFF;
-  text-shadow: 0px 0px 15px rgba(0,0,0,0.50);
-  border: 0;
-  font-size: 20px;
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Custom page header */
+.header {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+    padding-bottom: 19px;
+}
+
+/* Custom page footer */
+.footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+}
+
+.container-narrow > hr {
+    margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+/* Supporting marketing content */
+.marketing {
+    margin: 40px 0;
+}
+
+.marketing p + h4 {
+    margin-top: 28px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    .container {
+        max-width: 730px;
+    }
+
+    /* Remove the padding we set earlier */
+    .header,
+    .marketing,
+    .footer {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    /* Space out the masthead */
+    .header {
+        margin-bottom: 30px;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
 }

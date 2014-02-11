@@ -1,27 +1,18 @@
-/*global noam, Backbone, $*/
+/*global ui, $*/
 
-window.noam = {
+
+window.ui = {
     Models: {},
     Collections: {},
     Views: {},
     Routers: {},
-    Events: {},
-    navView: {},
-    appView: null,
-    globals: {
-        numberOfStories: 19, 
-        maxNumberOfPages: 8
-    },
-
     init: function () {
         'use strict';
-        this.appView = new this.Views.AppView();
-        window.exhibitRouter = new this.Routers.AppRouter();
+        console.log('Hello from Backbone!');
     }
 };
 
 $(document).ready(function () {
     'use strict';
-    noam.init();
-    Backbone.history.start();
+    ui.init();
 });

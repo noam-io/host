@@ -1,5 +1,5 @@
 {
-  "name": "natural-products",
+  "name": "ui",
   "version": "0.0.0",
   "dependencies": {
     "sass-bootstrap": "~3.0.0",
@@ -7,11 +7,7 @@
     "underscore": "~1.4.3",
     "backbone": "~1.0.0",
     "modernizr": "~2.6.2",
-    "animate.css": "~3.0.0"
-
+    "d3":"~2.1.0"
   },
-  "devDependencies": {},
-  "resolutions": {
-    "jquery": "~1.9.0"
-  }
+  "devDependencies": {}
 }

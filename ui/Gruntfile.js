@@ -32,10 +32,6 @@ module.exports = function (grunt) {
                 nospawn: true,
                 livereload: true
             },
-            scripts: {
-                files: ['templates/{,*/}{,*/}*.ejs'],
-                tasks: ['grunt-contrib-jst']
-            },
             coffee: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
                 tasks: ['coffee:dist']
@@ -57,19 +53,19 @@ module.exports = function (grunt) {
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
-                    '<%= yeoman.app %>/scripts/templates/{,*/}*.{ejs,mustache,hbs}',
+                    '<%= yeoman.app %>/scripts/templates/*.{ejs,mustache,hbs}',
                     'test/spec/**/*.js'
                 ]
             },
             jst: {
                 files: [
-                    '<%= yeoman.app %>/scripts/templates/{,*/}{,*/}*.ejs'
+                    '<%= yeoman.app %>/scripts/templates/*.ejs'
                 ],
                 tasks: ['jst']
             },
             test: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/**/*.js'],
-                tasks: ['test']
+                tasks: ['test:true']
             }
         },
         connect: {
@@ -115,6 +111,9 @@ module.exports = function (grunt) {
         open: {
             server: {
                 path: 'http://localhost:<%= connect.options.port %>'
+            },
+            test: {
+                path: 'http://localhost:<%= connect.test.options.port %>'
             }
         },
         clean: {
@@ -133,18 +132,11 @@ module.exports = function (grunt) {
                 'test/spec/{,*/}*.js'
             ]
         },
-        jasmine: {
-            all:{
-                src : '/scripts/{,*/}*.js',
+        mocha: {
+            all: {
                 options: {
-                    keepRunner: true,
-                    specs : 'test/spec/**/*.js',
-                    vendor : [
-                        '<%= yeoman.app %>/bower_components/jquery/jquery.js',
-                        '<%= yeoman.app %>/bower_components/underscore/underscore.js',
-                        '<%= yeoman.app %>/bower_components/backbone/backbone.js',
-                        '.tmp/scripts/templates.js'
-                    ]
+                    run: true,
+                    urls: ['http://localhost:<%= connect.test.options.port %>/index.html']
                 }
             }
         },
@@ -259,22 +251,15 @@ module.exports = function (grunt) {
                         '.htaccess',
                         'images/{,*/}*.{webp,gif}',
                         'styles/fonts/{,*/}*.*',
-                        'data/*.json',
-                        'bower_components/sass-bootstrap/fonts/*.*',
-                        'video/*'
+                        'bower_components/sass-bootstrap/fonts/*.*'
                     ]
                 }]
-            }
-        },
-        bower: {
-            all: {
-                rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
         },
         jst: {
             compile: {
                 files: {
-                    '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/{,*/}{,*/}*.ejs']
+                    '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/*.ejs']
                 }
             }
         },
@@ -284,7 +269,7 @@ module.exports = function (grunt) {
                     src: [
                         '<%= yeoman.dist %>/scripts/{,*/}*.js',
                         '<%= yeoman.dist %>/styles/{,*/}*.css',
-                        // Don't rev images: <%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
+                        '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
                         '/styles/fonts/{,*/}*.*',
                         'bower_components/sass-bootstrap/fonts/*.*'
                     ]
@@ -297,18 +282,25 @@ module.exports = function (grunt) {
         grunt.file.write('.tmp/scripts/templates.js', 'this.JST = this.JST || {};');
     });
 
-    grunt.registerTask('server', function (target) {
+    grunt.registerTask('server', function () {
+        grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
+        grunt.task.run(['serve:' + target]);
+    });
+
+    grunt.registerTask('serve', function (target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
+            return grunt.task.run(['build', 'open:server', 'connect:dist:keepalive']);
         }
 
         if (target === 'test') {
             return grunt.task.run([
                 'clean:server',
+                'coffee',
                 'createDefaultTemplate',
                 'jst',
                 'compass:server',
                 'connect:test',
+                'open:test',
                 'watch:livereload'
             ]);
         }
@@ -320,22 +312,36 @@ module.exports = function (grunt) {
             'jst',
             'compass:server',
             'connect:livereload',
-            'open',
+            'open:server',
             'watch'
         ]);
     });
 
-    grunt.registerTask('test', [
-        'clean:server',
-        'createDefaultTemplate',
-        'jst',
-        'compass',
-        'jasmine',
-        'watch:test'
-    ]);
+    grunt.registerTask('test', function (isConnected) {
+        isConnected = Boolean(isConnected);
+        var testTasks = [
+                'clean:server',
+                'coffee',
+                'createDefaultTemplate',
+                'jst',
+                'compass',
+                'connect:test',
+                'mocha',
+                'watch:test'
+            ];
+            
+        if(!isConnected) {
+            return grunt.task.run(testTasks);
+        } else {
+            // already connected so not going to connect again, remove the connect:test task
+            testTasks.splice(testTasks.indexOf('connect:test'), 1);
+            return grunt.task.run(testTasks);
+        }
+    });
 
     grunt.registerTask('build', [
         'clean:dist',
+        'coffee',
         'createDefaultTemplate',
         'jst',
         'compass:dist',
