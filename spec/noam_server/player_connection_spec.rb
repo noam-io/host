@@ -51,7 +51,7 @@ describe NoamServer::PlayerConnection do
     ear.callback.should_not be_nil
   end
 
-  it 'when ear does not hear, piles up messages and sends them upon connection' do
+  it 'when ear does not hear, do not pile up messages and sends them upon connection' do
     ear = MockEar.new
     ear.hear_returns = false
 
@@ -62,9 +62,7 @@ describe NoamServer::PlayerConnection do
     ear.args_received.clear
     ear.callback.call
 
-    ear.args_received.count.should == 2
-    ear.args_received[ 0 ].should == [ 'id', 'name', 'value' ]
-    ear.args_received[ 1 ].should == [ 'id 2', 'name 2', 'value 2' ]
+    ear.args_received.count.should == 0
   end
 end
 
