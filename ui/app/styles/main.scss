@@ -1,0 +1,57 @@
+@import 'models/exhibit';
+@import 'models/utils';
+@import 'models/nav';
+
+@import 'ui';
+@import 'models/vignette';
+@import 'models/intro';
+@import 'models/quinine';
+@import 'models/penicillin';
+@import 'models/coartem';
+@import 'models/aspirin';
+@import 'models/galantamine';
+@import 'models/exenatide';
+@import 'models/morphine';
+@import 'models/digitalis';
+@import 'models/taxol';
+@import 'models/cyclosporin';
+@import 'models/cladosporin';
+@import 'models/lsd';
+
+body{
+    height: 100%;
+    width: 100%;
+}
+
+@mixin topLeft($position: absolute){
+	position: $position;
+	top: 0;
+	left: 0;	
+}
+
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+#intro, #about{
+	@include topLeft($position: fixed);
+	height: 100%;
+	width: 100%;
+	z-index: 1031;
+	color: white;
+	padding: 100px;
+	.video{
+		@include topLeft();
+	}
+}
+
+/*STYLES FOR CARDS WITHOUT WHITE BG*/
+.asclepius {
+  color: #FFF;
+  text-shadow: 0px 0px 15px rgba(0,0,0,0.50);
+  border: 0;
+  font-size: 20px;
+}
