@@ -19,7 +19,8 @@ module NoamServer
 
     def hear( id_of_player, event_name, event_value )
       if ( !@ear.hear( id_of_player, event_name, event_value ) )
-        @backlog << [id_of_player, event_name, event_value]
+        # TODO : We no longer want to buffer values
+        # @backlog << [id_of_player, event_name, event_value]
         @ear.new_connection do
           NoamLogging.debug(self, "Player reconnected for lemma '#{id_of_player}' sending '#{event_name}' = #{event_value}")
           on_connection
