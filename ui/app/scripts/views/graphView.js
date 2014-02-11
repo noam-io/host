@@ -5,8 +5,8 @@ ui.Views = ui.Views || {};
 (function () {
     'use strict';
 
-    ui.Views.ExhibitView = Backbone.View.extend({
-    	el: '#graph',
+    ui.Views.GraphView = Backbone.View.extend({
+    	el: '.graph',
         //template: JST['app/scripts/templates/exhibit.ejs'],
         events: {
             
@@ -18,7 +18,7 @@ ui.Views = ui.Views || {};
         },
 
         render: function(){
-            
+            $(this.el).html('I work');
             
             
 

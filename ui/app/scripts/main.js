@@ -9,6 +9,7 @@ window.ui = {
     init: function () {
         'use strict';
         console.log('Hello from Backbone!');
+        this.graphView = new ui.Views.GraphView();
     }
 };
 
