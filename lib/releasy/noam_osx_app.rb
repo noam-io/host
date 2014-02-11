@@ -14,7 +14,7 @@ module Releasy
       DEFAULT_FOLDER_SUFFIX = "OSX"
 
       # Binary gems included in app.
-      BINARY_GEMS = %w[eventmachine thin]
+      BINARY_GEMS = %w[eventmachine http_parser.rb thin]
       # Icon type used in the app.
       ICON_EXTENSION = ".icns"
       # Source gems included in app that we should remove.

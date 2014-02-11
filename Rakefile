@@ -40,7 +40,7 @@ Releasy::Project.new do
     # this wrapper to be the output of `tar -zcvf ruby-mac-wrapper-YYYY-MM-DD.tar.gz ./Ruby.app`
     # in that directory. The .tar.gz filename is flexible as long as it matches
     # between the actual file and this wrapper specification.
-    wrapper "wrappers/ruby-mac-wrapper-2014-02-05.tar.gz"
+    wrapper "wrappers/ruby-mac-wrapper-2014-02-11.tar.gz"
     add_package :tar_gz
   end
 
