@@ -100,6 +100,7 @@ $last_active_event = ""
 class NoamApp < Sinatra::Base
   register Sinatra::Async
 
+  set :bind, '0.0.0.0'
   set :server, 'thin'
   set :public_folder, File.dirname(__FILE__)
   set :port, CONFIG[:web_server_port]
