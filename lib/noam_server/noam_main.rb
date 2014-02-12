@@ -16,14 +16,11 @@ module NoamServer
       @logger.setLevel(@config[:logging][:level])
       @logger.start_up
 
-      unless CONFIG[:persistor_class].nil?
-        NoamLogging.info(self, "Using Persistence Class: #{CONFIG[:persistor_class]}")
-        unless Persistence::Factory.get(@config).connected
-          NoamLogging.fatal(self, "Unable to connect to persistent store.")
-          exit
-        end
-      else
-        NoamLogging.info(self, "Not using Persistent Storage.")
+      persistor = Persistence::Factory.get(@config)
+      NoamLogging.info(self, "Using Persistence: #{persistor}")
+      unless persistor.connected
+        NoamLogging.fatal(self, "Unable to connect to persistent store.")
+        EM.stop
       end
 
       @server = NoamServer.new(@config[:listen_port])
