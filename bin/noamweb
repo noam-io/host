@@ -58,10 +58,12 @@ begin
     end
   end
 rescue Exception => e
-  system("echo '#{e}' >> noam.log")
+  system("echo 'Begin Log' >> /tmp/noam.log");
+  system("date >> /tmp/noam.log");
+  system("echo '#{e.to_s.gsub(/'/, '"')}' >> /tmp/noam.log");
   puts e
   e.backtrace.each do |line|
-    system("echo '#{line.gsub(/'/, '"')}' >> noam.log")
+    system("echo '#{line.gsub(/'/, '"')}' >> /tmp/noam.log")
     puts line
   end
 end

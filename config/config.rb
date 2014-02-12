@@ -16,9 +16,9 @@ CONFIG[:web_server] = {
 CONFIG[:server_name] = NoamServer::ServerName.new("#{Socket.gethostname} - Noam Moderator")
 
 # Persistor Types
-#CONFIG[:persistor_class] = :riak
-#CONFIG[:persistor_class] = :memory
-CONFIG[:persistor_class] = :mongodb
+# CONFIG[:persistor_class] = :riak
+# CONFIG[:persistor_class] = :memory
+# CONFIG[:persistor_class] = :mongodb
 
 # Riak Settings
 # NOTE: when using riak, you can point it at a single host:
