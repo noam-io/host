@@ -48,9 +48,11 @@ module NoamServer
         raise
       end
 
-      # EventMachine.add_periodic_timer(2) do
+      EventMachine.add_periodic_timer(2) do
+        require 'noam_server/unconnected_lemmas'
+        NoamLogging.info(self, "Unconnected lemmas: #{::NoamServer::UnconnectedLemmas.instance.inspect}")
       #   @broadcaster.go
-      # end
+      end
     end
 
   end

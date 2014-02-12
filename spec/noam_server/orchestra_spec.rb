@@ -3,14 +3,11 @@ require 'config'
 require 'noam_server/orchestra'
 require 'noam_server/player'
 require 'noam_server/player_connection'
-require "noam_server/persistence/riak"
+require 'noam_server/unconnected_lemmas'
 
 describe NoamServer::Orchestra do
-  let(:orchestra) {
-    orchestra = described_class.new
-    # orchestra.persistor = NoamServer::Persistence::Memory.new
-    # orchestra
-  }
+  let(:unconnected_lemmas) { {} }
+  let(:orchestra) { described_class.new }
 
   let(:id_1) { 'Arduino #1' }
   let(:id_2) { 'Raspberry Pi #2' }
@@ -24,6 +21,10 @@ describe NoamServer::Orchestra do
   let(:connection_1) { NoamServer::PlayerConnection.new( player_1 )}
   let(:connection_2) { NoamServer::PlayerConnection.new( player_2 )}
 
+  before(:each) do
+    NoamServer::UnconnectedLemmas.stub(:instance).and_return(unconnected_lemmas)
+  end
+
   it "plays a note noone has registered for" do
     -> {orchestra.play( 'player', 'listens_for_1', 12.42 )}.should_not raise_error
   end
@@ -32,10 +33,17 @@ describe NoamServer::Orchestra do
     described_class.instance.should === described_class.instance
   end
 
-  it "should register players" do
-    orchestra.register( connection_1, player_1)
+  it "registers players" do
+    orchestra.register(connection_1, player_1)
     connection_1.should_receive(:hear).with( 'player_id', "listens_for_1", 12.42)
     orchestra.play("listens_for_1", 12.42, 'player_id' )
+  end
+
+  it "deletes newly-registered players from the unconnected list" do
+    NoamServer::UnconnectedLemmas.instance[id_1] = {:name => id_1}
+    NoamServer::UnconnectedLemmas.instance[id_1].should_not == nil
+    orchestra.register(connection_1, player_1)
+    NoamServer::UnconnectedLemmas.instance[id_1].should == nil
   end
 
   it "fires players" do

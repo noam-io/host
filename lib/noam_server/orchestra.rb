@@ -1,4 +1,5 @@
 require 'noam_server/noam_logging'
+require 'noam_server/unconnected_lemmas'
 
 module NoamServer
   class Orchestra
@@ -30,6 +31,8 @@ module NoamServer
         @events[event][spalla_id] = player_connection
       end
       fired.compact.uniq.each(&:terminate)
+
+      UnconnectedLemmas.instance.delete(spalla_id)
 
       player.plays.each do |event|
         @events[event] ||= {}

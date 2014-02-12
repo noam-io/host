@@ -1,6 +1,8 @@
 require 'noam/messages'
 require 'noam_server/noam_logging'
+require 'noam_server/unconnected_lemmas'
 require 'socket'
+
 module NoamServer
   module UdpHandler
     attr_accessor :polo, :room_name
@@ -8,13 +10,28 @@ module NoamServer
     def receive_data(message)
       message = Noam::Messages.parse(message)
       if message.message_type == "marco"
+        peername = get_peername
+        port, ip = Socket.unpack_sockaddr_in(peername)
         if message.room_name == @room_name
-          peername = get_peername
-          port, ip = Socket.unpack_sockaddr_in(peername)
           NoamLogging.info(self, "Sending polo #{@polo.inspect} to #{ip}:#{port}")
           send_data(@polo)
+          # TODO: something like...
+          # elsif message.room_name.to_s == ""
+          #   unconnected_lemma_info = UnconnectedLemmas.instance[message.spalla_id]
+          #   if unconnected_lemma_info && unconnected_lemma_info[:grab_requested]
+          #     send_data(@grab_request)
+          #   end
         else
-          NoamLogging.info(self, "UDP handler for room #{@room_name} not responding because of room name mismatch: #{message.room_name}")
+          # not responding because of room name mismatch
+          UnconnectedLemmas.instance[message.spalla_id] = {
+            :name => message.spalla_id,
+            :desired_room_name => message.room_name,
+            :device_type => message.device_type,
+            :system_version => message.system_version,
+            :ip => ip,
+            :port => port,
+            :last_activity_timestamp => Time.now.getutc
+          }
         end
       else
         NoamLogging.info(self, "UDP handler dropped message because it was not a 'marco' message #{message.inspect}")

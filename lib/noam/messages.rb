@@ -64,7 +64,6 @@ module Noam
       def initialize(data)
         index = super(data)
         @room_name = data[index+=1]
-        @callback_port = data[index+=1]
         @device_type = data[index+=1]
         @system_version = data[index+=1]
         index
@@ -107,8 +106,8 @@ module Noam
       ["polo", room_name, callback_port].to_json
     end
 
-    def self.build_marco(spalla_id, room_name, callback_port)
-      ["marco", spalla_id, room_name, callback_port, "ruby", "1.1"].to_json
+    def self.build_marco(spalla_id, room_name)
+      ["marco", spalla_id, room_name, "ruby", "1.1"].to_json
     end
   end
 end

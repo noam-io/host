@@ -87,7 +87,7 @@ describe Noam::Messages do
   end
 
   it "should parse a marco message" do
-    message = "[\"marco\",\"lemma_id\",\"Room Name\",6678,\"java\",\"1.1\"]"
+    message = "[\"marco\",\"lemma_id\",\"Room Name\",\"java\",\"1.1\"]"
     parsed = described_class.parse(message)
     parsed.message_type.should == "marco"
     parsed.spalla_id.should == "lemma_id"

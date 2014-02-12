@@ -18,8 +18,8 @@ module NoamServer
          rescue JSON::ParserError
             NoamLogging.error(self, "Invalid message received:  #{msg}")
          rescue => error
-            stackTrace = error.backtrace.join("\n  == ")
-            NoamLogging.warn(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stackTrace}")
+            stack_trace = error.backtrace.join("\n  == ")
+            NoamLogging.warn(self, "Error: #{error.to_s}\n Stack Trace:\n == #{stack_trace}")
          end
        end
     end
