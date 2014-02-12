@@ -17,8 +17,7 @@ module NoamServer
           send_data(@polo)
           # TODO: something like...
           # elsif message.room_name.to_s == ""
-          #   unconnected_lemma_info = UnconnectedLemmas.instance[message.spalla_id]
-          #   if unconnected_lemma_info && unconnected_lemma_info[:grab_requested]
+          #   if UnconnectedLemmas.grab_requested?(message.spalla_id)
           #     send_data(@grab_request)
           #   end
         else
