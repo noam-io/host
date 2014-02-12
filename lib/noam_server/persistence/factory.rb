@@ -18,7 +18,12 @@ module NoamServer
         else
           @type = :nil
         end
-        @type.instance(config[config[:persistor_class]])
+
+        unless @type.nil?
+          return @type.instance(config[config[:persistor_class]])
+        else
+          return :nil
+        end
       rescue Exception => e
         NoamLogging.error("Persistence::Factory", "Unable to instantiate persistence for #{config[:persistor_class]}: #{e}")
         require 'noam_server/persistence/memory'

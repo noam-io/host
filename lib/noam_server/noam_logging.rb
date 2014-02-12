@@ -59,11 +59,15 @@ module NoamServer
     end
 
     def setLevel(level)
-      @logger_class.root.level = level
+      unless level.nil?
+        @logger_class.root.level = level
+      end
     end
 
     def setAppenders(appenders)
-      @logger_class.root.appenders = appenders
+      unless appenders.nil?
+        @logger_class.root.appenders = appenders
+      end
     end
 
     def add(obj, severity, msg)

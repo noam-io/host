@@ -12,8 +12,9 @@ module NoamServer
 
     def initialize
       @config = CONFIG
-      NoamLogging.instance(@config[:logging])
-      NoamLogging.start_up
+      @logger = NoamLogging.instance(@config[:logging])
+      @logger.setLevel(@config[:logging][:level])
+      @logger.start_up
 
       unless CONFIG[:persistor_class].nil?
         NoamLogging.info(self, "Using Persistence Class: #{CONFIG[:persistor_class]}")
@@ -40,7 +41,7 @@ module NoamServer
       rescue Errno::EADDRINUSE
         NoamLogging.warn("Exiting due to ports already being occupied")
         fire_server_started_callback
-        exit
+        EM.stop
       rescue Exception => e
         NoamLogging.fatal(self, "Exiting due to bad startup.")
         NoamLogging.error(self, "Startup Error: " + e.to_s)
@@ -59,7 +60,17 @@ end
 ####
 # Default Noam Callbacks
 ##########################
+
+# Dummy Player used for Web UI
+TempPlayer = Struct.new(:spalla_id)
+WebUIPlaceholder = TempPlayer.new("Web UI Lemma")
+
 NoamServer::Orchestra.instance.on_play do |name, value, player|
+
+  unless player
+    player = WebUIPlaceholder
+  end
+
   unless CONFIG[:persistor_class].nil?
     persistor = NoamServer::Persistence::Factory.get(CONFIG)
     EM::defer {
