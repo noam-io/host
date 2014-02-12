@@ -107,6 +107,10 @@ d3.json("flare-imports.json", function(classes) {
       links = packages.imports(nodes),
       splines = bundle(links);
 
+      console.log('links',links);
+
+      console.log('splines',splines)
+
   var path = svg.selectAll("path.link")
       .data(links)
     .enter().append("svg:path")

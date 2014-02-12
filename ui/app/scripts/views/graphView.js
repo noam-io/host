@@ -80,6 +80,12 @@ ui.Views = ui.Views || {};
                 .attr('height',this.d.h)
                 .append('svg:g')
                 .attr('transform','translate(' + this.d.rx + ',' + this.d.ry + ')' );
+
+            this.line = d3.svg.line.radial()
+                .interpolate("bundle")
+                .tension(.85)
+                .radius(function(d) { return d.y; })
+                .angle(function(d) { return d.x / 180 * Math.PI; });
             
         },
 
@@ -93,8 +99,17 @@ ui.Views = ui.Views || {};
                     links = _this.getConnections(nodes),
                     splines = _this.bundle(links);
 
-                console.log(links);
+                console.log('links',links)
+                console.log('splines',splines);
  
+
+                var path = _this.svg.selectAll("path.link")
+                    .data(links)
+                    .enter().append("svg:path")
+                    .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
+                    .attr("d", function(d, i) { return _this.line(splines[i]); });
+
+
                 _this.svg.selectAll('g.node')
                     .data(nodes)
                     .enter().append("svg:g")
@@ -171,9 +186,11 @@ ui.Views = ui.Views || {};
             console.log(data);
             _.each(data, function(e,r) {
                 _.each(e, function(list,i) {
-                    _.each(list.out, function(event, j) {
-                        var targetId = event.split('sentFrom')[1];
-                        var target = _.findWhere(data, {id:targetId})
+                    _.each(list.out, function(s, j) {
+                        var targetId = s.split('sentFrom')[1];
+                        // console.log(targetId)
+                        var target = _.findWhere(e, {id:targetId})
+                        // console.log(target)
                         d.push({ source: list, target: target});
                     })
                 })
