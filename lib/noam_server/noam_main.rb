@@ -5,6 +5,7 @@ require 'noam_server/persistence/factory'
 require 'noam_server/server_locator'
 require 'noam_server/udp_broadcaster'
 require 'noam_server/udp_listener'
+require 'noam_server/unconnected_lemmas'
 require 'noam_server/web_socket_server'
 
 module NoamServer
@@ -49,9 +50,8 @@ module NoamServer
       end
 
       EventMachine.add_periodic_timer(2) do
-        require 'noam_server/unconnected_lemmas'
-        NoamLogging.info(self, "Unconnected lemmas: #{::NoamServer::UnconnectedLemmas.instance.inspect}")
-      #   @broadcaster.go
+        UnconnectedLemmas.reap
+        NoamLogging.debug(self, "UnconnectedLemmas: #{UnconnectedLemmas.instance.inspect}")
       end
     end
 
