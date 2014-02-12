@@ -25,7 +25,7 @@ module NoamServer
 
   class UdpListener
     def start(udp_listen_port, tcp_listen_port, room_name)
-      polo_message = Noam::Messages.build_polo(room_name, udp_listen_port)
+      polo_message = Noam::Messages.build_polo(room_name, tcp_listen_port)
       EM.open_datagram_socket('0.0.0.0', udp_listen_port, UdpHandler) do |handler|
         handler.polo = polo_message
         handler.room_name = room_name
