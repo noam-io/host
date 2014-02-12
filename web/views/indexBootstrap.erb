@@ -19,6 +19,7 @@
       }
     </style>
     <link href="/stylesheets/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/views/indexBootstrap/main.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <style>
@@ -73,53 +74,96 @@
       </div>
     </div>
 
-    <div class="container">
+    <div id="mainContainer" class="container">
       <BR/><BR/>
       <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
 
-      <div class="starter-template">
-        <h1>Noam Grid View</h1>
-      </div>
+      <ul id="mainTabs" class="nav nav-tabs">
+        <li class="active"><a href="#graphView" data-toggle="tab">Graph</a></li>
+        <li><a href="#gridView" data-toggle="tab">Grid</a></li>
+      </ul>
 
-      <div id="Channels">
-        <table class="table">
-          <thead>
-            <tr>
-              <td>Channel Name</td>
-              <td>Last Updated</td>
-              <td>Value</td>
-            </tr>
-          </thead>
-          <tbody>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <!-- Graph View Here -->
+        <div class="tab-pane" id="graphView">
+          <BR/>
+          <center>
+            <img src="" title="Placeholder for graph view" width="400" height="400">
+          </center>
+        </div>
+        <!-- End Graph View -->
 
-          </tbody>
-        </table>
+        <!-- Grid View of Server-->
+        <div class="tab-pane" id="gridView">
+          <div class="starter-template">
+            <h4>Noam Grid View</h4>
+          </div>
+
+          <div id="Channels">
+            <table class="table">
+              <thead>
+                <tr>
+                  <td>Channel Name</td>
+                  <td>Last Updated</td>
+                  <td>Value</td>
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- End Grid View -->
       </div>
 
     </div><!-- /.container -->
 
-    <!-- Modals -->
-    <div class="modal fade" id="sendMessage">
-      <form id="sendMessageForm">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Send Message</h4>
-          </div>
-          <div class="modal-body">
-            <p>Channel: <span class="sendMessageChannel"></span></p>
-            <p>Value: <BR><textarea class="sendMessageValue" style="width: 300px;" rows="5"></textarea></p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-      </form>
-    </div><!-- /.modal -->
+    <div id="detailPane" pos="400">
+      <div class="handle">
+        <span class="dir"><</span><BR/>I<BR/>N<BR/>S<BR/>I<BR/>G<BR/>H<BR/>T
+      </div>
+      <div id="detailViews">
 
+        <div id="detailDefault">
+          Click on a Lemma or Topic to view details.
+        </div>
+
+        <div id="detailLemma">
+          <div>
+            <span class="name">Participant 2</span> - <span class="ip">192.168.1.113</span>
+            <span class="newWindow"><a href="#">New Window</a></span>
+          </div>
+          <div class="version">
+            Arduino Lemma v-1.0.1
+          </div>
+          <div class="joinedAt">
+            Joined the conversation at -:--AM (------- ago)
+          </div>
+          <div id="activityGraph">
+          </div>
+        </div>
+
+        <div id="detailTopic">
+          <div>
+            <span class="name">Participant 2</span>
+            <span class="newWindow"><a href="#">New Window</a></span>
+          </div>
+          <div class="status">
+            Joined the conversation at -:--AM (------ ago)
+          </div>
+          <div>
+            Current Value: <span class="value">192.168.1.113</span>
+          </div>
+          <form id="sendMessageForm">
+          <div>
+            <input class="sendMessageValue" type="value"> <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
 
 
@@ -130,9 +174,12 @@
     <script src="/javascripts/libs/jquery-ui-1.8.23.custom.min.js"></script>
     <script src="/javascripts/libs/bootstrap.min.js"></script>
     <script src="/javascripts/libs/timeago.js"/></script>
+    <script src="/javascripts/libs/d3.v3.min.js"/></script>
     <script src="/javascripts/core/NoamRefresher.js"></script>
     <script src="/javascripts/views/indexBootstrap/Player.js"></script>
     <script src="/javascripts/views/indexBootstrap/Channel.js"></script>
+    <script src="/javascripts/views/indexBootstrap/DetailView.js"></script>
+    <script src="/javascripts/views/indexBootstrap/GraphicActivity.js"></script>
     <script src="/javascripts/views/indexBootstrap/indexBootstrapMain.js"></script>
   </body>
 </html>

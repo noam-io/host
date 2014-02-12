@@ -13,10 +13,12 @@ $(function() {
 
 
   $("#sendMessageForm").submit(function(){
-    var channel = $(".sendMessageChannel").html();
+    var channel = $("#detailTopic .name").html();
     var value = $(".sendMessageValue").val();
 
-     $.post( '/play-event', {'name': channel, 'value': value} );
+     $.post( '/play-event', {'name': channel, 'value': value}, function(){
+      $(".sendMessageValue").val('');
+     });
      $("#sendMessage").modal('hide');
      return false;
   });
@@ -46,7 +48,6 @@ $(function() {
       var _players = results['players'];
       for(lemma_id in _players){
         if(!(lemma_id in players)){
-          console.log(_players[lemma_id]);
           players[lemma_id] = new Player(_players[lemma_id]); 
         } else {
           players[lemma_id].update(_players[lemma_id]);
@@ -62,8 +63,10 @@ $(function() {
         } else {
           channels[channel_name].update(_events[channel_name], players);
         }
-        channels[channel_name].highlight();
       }
+
+      // Refresh detail view
+      detailViewManager.refresh();
     },
     errorcb: function(error){
       $("#serverDownError").fadeIn(500);
@@ -72,6 +75,15 @@ $(function() {
 
   var refresher = new NoamRefresher( params );
   refresher.go();
+
+  $(document).ready(function(){
+    $('#mainTabs a:last').tab('show');
+
+    activityGraph.init();
+  });
+
+
+
 
 });
 
