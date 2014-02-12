@@ -22,6 +22,8 @@
         find(d.name, d);
       });
 
+      console.log(classes)
+
       return map[""];
     },
 
@@ -41,7 +43,7 @@
           imports.push({source: map[d.name], target: map[i]});
         });
       });
-
+      console.log(imports)
       return imports;
     }
 
