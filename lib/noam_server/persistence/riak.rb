@@ -9,6 +9,7 @@ module NoamServer
     class Riak < Base
 
       def initialize(config)
+        @connected = false
         @client = ::Riak::Client.new(config)
         if @client.ping
           @connected = true

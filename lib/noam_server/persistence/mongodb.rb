@@ -8,12 +8,12 @@ module NoamServer
       attr_accessor :ip, :port, :db
 
       def initialize(config)
-        puts config
         @connected = false
         @ip = config[:ip] || 'localhost'
         @port = config[:port] || 27017
         @db = config[:db] || 'noam-server-data'
         NoamLogging.info(self, "Using MongoDB database '#{@db}' as Persistent Store")
+        NoamLogging.info(self,  "config: #{config.inspect}")
         NoamLogging.info(self, "Server at #{@ip}:#{@port}")
         connect
       end

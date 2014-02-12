@@ -14,7 +14,11 @@ module NoamServer
         @instance
       end
 
-      def initialize
+      def self.reset
+        @instance = nil
+      end
+
+      def initialize(config)
         @connected = false
       end
 
@@ -33,9 +37,7 @@ module NoamServer
       end
 
       def clear(bucket_name)
-
       end
-      
     end
   end
 end
