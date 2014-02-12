@@ -48,7 +48,7 @@ $(function() {
       var _players = results['players'];
       for(lemma_id in _players){
         if(!(lemma_id in players)){
-          players[lemma_id] = new Player(_players[lemma_id]); 
+          players[lemma_id] = new Player(_players[lemma_id]);
         } else {
           players[lemma_id].update(_players[lemma_id]);
         }

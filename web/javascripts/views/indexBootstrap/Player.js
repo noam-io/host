@@ -29,10 +29,8 @@ Player.prototype.createElementCallbacks = function(){
 
 Player.prototype.update = function(player){
 	var updated = false;
-	var updatedPlayHear = 	('hears' in this && this['hears'] != player['hears']) ||
-							('plays' in this && this['plays'] != player['plays']);
-	console.log(('hears' in this) + " && " + (this['hears'] != player['hears']) + " || "+
-				('plays' in this) + " && " + (this['plays'] != player['plays']));
+	var updatedPlayHear = 	('hears' in this) && _.union(this['hears'], player['hears']).length != this['hears'].length &&
+							('plays' in this) && _.union(this['plays'], player['plays']).length != this['hears'].length;
 	for(key in player){
 		updated = updated || (key in this && this[key] != player[key]);
 		this[key] = player[key];
