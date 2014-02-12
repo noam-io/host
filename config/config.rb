@@ -3,6 +3,7 @@ require 'noam_server/server_name'
 require 'socket'
 
 CONFIG = {}
+CONFIG[:room_name] = "Noam"
 CONFIG[:web_server_port] = 8081
 CONFIG[:broadcast_port] = 1030
 CONFIG[:listen_port] = 7733
@@ -36,7 +37,7 @@ CONFIG[:mongodb] = { :ip => 'localhost', :port => 27017, :db => 'noam-server-dat
 CONFIG[:logging] = { }
 
 # Level of logging to use by default
-CONFIG[:logging][:level] = :info
+CONFIG[:logging][:level] = :debug
 
 # Pattern to use for all logging messages
 #    %d - date

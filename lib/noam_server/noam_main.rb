@@ -4,6 +4,7 @@ require 'noam_server/noam_server'
 require 'noam_server/persistence/factory'
 require 'noam_server/server_locator'
 require 'noam_server/udp_broadcaster'
+require 'noam_server/udp_listener'
 require 'noam_server/web_socket_server'
 
 module NoamServer
@@ -25,16 +26,18 @@ module NoamServer
 
       @server = NoamServer.new(@config[:listen_port])
       @webserver = WebSocketServer.new(@config[:web_socket_port])
-      @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],
-                                        @config[:listen_port])
-      @server_locator = ServerLocator.new(@config[:broadcast_port])
+      # @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],
+      #                                   @config[:listen_port])
+      #@server_locator = ServerLocator.new(@config[:broadcast_port])
+      @marcopolo = UdpListener.new()
     end
 
     def start
       begin
         @server.start
         @webserver.start
-        @server_locator.start
+      #  @server_locator.start
+        @marcopolo.start(@config[:broadcast_port], @config[:listen_port], @config[:room_name])
       rescue Errno::EADDRINUSE
         NoamLogging.warn("Exiting due to ports already being occupied")
         fire_server_started_callback
@@ -45,9 +48,9 @@ module NoamServer
         raise
       end
 
-      EventMachine.add_periodic_timer(2) do
-        @broadcaster.go
-      end
+      # EventMachine.add_periodic_timer(2) do
+      #   @broadcaster.go
+      # end
     end
 
   end
