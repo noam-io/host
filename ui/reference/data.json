@@ -15,6 +15,14 @@
       "system_version":"1.0",
       "hears":["sentFromObject1"],
       "plays":["sentFromObject2"]
+    },
+    "Object3":{
+      "spalla_id":"Object3",
+      "device_type":"web",
+      "last_activity":" 9.27.36",
+      "system_version":"1.0",
+      "hears":["sentFromObject1"],
+      "plays":["sentFromObject2"]
     }
   },
   "events":{
