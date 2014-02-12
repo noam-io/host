@@ -3,6 +3,27 @@
 
 function Channel(channel, players){
 	this.update(channel, players);
+	this.cb = {};
+}
+
+
+Channel.prototype.getObj = function(){
+	return $("#Channels .table tbody .channel[channel-name="+this.name+"]");
+}
+
+
+Channel.prototype.addCB = function(name, cb){
+	this.cb[name] = cb;
+}
+
+Channel.prototype.createElementCallbacks = function(){
+	var self = this;
+	self.getObj().click(function(){
+		$(".channel").removeClass('active');
+		if(detailViewManager.toggleTopic(self)){
+			self.getObj().addClass('active');
+		}
+	});
 }
 
 
@@ -14,6 +35,11 @@ Channel.prototype.update = function(channel, players){
 	}
 	if(updated){
 		this.draw(players);
+		this.highlight();
+		activityGraph.addActivity(channel_name);
+		for(cbName in this.cb){
+			this.cb[cbName](this);
+		}
 	}
 }
 
@@ -55,19 +81,10 @@ Channel.prototype.highlight = function(){
 
 Channel.prototype.draw = function(players){
 	var self = this;
-	var selector = "#Channels .table tbody .channel[channel-name="+this.name+"]";
-	var obj = $(selector);
+	var obj = self.getObj();
 	if(obj.size() == 0){
 		$("#Channels .table tbody").append(this.toTR(players));
-		$(selector).click(function(){
-			$("#sendMessage .sendMessageChannel").html(self.name);
-			$("#sendMessage #sendMessageChannel").val(self.name);
-			$("#sendMessage .sendMessageValue").val('');
-			$("#sendMessage").modal();
-			setTimeout(function(){
-				$("#sendMessage .sendMessageValue").focus();
-			}, 500);
-		});
+		this.createElementCallbacks();
 	} else {
 		obj = $(obj[0]);
 		obj.find('.timestamp').html(this.timestamp);

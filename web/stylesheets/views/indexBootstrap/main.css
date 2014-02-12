@@ -1,0 +1,91 @@
+
+
+/* Custom Grid View Styles */
+.player {
+	
+	cursor: pointer;
+}
+
+.player:hover {
+	background-color: #EEEEFF;
+}
+
+.table>thead>tr>.player.active {
+	background-color: #CCCCFF;
+}
+
+.table>tbody>tr.active>td {
+	background-color:rgba(0,0,255,0.1);
+}
+
+
+
+/* Lemma Detail Popup Styles */
+#detailPane {
+	position: fixed;
+	top: 100px;
+	right: -400px;
+	width: 400px;
+	height: 500px;
+
+	padding: 10px;
+	background-color: #F0F0F0;
+}
+
+#detailPane .handle {
+	cursor: pointer;
+	float: left;
+	width: 40px;
+	margin-top: -10px;
+	margin-left: -52px;
+	background-color: #F0F0F0;
+	text-align: center;
+	font-size: 18px;
+	line-height: 18px;
+	padding:10px 5px;
+}
+
+#detailPane #detailViews .newWindow {
+	float: right;
+	font-size: 10px;
+}
+
+#detailPane #detailViews .name {
+	font-weight: bold;
+	font-size: 18px;
+}
+
+#detailPane #detailViews .ip {
+	font-size: 18px;
+}
+
+#detailPane #detailViews .joinedAt {
+	padding: 5px;
+}
+
+
+/* Graphic Holders */
+#activityGraph {
+	font-size: 10px;
+}
+
+#activityGraph .axis path,
+#activityGraph .axis  {
+  fill: none;
+  stroke: #000;
+}
+
+#activityGraph .topic,
+#activityGraph line.topic  {
+	stroke-width: 3px;
+}
+
+#activityGraph line.topic.topic-hear {
+	stroke: #00A99D;
+}
+
+#activityGraph line.topic.topic-play {
+	stroke: #F7931E;
+}
+
+
