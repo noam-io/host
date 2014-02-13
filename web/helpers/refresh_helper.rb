@@ -17,6 +17,7 @@ def display_escaped(value)
     CGI.escapeHTML(value.to_s)
 end
 
+# Includes milliseconds so receiver can differential fine-grained updates
 def format_date( date )
-  date.strftime( "%l.%M.%S" ) if date
+  date.strftime( "%Y-%m-%dT%H:%M:%S:%L%z" ) if date
 end
