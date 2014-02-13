@@ -102,10 +102,12 @@ svg.append("svg:path")
     .on("mousedown", mousedown);
 
 d3.json("flare-imports.json", function(classes) {
-  console.log(packages.root(classes));
+  console.log("packages.root",packages.root(classes));
   var nodes = cluster.nodes(packages.root(classes)),
       links = packages.imports(nodes),
       splines = bundle(links);
+
+      console.log('nodes', nodes)
 
       console.log('links',links);
 

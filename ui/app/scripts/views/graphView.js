@@ -9,8 +9,8 @@ ui.Views = ui.Views || {};
     	el: '.graph',
         div: null,
         d: {
-            w: 960,
-            h: 960,
+            w: 1280,
+            h: 800,
             rx: 960/2,
             ry: 960/2
         },
@@ -62,10 +62,10 @@ ui.Views = ui.Views || {};
                 .tension(.85)
                 .radius( function(d) {
                     return d.y;
-                })
+                    })
                 .angle( function(d) {
                     return d.x/180 * Math.PI;
-                });
+                    });
 
             // Generates the containing div
             this.div = d3.select(this.el)
@@ -74,6 +74,7 @@ ui.Views = ui.Views || {};
                 .style("height", this.d.h + "px")
                 .style("position", "absolute")
                 .style("-webkit-backface-visibility", "hidden");
+
             // Binds svg to the containing div
             this.svg = this.div.append('svg:svg')
                 .attr('width',this.d.w)
@@ -81,6 +82,11 @@ ui.Views = ui.Views || {};
                 .append('svg:g')
                 .attr('transform','translate(' + this.d.rx + ',' + this.d.ry + ')' );
 
+            // Draw background
+            this.svg.append("svg:path")
+                .attr("class", "arc")
+                .attr("d", d3.svg.arc().outerRadius(this.d.ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
+            // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
                 .tension(.85)
@@ -94,11 +100,12 @@ ui.Views = ui.Views || {};
 
             d3.json(this.fakeData, function(data) {
 
-                var d = _this.pruneDataForViz(data),
-                    nodes = _this.cluster.nodes(d),
+                var d = _this.mapToNodes(data),
+                    nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
                     links = _this.getConnections(nodes),
                     splines = _this.bundle(links);
 
+                console.log('nodes',nodes)
                 console.log('links',links)
                 console.log('splines',splines);
  
@@ -114,89 +121,91 @@ ui.Views = ui.Views || {};
                     .data(nodes)
                     .enter().append("svg:g")
                     .attr('class','node')
-                    .attr('id', function(d){ return "node-" + d.id});
+                    .attr('id', function(d){ return "node-" + d.key});
 
                 _this.svg.selectAll("g.node")
                     .data(nodes.filter(function(n) { return !n.children; }))
-                    .enter().append("svg:g")
+                .enter().append("svg:g")
                     .attr("class", "node")
                     .attr("id", function(d) { return "node-" + d.key; })
                     .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-                    .append("svg:text")
+                .append("svg:text")
                     .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
                     .attr("dy", ".31em")
                     .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
                     .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                    .text(function(d) { return d.id; })
+                    .text(function(d) { return d.key; })
                 }); 
         },
 
 
         // For sanity
-        pruneDataForViz: function(data) {
-            var d = {};
-            _.each(data.players, function(v,i) {
-                // Define structure
-                d[v.spalla_id] = {};
-                d[v.spalla_id].id = v.spalla_id;
-                d[v.spalla_id].in = [];
-                d[v.spalla_id].out = [];
-                d[v.spalla_id].parent = null;
-                d[v.spalla_id].children = null;
-                d[v.spalla_id].depth = 0;
-                // Populate data coming in
-                _.each(v.hears, function(val,iter) {
-                    d[v.spalla_id].in.push(val);
-                });
-                // Populate data coming out
-                _.each(v.plays, function(val,iter) {
-                    d[v.spalla_id].out.push(val);
-                });
+        mapHierarchy: function(data) {
+            var map = {};
+
+            function find(name, data) {
+                var node = map[name], i;
+                if (!node) {
+                  node = map[name] = data || {name: name, children: []};
+                  if (name.length) {
+                    node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
+                    node.parent.children.push(node);
+                    node.key = name.substring(i + 1);
+                  }
+                }
+                // console.log(node)
+                return node;
+            }
+
+            _.each( data, function(d, i) {
+                find(d.name, d);
             });
-            return d;
-        },
 
+            // console.log('classes',classes)
 
-        // What is a lemma hearing?
-        getAllTopics: function(data) {
-            var map=[];
-            _.map(data.players, function(d) {
-                _.each(d.hears, function(val,iter) {
-                    map.push(val);
-                });
-                _.each(d.plays, function(val,iter) {
-                    map.push(val);
-                });
-            })
-            return _.uniq(map);
-        },
-
-        // What is a lemma saying?
-        getParticipants: function(data) {
-            var map = _.map(data.participants, function(d) {
-                return d.id;
-            });
-            console.log(map);
-            return map;
+            return map[""];
         },
 
         // For connectyness        
-        getConnections: function(data) {
-            var map = {}, d = [];
-            console.log(data);
-            _.each(data, function(e,r) {
-                _.each(e, function(list,i) {
-                    _.each(list.out, function(s, j) {
-                        var targetId = s.split('sentFrom')[1];
-                        // console.log(targetId)
-                        var target = _.findWhere(e, {id:targetId})
-                        // console.log(target)
-                        d.push({ source: list, target: target});
-                    })
-                })
+        getConnections: function(nodes) {
+            var map = {},
+              imports = [];
+
+            // Compute a map from name to node.
+            nodes.forEach(function(d) {
+                map[d.name] = d;
             });
-            console.log(d)
-            return d;
+
+            // For each import, construct a link from the source to target node.
+            nodes.forEach(function(d) {
+            if (d.imports) d.imports.forEach(function(i) {
+              imports.push({source: map[d.name], target: map[i]});
+            });
+            });
+            console.log(imports)
+            return imports;
+        },
+
+        mapToNodes: function(data) {
+            var map=[];
+            _.each(data.players, function(val,iter) {
+                var i={}, o={};
+                i.name = 'root.' + val.spalla_id + '.in';
+                i.imports = [];
+                _.each(val.hears, function(dat,jter) {
+                    i.imports.push('root.' + dat.split('sentFrom')[1] + '.out');
+                });
+
+                o.name = 'root.' + val.spalla_id + '.out';
+                o.imports = [];
+                _.each(val.plays, function(dat,jter) {
+                    o.imports.push('root.' + dat.split('sentFrom')[1] + '.in');
+                });
+
+                map.push(i);
+                map.push(o);
+            })
+            return map;
         },
 
     });
