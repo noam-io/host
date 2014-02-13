@@ -193,6 +193,7 @@ function mouseover(d) {
 }
 
 function mouseout(d) {
+  console.log(svg,d);
   svg.selectAll("path.link.source-" + d.key)
       .classed("source", false)
       .each(updateNodes("target", false));
@@ -203,7 +204,9 @@ function mouseout(d) {
 }
 
 function updateNodes(name, value) {
+
   return function(d) {
+    console.log('updateNodes',this)
     if (value) this.parentNode.appendChild(this);
     svg.select("#node-" + d[name].key).classed(name, value);
   };

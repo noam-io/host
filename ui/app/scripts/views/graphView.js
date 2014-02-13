@@ -10,7 +10,7 @@ ui.Views = ui.Views || {};
         div: null,
         d: {
             w: 1280,
-            h: 800,
+            h: 960,
             rx: 960/2,
             ry: 960/2
         },
@@ -85,7 +85,11 @@ ui.Views = ui.Views || {};
             // Draw background
             this.svg.append("svg:path")
                 .attr("class", "arc")
-                .attr("d", d3.svg.arc().outerRadius(this.d.ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
+                .attr("d", d3.svg.arc()
+                    .outerRadius(this.d.ry-120)
+                    .innerRadius(0)
+                    .startAngle(0)
+                    .endAngle(2 * Math.PI))
 
             // Line generator
             this.line = d3.svg.line.radial()
@@ -106,15 +110,16 @@ ui.Views = ui.Views || {};
                     links = _this.getConnections(nodes),
                     splines = _this.bundle(links);
 
-                console.log('nodes',nodes)
-                console.log('links',links)
+                console.log('mappedData',d);
+                console.log('nodes',nodes);
+                console.log('links',links);
                 console.log('splines',splines);
  
 
                 var path = _this.svg.selectAll("path.link")
                     .data(links)
                     .enter().append("svg:path")
-                    .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
+                    .attr("class", function(d) { return "link name-" + d.source.name.split('.')[1] + " source-" + d.source.name.split('.')[1] + " target-" + d.target.name.split('.')[1]; })
                     .attr("d", function(d, i) { return _this.line(splines[i]); });
 
 
@@ -129,11 +134,51 @@ ui.Views = ui.Views || {};
                       .attr("dy", ".31em")
                       .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
                       .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                      .text(function(d) { return d.name.split('root.')[1]; })
+                      .text(function(d) { return d.name.split('participant.')[1]; })
+                      .on("mouseover", _this.mouseon)
+                      .on("mouseout", _this.mouseoff);
+
+                _this.drawCategory(nodes);
           });
+        },
+
+
+        drawCategory: function(nodes) {
+            var _this = this;
+            var groups = this.svg.selectAll("g.group")
+              .data(nodes.filter(function(d) {
+                 return d.children;
+             }))
+            .enter().append("group")
+              .attr("class", "group");
+
+            var groupArc = d3.svg.arc()
+                .innerRadius(this.d.ry-20)
+                .outerRadius(this.d.ry+20)
+                .startAngle(function(d){ var r=_this.getAngles(d.children); return r.min ;})
+                .endAngle(function(d){ var r=_this.getAngles(d.children); return r.max; });
+
+            this.svg.selectAll("g.arc")
+                .data(groups[0])
+                .enter().append("arc")
+                .attr("d", groupArc)
+                .attr("class", "arc")
+                .append("svg:text")
 
         },
 
+        getAngles: function(data) {
+            var min,max = 0;
+            console.log('getAnglesInput',data.length)
+            if(data.length === 0) return { min: 0, max:0 };
+            min = max = data[0].x;
+            data.forEach(function(d){
+               if(d.x < min) min = d.x;
+               if(d.x > max) max = d.x;
+            });
+            console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
+            return { min: min-2 * (pi/180), max: max+2 * (pi/180)};
+        },
 
         // For sanity
         mapHierarchy: function(data) {
@@ -186,25 +231,57 @@ ui.Views = ui.Views || {};
             var map=[];
             _.each(data.players, function(val,iter) {
                 var i={}, o={};
-                i.name = 'root.' + val.spalla_id + '.in';
+                i.name = 'participant.' + val.spalla_id + '.in';
                 i.size = Math.random() * 5000;
                 i.imports = [];
                 _.each(val.hears, function(dat,jter) {
-                    i.imports.push('root.' + dat.split('sentFrom')[1] + '.out');
+                    i.imports.push('participant.' + dat.split('sentFrom')[1] + '.out');
                 });
 
-                o.name = 'root.' + val.spalla_id + '.out';
+                o.name = 'participant.' + val.spalla_id + '.out';
                 o.size = Math.random() * 5000;
                 o.imports = [];
-                _.each(val.plays, function(dat,jter) {
-                    o.imports.push('root.' + dat.split('sentFrom')[1] + '.in');
-                });
+                // Commented this out, causes Lemmas that talk to eachother
+                // _.each(val.plays, function(dat,jter) {
+                //     o.imports.push('participant.' + dat.split('sentFrom')[1] + '.in');
+                // });
 
                 map.push(i);
                 map.push(o);
             })
             return map;
         },
+
+        mouseon: function(d) {
+            var _this = window.ui.graphView;
+            console.log('mouseon',d.name)
+            _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
+              .classed("target", true)
+              .each(_this.updateNodes("source", true));
+
+            _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
+              .classed("source", true)
+              .each(_this.updateNodes("target", true));
+            },
+ 
+        mouseoff:function(d) {
+            var _this = window.ui.graphView;
+            _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
+              .classed("source", false)
+              .each(_this.updateNodes("target", false));
+
+            _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
+              .classed("target", false)
+              .each(_this.updateNodes("source", false));
+        },
+        updateNodes: function(name, value) {
+            var _this = window.ui.graphView;
+          return function(d) {
+            console.log('updateNotdes',this)
+            if (value) this.parentNode.appendChild(this);
+            _this.svg.select("#node-" + d[name].key).classed(name, value);
+          };
+        }
 
     });
 
