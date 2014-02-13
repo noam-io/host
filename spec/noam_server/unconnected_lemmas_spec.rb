@@ -10,19 +10,17 @@ describe NoamServer::UnconnectedLemmas do
   end
 
   it "leaves unexpired lemmas alone" do
-    seconds_ago = 2
-    entry = { :last_activity_timestamp => @now - 2 }
-    NoamServer::UnconnectedLemmas.instance["lemma #1"] = entry
+    entry = { :name => "lemma #1", :last_activity_timestamp => @now - 2 }
+    NoamServer::UnconnectedLemmas.instance.add(entry)
     NoamServer::UnconnectedLemmas.reap
-    NoamServer::UnconnectedLemmas.instance["lemma #1"].should == entry
+    NoamServer::UnconnectedLemmas.instance.get("lemma #1").should == entry
   end
 
   it "reaps stale lemmas" do
-    seconds_ago = 30
-    entry = { :last_activity_timestamp => @now - 30 }
-    NoamServer::UnconnectedLemmas.instance["lemma #1"] = entry
+    entry = { :name => "lemma #1", :last_activity_timestamp => @now - 30 }
+    NoamServer::UnconnectedLemmas.instance.add(entry)
     NoamServer::UnconnectedLemmas.reap
-    NoamServer::UnconnectedLemmas.instance.has_key?("lemma #1").should == false
+    NoamServer::UnconnectedLemmas.instance.get("lemma #1").should == nil
   end
 end
 
