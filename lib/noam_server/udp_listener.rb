@@ -14,11 +14,12 @@ module NoamServer
         peername = get_peername
         port, ip = Socket.unpack_sockaddr_in(peername)
         if message.room_name == @room_name
-          NoamLogging.info(self, "Sending polo #{@polo.inspect} to #{ip}:#{port}")
+          NoamLogging.debug(self, "Sending polo #{@polo.inspect} to #{ip}:#{port}")
           send_data(@polo)
         else
           remember_unconnected_lemma(ip, port, message)
           if grabbable_lemma?(message)
+            NoamLogging.debug(self, "Sending polo #{@polo.inspect} to grabbed lemma: #{ip}:#{port}")
             send_data(@polo)
           end
         end
