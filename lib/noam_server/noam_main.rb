@@ -2,7 +2,6 @@ require 'config'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'noam_server/persistence/factory'
-require 'noam_server/server_locator'
 require 'noam_server/udp_broadcaster'
 require 'noam_server/udp_listener'
 require 'noam_server/unconnected_lemmas'
@@ -27,9 +26,9 @@ module NoamServer
 
       @server = NoamServer.new(@config[:listen_port])
       @webserver = WebSocketServer.new(@config[:web_socket_port])
-      # @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],
-      #                                   @config[:listen_port])
-      #@server_locator = ServerLocator.new(@config[:broadcast_port])
+      @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],
+                                        @config[:server_name],
+                                        @config[:web_server_port])
       @marcopolo = UdpListener.new
     end
 
@@ -37,7 +36,6 @@ module NoamServer
       begin
         @server.start
         @webserver.start
-      #  @server_locator.start
         @marcopolo.start(@config[:broadcast_port], @config[:listen_port], @config[:server_name])
       rescue Errno::EADDRINUSE
         NoamLogging.warn("Exiting due to ports already being occupied")
@@ -50,6 +48,7 @@ module NoamServer
       end
 
       EventMachine.add_periodic_timer(2) do
+        @broadcaster.go
         UnconnectedLemmas.instance.reap
         NoamLogging.debug(self, "UnconnectedLemmas: #{UnconnectedLemmas.instance}")
         LocatedServers.instance.reap
