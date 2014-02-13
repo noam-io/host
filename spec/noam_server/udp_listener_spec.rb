@@ -1,3 +1,4 @@
+require 'noam_server/grabbed_lemmas'
 require 'noam_server/udp_listener'
 require 'noam/messages'
 
@@ -22,6 +23,26 @@ describe "UDP Listener" do
     connection.room_name = "Foo"
     marco = Noam::Messages.build_marco("lemma", "Foo")
     connection.should_receive(:send_data).with("polo message")
+    connection.receive_data(marco)
+  end
+
+  it "responds with a polo if a grab has been requested" do
+    connection = TestUdpConnection.new
+    connection.polo = "polo message"
+    connection.room_name = "Foo"
+    NoamServer::GrabbedLemmas.instance.add("lemma #1")
+    marco = Noam::Messages.build_marco("lemma #1", "")
+    connection.should_receive(:send_data).with("polo message")
+    connection.receive_data(marco)
+  end
+
+  it "does NOT respond with a polo when there's a non-blank room, even if a grab has been requested" do
+    connection = TestUdpConnection.new
+    connection.polo = "polo message"
+    connection.room_name = "Foo"
+    NoamServer::GrabbedLemmas.instance.add("lemma #1")
+    marco = Noam::Messages.build_marco("lemma #1", "Another Room")
+    connection.should_not_receive(:send_data)
     connection.receive_data(marco)
   end
 

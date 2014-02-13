@@ -1,5 +1,6 @@
 require 'noam/messages'
 require 'noam_server/noam_logging'
+require 'noam_server/grabbed_lemmas'
 require 'noam_server/unconnected_lemmas'
 require 'socket'
 
@@ -15,28 +16,32 @@ module NoamServer
         if message.room_name == @room_name
           NoamLogging.info(self, "Sending polo #{@polo.inspect} to #{ip}:#{port}")
           send_data(@polo)
-          # TODO: something like...
-          # elsif message.room_name.to_s == ""
-          #   if UnconnectedLemmas.grab_requested?(message.spalla_id)
-          #     send_data(@grab_request)
-          #   end
         else
-          # not responding because of room name mismatch
-          UnconnectedLemmas.instance.add({
-            :name => message.spalla_id,
-            :desired_room_name => message.room_name,
-            :device_type => message.device_type,
-            :system_version => message.system_version,
-            :ip => ip,
-            :port => port,
-            :last_activity_timestamp => Time.now.getutc
-          })
+          remember_unconnected_lemma(ip, port, message)
+          if grabbable_lemma?(message)
+            send_data(@polo)
+          end
         end
       else
         NoamLogging.info(self, "UDP handler dropped message because it was not a 'marco' message #{message.inspect}")
       end
     end
 
+    def remember_unconnected_lemma(ip, port, message)
+      UnconnectedLemmas.instance.add({
+        :name => message.spalla_id,
+        :desired_room_name => message.room_name,
+        :device_type => message.device_type,
+        :system_version => message.system_version,
+        :ip => ip,
+        :port => port,
+        :last_activity_timestamp => Time.now.getutc
+      })
+    end
+
+    def grabbable_lemma?(message)
+      message.room_name.to_s == "" && GrabbedLemmas.instance.include?(message.spalla_id)
+    end
   end
 
   class UdpListener
