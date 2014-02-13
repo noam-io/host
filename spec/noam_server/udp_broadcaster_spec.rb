@@ -40,11 +40,6 @@ describe NoamServer::UdpBroadcaster do
     broadcaster.go
   end
 
-  it "broadcasts localhost" do
-    set_expectation( "127.0.0.1" )
-    broadcaster.go
-  end
-
   it "can broadcast multiple times" do
     set_expectation( broadcast_ip_1 )
     set_expectation( broadcast_ip_1 )
