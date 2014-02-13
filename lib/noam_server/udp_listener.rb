@@ -22,7 +22,7 @@ module NoamServer
           #   end
         else
           # not responding because of room name mismatch
-          UnconnectedLemmas.instance[message.spalla_id] = {
+          UnconnectedLemmas.instance.add({
             :name => message.spalla_id,
             :desired_room_name => message.room_name,
             :device_type => message.device_type,
@@ -30,7 +30,7 @@ module NoamServer
             :ip => ip,
             :port => port,
             :last_activity_timestamp => Time.now.getutc
-          }
+          })
         end
       else
         NoamLogging.info(self, "UDP handler dropped message because it was not a 'marco' message #{message.inspect}")

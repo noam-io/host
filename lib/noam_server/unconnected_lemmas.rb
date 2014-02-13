@@ -28,6 +28,10 @@ module NoamServer
       @lemmas.clear
     end
 
+    def to_s
+      @lemmas.inspect
+    end
+
     def reap
       staleness_timeout = 10
       staleness_threshold = Time.now.getutc - staleness_timeout

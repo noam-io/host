@@ -6,7 +6,7 @@ require 'noam_server/player_connection'
 require 'noam_server/unconnected_lemmas'
 
 describe NoamServer::Orchestra do
-  let(:unconnected_lemmas) { {} }
+  let(:unconnected_lemmas) { NoamServer::UnconnectedLemmas.new }
   let(:orchestra) { described_class.new }
 
   let(:id_1) { 'Arduino #1' }
@@ -40,10 +40,10 @@ describe NoamServer::Orchestra do
   end
 
   it "deletes newly-registered players from the unconnected list" do
-    NoamServer::UnconnectedLemmas.instance[id_1] = {:name => id_1}
-    NoamServer::UnconnectedLemmas.instance[id_1].should_not == nil
+    NoamServer::UnconnectedLemmas.instance.add({:name => id_1})
+    NoamServer::UnconnectedLemmas.instance.get(id_1).should_not == nil
     orchestra.register(connection_1, player_1)
-    NoamServer::UnconnectedLemmas.instance[id_1].should == nil
+    NoamServer::UnconnectedLemmas.instance.get(id_1).should == nil
   end
 
   it "fires players" do

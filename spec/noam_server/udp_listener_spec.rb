@@ -9,7 +9,7 @@ class TestUdpConnection
 end
 
 describe "UDP Listener" do
-  let (:unconnected_lemmas) { {} }
+  let (:unconnected_lemmas) { NoamServer::UnconnectedLemmas.new }
 
   before :each do
     Socket.stub(:unpack_sockaddr_in).and_return([1234, "127.0.0.1"])
@@ -38,14 +38,14 @@ describe "UDP Listener" do
     connection.room_name = "Foo"
     marco = Noam::Messages.build_marco("lemmaID", "Another")
 
-    NoamServer::UnconnectedLemmas.instance["lemmaID"].should == nil
+    NoamServer::UnconnectedLemmas.instance.get("lemmaID").should == nil
 
     now = Time.now
     Time.stub(:now).and_return(now)
 
     connection.receive_data(marco)
 
-    NoamServer::UnconnectedLemmas.instance["lemmaID"].should == {
+    NoamServer::UnconnectedLemmas.instance.get("lemmaID").should == {
       :name => "lemmaID",
       :desired_room_name => "Another",
       :port => 1234,
