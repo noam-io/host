@@ -86,6 +86,7 @@ ui.Views = ui.Views || {};
             this.svg.append("svg:path")
                 .attr("class", "arc")
                 .attr("d", d3.svg.arc().outerRadius(this.d.ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
+
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
@@ -117,25 +118,20 @@ ui.Views = ui.Views || {};
                     .attr("d", function(d, i) { return _this.line(splines[i]); });
 
 
-                _this.svg.selectAll('g.node')
-                    .data(nodes)
-                    .enter().append("svg:g")
-                    .attr('class','node')
-                    .attr('id', function(d){ return "node-" + d.key});
-
                 _this.svg.selectAll("g.node")
-                    .data(nodes.filter(function(n) { return !n.children; }))
-                .enter().append("svg:g")
-                    .attr("class", "node")
-                    .attr("id", function(d) { return "node-" + d.key; })
-                    .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-                .append("svg:text")
-                    .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
-                    .attr("dy", ".31em")
-                    .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-                    .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                    .text(function(d) { return d.key; })
-                }); 
+                      .data(nodes.filter(function(n) { return !n.children; }))
+                    .enter().append("svg:g")
+                      .attr("class", "node")
+                      .attr("id", function(d) { return "node-" + d.key; })
+                      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+                    .append("svg:text")
+                      .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+                      .attr("dy", ".31em")
+                      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+                      .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+                      .text(function(d) { return d.name.split('root.')[1]; })
+          });
+
         },
 
 
@@ -178,9 +174,9 @@ ui.Views = ui.Views || {};
 
             // For each import, construct a link from the source to target node.
             nodes.forEach(function(d) {
-            if (d.imports) d.imports.forEach(function(i) {
-              imports.push({source: map[d.name], target: map[i]});
-            });
+                if (d.imports) d.imports.forEach(function(i) {
+                  imports.push({source: map[d.name], target: map[i]});
+                });
             });
             console.log(imports)
             return imports;
@@ -191,12 +187,14 @@ ui.Views = ui.Views || {};
             _.each(data.players, function(val,iter) {
                 var i={}, o={};
                 i.name = 'root.' + val.spalla_id + '.in';
+                i.size = Math.random() * 5000;
                 i.imports = [];
                 _.each(val.hears, function(dat,jter) {
                     i.imports.push('root.' + dat.split('sentFrom')[1] + '.out');
                 });
 
                 o.name = 'root.' + val.spalla_id + '.out';
+                o.size = Math.random() * 5000;
                 o.imports = [];
                 _.each(val.plays, function(dat,jter) {
                     o.imports.push('root.' + dat.split('sentFrom')[1] + '.in');
