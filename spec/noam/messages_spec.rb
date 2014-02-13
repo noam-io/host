@@ -94,6 +94,15 @@ describe Noam::Messages do
     parsed.room_name.should == "Room Name"
     parsed.device_type.should == "java"
     parsed.system_version.should == "1.1"
+  end
 
+  it "should build and parse a server_beacon message" do
+    message = ["server_beacon", "Room Name", 8888].to_json
+    built = described_class.build_server_beacon("Room Name", 8888)
+    built.should == message
+    parsed = described_class.parse(message)
+    parsed.room_name.should == "Room Name"
+    parsed.message_type.should == "server_beacon"
+    parsed.http_port.should == 8888
   end
 end

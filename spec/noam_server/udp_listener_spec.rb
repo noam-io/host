@@ -1,4 +1,5 @@
 require 'noam_server/grabbed_lemmas'
+require 'noam_server/located_servers'
 require 'noam_server/udp_listener'
 require 'noam/messages'
 
@@ -11,10 +12,12 @@ end
 
 describe "UDP Listener" do
   let (:unconnected_lemmas) { NoamServer::UnconnectedLemmas.new }
+  let (:located_servers) { NoamServer::LocatedServers.new }
 
   before :each do
     Socket.stub(:unpack_sockaddr_in).and_return([1234, "127.0.0.1"])
     NoamServer::UnconnectedLemmas.stub(:instance).and_return(unconnected_lemmas)
+    NoamServer::LocatedServers.stub(:instance).and_return(located_servers)
   end
 
   it "should respond to marco with polo" do
@@ -81,6 +84,27 @@ describe "UDP Listener" do
     connection = TestUdpConnection.new
     connection.should_not_receive(:send_data)
     connection.receive_data("crap message")
+  end
+
+  it "saves located server information" do
+    connection = TestUdpConnection.new
+    connection.room_name = "This Room ID"
+    beacon = Noam::Messages.build_server_beacon("Another Room ID", 9876)
+
+    NoamServer::LocatedServers.instance.get("Another Room ID").should == nil
+
+    now = Time.now
+    Time.stub(:now).and_return(now)
+
+    connection.receive_data(beacon)
+
+    NoamServer::LocatedServers.instance.get("Another Room ID").should == {
+      :name => "Another Room ID",
+      :http_port => 9876,
+      :beacon_port => 1234,
+      :ip => "127.0.0.1",
+      :last_activity_timestamp => now.getutc
+    }
   end
 
 end

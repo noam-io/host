@@ -50,8 +50,10 @@ module NoamServer
       end
 
       EventMachine.add_periodic_timer(2) do
-        UnconnectedLemmas.reap
+        UnconnectedLemmas.instance.reap
         NoamLogging.debug(self, "UnconnectedLemmas: #{UnconnectedLemmas.instance}")
+        LocatedServers.instance.reap
+        NoamLogging.debug(self, "LocatedServers: #{LocatedServers.instance}")
       end
     end
 

@@ -1,6 +1,7 @@
 require 'noam/messages'
 require 'noam_server/noam_logging'
 require 'noam_server/grabbed_lemmas'
+require 'noam_server/located_servers'
 require 'noam_server/unconnected_lemmas'
 require 'socket'
 
@@ -11,8 +12,7 @@ module NoamServer
     def receive_data(message)
       message = Noam::Messages.parse(message)
       if message.message_type == "marco"
-        peername = get_peername
-        port, ip = Socket.unpack_sockaddr_in(peername)
+        port, ip = get_port_and_ip
         if message.room_name == @room_name
           NoamLogging.debug(self, "Sending polo #{@polo.inspect} to #{ip}:#{port}")
           send_data(@polo)
@@ -23,9 +23,17 @@ module NoamServer
             send_data(@polo)
           end
         end
+      elsif message.message_type == "server_beacon"
+        port, ip = get_port_and_ip
+        remember_server(ip, port, message)
       else
         NoamLogging.info(self, "UDP handler dropped message because it was not a 'marco' message #{message.inspect}")
       end
+    end
+
+    def get_port_and_ip
+      peername = get_peername
+      Socket.unpack_sockaddr_in(peername)
     end
 
     def remember_unconnected_lemma(ip, port, message)
@@ -36,6 +44,16 @@ module NoamServer
         :system_version => message.system_version,
         :ip => ip,
         :port => port,
+        :last_activity_timestamp => Time.now.getutc
+      })
+    end
+
+    def remember_server(ip, port, message)
+      LocatedServers.instance.add({
+        :name => message.room_name,
+        :http_port => message.http_port,
+        :ip => ip,
+        :beacon_port => port,
         :last_activity_timestamp => Time.now.getutc
       })
     end
