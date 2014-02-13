@@ -1,9 +1,8 @@
 require 'logging'
-require 'noam_server/server_name'
 require 'socket'
 
 CONFIG = {}
-CONFIG[:room_name] = "Noam"
+CONFIG[:server_name] = "#{Socket.gethostname} - Noam Moderator"
 CONFIG[:web_server_port] = 8081
 CONFIG[:broadcast_port] = 1030
 CONFIG[:listen_port] = 7733
@@ -13,8 +12,6 @@ CONFIG[:web_socket_port] = 8089
 CONFIG[:web_server] = {
 	:time_to_timeout => 10
 }
-
-CONFIG[:server_name] = NoamServer::ServerName.new("#{Socket.gethostname} - Noam Moderator")
 
 # Persistor Types
 # CONFIG[:persistor_class] = :riak
@@ -37,7 +34,7 @@ CONFIG[:mongodb] = { :ip => 'localhost', :port => 27017, :db => 'noam-server-dat
 CONFIG[:logging] = { }
 
 # Level of logging to use by default
-CONFIG[:logging][:level] = :debug
+CONFIG[:logging][:level] = :info
 
 # Pattern to use for all logging messages
 #    %d - date

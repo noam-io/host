@@ -30,7 +30,7 @@ module NoamServer
       # @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],
       #                                   @config[:listen_port])
       #@server_locator = ServerLocator.new(@config[:broadcast_port])
-      @marcopolo = UdpListener.new()
+      @marcopolo = UdpListener.new
     end
 
     def start
@@ -38,7 +38,7 @@ module NoamServer
         @server.start
         @webserver.start
       #  @server_locator.start
-        @marcopolo.start(@config[:broadcast_port], @config[:listen_port], @config[:room_name])
+        @marcopolo.start(@config[:broadcast_port], @config[:listen_port], @config[:server_name])
       rescue Errno::EADDRINUSE
         NoamLogging.warn("Exiting due to ports already being occupied")
         fire_server_started_callback
