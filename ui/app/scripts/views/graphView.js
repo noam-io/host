@@ -115,6 +115,7 @@ ui.Views = ui.Views || {};
                 console.log('links',links);
                 console.log('splines',splines);
  
+                 _this.drawCategory(nodes);
 
                 var path = _this.svg.selectAll("path.link")
                     .data(links)
@@ -138,46 +139,61 @@ ui.Views = ui.Views || {};
                       .on("mouseover", _this.mouseon)
                       .on("mouseout", _this.mouseoff);
 
-                _this.drawCategory(nodes);
+                
           });
         },
 
 
         drawCategory: function(nodes) {
             var _this = this;
+
+            // console.log("filtered nodes",nodes.filter(function(d) { return d.name.split('.').length == 2 ? d : null  && d.children; }));
             var groups = this.svg.selectAll("g.group")
               .data(nodes.filter(function(d) {
-                 return d.children;
+                 console.log("categoryNodeFilter",d);
+                 return d.x ? d : null && d.children;
              }))
             .enter().append("group")
               .attr("class", "group");
 
-            var groupArc = d3.svg.arc()
-                .innerRadius(this.d.ry-20)
-                .outerRadius(this.d.ry+20)
-                .startAngle(function(d){ var r=_this.getAngles(d.children); return r.min ;})
-                .endAngle(function(d){ var r=_this.getAngles(d.children); return r.max; });
 
-            this.svg.selectAll("g.arc")
-                .data(groups[0])
-                .enter().append("arc")
-                .attr("d", groupArc)
-                .attr("class", "arc")
-                .append("svg:text")
+            var groupArc = d3.svg.arc()
+                .innerRadius(this.d.ry-120)
+                .outerRadius(this.d.ry-160)
+                .startAngle(function(d){ var r=_this.getAngles(d.__data__); return r.min; })
+                .endAngle(function(d){ var r=_this.getAngles(d.__data__); return r.max; });
+
+            console.log("groups",groups);
+            console.log("groupArc",groupArc);
+
+          this.svg.selectAll("g.arc")
+            .data(groups[0])
+            .enter().append("svg:path")
+            .attr("d", groupArc)
+            .attr("class", "groupArc")
+            .style("fill", "#1f77b4")
+            .style("fill-opacity", 0.5)
+            .text(function(d){
+                
+            })
 
         },
 
         getAngles: function(data) {
             var min,max = 0;
-            console.log('getAnglesInput',data.length)
-            if(data.length === 0) return { min: 0, max:0 };
-            min = max = data[0].x;
-            data.forEach(function(d){
+            // console.log('getAnglesInput',data.x)
+            if(!data.children) {
+                console.log("Noe kids")
+                return { min: 0, max:0 };
+            }
+            min = max = data.children[0].x;
+           data.children.forEach(function(d){
                if(d.x < min) min = d.x;
                if(d.x > max) max = d.x;
-            });
+           });
+            var pi = Math.PI;
             console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
-            return { min: min-2 * (pi/180), max: max+2 * (pi/180)};
+            return { min: (min-2) * (pi/180), max: (max+2) * (pi/180)};
         },
 
         // For sanity
@@ -231,14 +247,14 @@ ui.Views = ui.Views || {};
             var map=[];
             _.each(data.players, function(val,iter) {
                 var i={}, o={};
-                i.name = 'participant.' + val.spalla_id + '.in';
+                i.name = 'participant.' + val.spalla_id + '.hears';
                 i.size = Math.random() * 5000;
                 i.imports = [];
                 _.each(val.hears, function(dat,jter) {
-                    i.imports.push('participant.' + dat.split('sentFrom')[1] + '.out');
+                    i.imports.push('participant.' + dat.split('sentFrom')[1] + '.plays');
                 });
 
-                o.name = 'participant.' + val.spalla_id + '.out';
+                o.name = 'participant.' + val.spalla_id + '.plays';
                 o.size = Math.random() * 5000;
                 o.imports = [];
                 // Commented this out, causes Lemmas that talk to eachother
@@ -254,7 +270,7 @@ ui.Views = ui.Views || {};
 
         mouseon: function(d) {
             var _this = window.ui.graphView;
-            console.log('mouseon',d.name)
+            //console.log('mouseon',d.name)
             _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
               .classed("target", true)
               .each(_this.updateNodes("source", true));
@@ -274,10 +290,11 @@ ui.Views = ui.Views || {};
               .classed("target", false)
               .each(_this.updateNodes("source", false));
         },
+
         updateNodes: function(name, value) {
             var _this = window.ui.graphView;
           return function(d) {
-            console.log('updateNotdes',this)
+            //console.log('updateNotdes',this)
             if (value) this.parentNode.appendChild(this);
             _this.svg.select("#node-" + d[name].key).classed(name, value);
           };

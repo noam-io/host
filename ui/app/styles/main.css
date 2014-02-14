@@ -7636,7 +7636,7 @@ path.arc {
 
 /* line 6, graph.scss */
 .node {
-  font-size: 10px;
+  font-size: 16px;
 }
 
 /* line 10, graph.scss */
@@ -7687,7 +7687,7 @@ path.arc {
 /* line 46, graph.scss */
 .arcText {
   fill: white;
-  font: 11px sans-serif;
+  font: 16px sans-serif;
 }
 
 /* line 6, main.scss */
