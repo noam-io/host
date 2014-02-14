@@ -9,7 +9,8 @@ window.ui = {
     init: function () {
         'use strict';
         console.log('Hello from Backbone!');
-        this.graphView = new ui.Views.GraphView();
+        this.collection = new ui.Collections.NoamCollection();
+        this.graphView = new ui.Views.GraphView({collection:this.collection});
     }
 };
 

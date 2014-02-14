@@ -25,17 +25,16 @@
 
         <div class="container">
             <div class="header">
-                <ul class="nav nav-pills pull-right">
-                    <li class="active"><a href="#">Settings</a></li>
-                    <li><a href="#">Network</a></li>
-                    <li><a href="#">Power</a></li>
-                </ul>
-                <h3 class="text-muted">Noam Server</h3>
+                <div class="nav container">
+                    <div class="col-xs-3 logo"><a href="/"><img src="/img/Logo.png"></a></div>
+                    <div class="col-xs-1"><a href="#"><div class="icon settings"><div class="label">Settings</div></div></a></div>
+                    <div class="col-xs-1"><a href="#"><div class="icon network"><div class="label">Network</div></div></a></div>
+                    <div class="col-xs-6 server-name">Test Server</div>
+                    <div class="col-xs-1"><a href="#"><div class="icon power"><div class="label">Power</div></div></a></div>
+                </div>
             </div>
 
-            <div class="graph">
-            </div>
-
+            <div class="graph"></div>
         </div>
 
 
@@ -74,8 +73,10 @@
 
         <!-- build:js({.tmp,app}) scripts/main.js -->
         <script src="scripts/main.js"></script>
-        <script src="scripts/views/graphView.js"></script>
         <script src="scripts/templates.js"></script>
+        <script src="scripts/views/graphView.js"></script>
+        <script src="scripts/models/noam.js"></script>
+        <script src="scripts/collections/noam.js"></script>
         <!-- endbuild -->
 </body>
 </html>

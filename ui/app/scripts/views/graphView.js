@@ -9,17 +9,17 @@ ui.Views = ui.Views || {};
     	el: '.graph',
         div: null,
         d: {
-            w: 1280,
+            w: 1140,
             h: 960,
-            rx: 960/2,
-            ry: 960/2
+            rx: 1140/3,
+            ry: 1140/3
         },
         d3: null,
         bundle: null,
         cluster: null,
         line: null,
         svg: null,
-        fakeData: 'data/dummy.json',
+        colors:[ '#210050','#46007a','#7f00de','#018b88','#01b8b1','#01ead6','#1667af','#01aeff','#6ed1ff','#73115b','#af007c','#d03593' ],
 
 
 
@@ -29,11 +29,24 @@ ui.Views = ui.Views || {};
         },
 
         initialize: function(){
+            var _this = this;
         	_.bindAll(this, 'render');
 
-            this.setupGraph();
-            this.parseToD3();
-        	this.render();
+            this.collection.fetch({
+
+                error: function(){
+                    console.log("error");
+                },
+                success: function(collection){
+                _this.setupGraph();
+                _this.parseToD3(collection);
+                _this.render();
+                console.log("rendering", collection);
+                }
+
+            });
+
+
         },
 
         render: function(){
@@ -59,7 +72,7 @@ ui.Views = ui.Views || {};
             // Setup radial line generator
             this.line = d3.svg.line.radial()
                 .interpolate('bundle')
-                .tension(.85)
+                .tension(.35)
                 .radius( function(d) {
                     return d.y;
                     })
@@ -83,27 +96,27 @@ ui.Views = ui.Views || {};
                 .attr('transform','translate(' + this.d.rx + ',' + this.d.ry + ')' );
 
             // Draw background
-            this.svg.append("svg:path")
-                .attr("class", "arc")
-                .attr("d", d3.svg.arc()
-                    .outerRadius(this.d.ry-120)
-                    .innerRadius(0)
-                    .startAngle(0)
-                    .endAngle(2 * Math.PI))
+            // this.svg.append("svg:path")
+            //     .attr("class", "arc")
+            //     .attr("d", d3.svg.arc()
+            //         .outerRadius(this.d.ry-120)
+            //         .innerRadius(0)
+            //         .startAngle(0)
+            //         .endAngle(2 * Math.PI))
 
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
-                .tension(.85)
+                .tension(.25)
                 .radius(function(d) { return d.y; })
                 .angle(function(d) { return d.x / 180 * Math.PI; });
             
         },
 
-        parseToD3: function() {
+        parseToD3: function(collectionData) {
             var _this = this;
 
-            d3.json(this.fakeData, function(data) {
+            d3.json(collectionData, function(data) {
 
                 var d = _this.mapToNodes(data),
                     nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
@@ -130,12 +143,12 @@ ui.Views = ui.Views || {};
                       .attr("class", "node")
                       .attr("id", function(d) { return "node-" + d.key; })
                       .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-                    .append("svg:text")
-                      .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
-                      .attr("dy", ".31em")
-                      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-                      .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                      .text(function(d) { return d.name.split('participant.')[1]; })
+                    // .append("svg:text")
+                    //   .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+                    //   .attr("dy", ".31em")
+                    //   .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+                    //   .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+                    //   .text(function(d) { return d.name.split('participant.')[1]; })
                       .on("mouseover", _this.mouseon)
                       .on("mouseout", _this.mouseoff);
 
@@ -173,12 +186,28 @@ ui.Views = ui.Views || {};
             }))
             .enter().append("svg:path")
             .attr("d", groupArc)
-            .attr("class", "groupArc")
-            .style("fill", "#1f77b4")
-            .style("fill-opacity", 0.5)
-            .text(function(d){
-                return d.__data__.name;
+            .attr("class", function(d) {
+                return "groupArc " + d.__data__.name.split('.')[1];
             })
+            .style("fill", function(d) {
+                return _this.colors[Math.floor(Math.random() * _this.colors.length)]
+            })
+            .style("fill-opacity", 0.5)
+            .on("mouseover", _this.mouseon)
+            .on("mouseout", _this.mouseoff);
+
+            this.svg.selectAll("g.arc")
+                .data(groups[0].filter(function(d) {
+                    return d.__data__.name !== 'participant' && d.__data__.name.split('.').length !== 3;
+                }))
+                .enter()
+                .append("svg:text")
+                .attr("transform", function(d) { return "rotate(" + (d.__data__.x - 90) + ")translate(" + d.__data__.y + ")"; })
+                .attr("dx", function(d) { return d.__data__.x < 180 ? 8 : -8; })
+                .attr("dy", ".31em")
+                .attr("text-anchor", function(d) { return d.__data__.x < 180 ? "start" : "end"; })
+                .attr("transform", function(d) { return d.__data__.x < 180 ? null : "rotate(180)"; })
+                .text(function(d) {  return d.__data__.name; })
 
         },
 
@@ -196,7 +225,7 @@ ui.Views = ui.Views || {};
            });
             var pi = Math.PI;
             // console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
-            return { min: (min) * (pi/180), max: (max) * (pi/180)};
+            return { min: (min-10) * (pi/180), max: (max+10) * (pi/180)};
         },
 
         // For sanity
@@ -248,16 +277,19 @@ ui.Views = ui.Views || {};
 
         mapToNodes: function(data) {
             var map=[];
+            var _this = this;
             _.each(data.players, function(val,iter) {
                 var i={}, o={};
                 i.name = 'participant.' + val.spalla_id + '.hears';
                 i.size = Math.random() * 5000;
+                i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
                 i.imports = [];
                 _.each(val.hears, function(dat,jter) {
                     i.imports.push('participant.' + dat.split('sentFrom')[1] + '.plays');
                 });
 
                 o.name = 'participant.' + val.spalla_id + '.plays';
+                o.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
                 o.size = Math.random() * 5000;
                 o.imports = [];
                 // Commented this out, causes Lemmas that talk to eachother
@@ -274,25 +306,31 @@ ui.Views = ui.Views || {};
         mouseon: function(d) {
             var _this = window.ui.graphView;
             //console.log('mouseon',d.name)
-            _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
+            _this.svg.selectAll("path.link.target-" + d.__data__.name.split('.')[1])
               .classed("target", true)
               .each(_this.updateNodes("source", true));
 
-            _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
+            _this.svg.selectAll("path.link.source-" + d.__data__.name.split('.')[1])
               .classed("source", true)
               .each(_this.updateNodes("target", true));
+
+          // _this.svg.selectAll("groupArc." + d.__data__.name.split('.')[1])
+          this.select('path')
+              .classed("target", true)
+              .attr("fill-opacity",1);
             },
  
         mouseoff:function(d) {
             var _this = window.ui.graphView;
-            _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
+            _this.svg.selectAll("path.link.source-" + d.__data__.name.split('.')[1])
               .classed("source", false)
               .each(_this.updateNodes("target", false));
 
-            _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
+            _this.svg.selectAll("path.link.target-" + d.__data__.name.split('.')[1])
               .classed("target", false)
               .each(_this.updateNodes("source", false));
         },
+
 
         updateNodes: function(name, value) {
             var _this = window.ui.graphView;

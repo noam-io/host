@@ -7690,7 +7690,69 @@ path.arc {
   font: 16px sans-serif;
 }
 
-/* line 6, main.scss */
+/* line 1, nav.scss */
+.nav {
+  color: 592685;
+}
+/* line 5, nav.scss */
+.nav .server-name {
+  text-align: right;
+  font-size: 2em;
+  padding-top: 0.5em;
+}
+/* line 11, nav.scss */
+.nav .logo {
+  padding-top: 19px;
+  float: left;
+  clear: none;
+  height: 71px;
+}
+/* line 18, nav.scss */
+.nav .icon {
+  width: 55px;
+  height: 71px;
+  margin: 0 auto;
+  text-align: bottom;
+  float: left;
+  clear: none;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  position: relative;
+}
+/* line 27, nav.scss */
+.nav .icon .label {
+  color: black;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+}
+/* line 36, nav.scss */
+.nav .settings {
+  background: url(/img/Icon-Settings-OFF.png) no-repeat;
+}
+/* line 38, nav.scss */
+.nav .settings.active {
+  background: url(/img/Icon-Settings.png) no-repeat;
+}
+/* line 43, nav.scss */
+.nav .network {
+  background: url("/img/Icon-Network-OFF.png") no-repeat;
+}
+/* line 45, nav.scss */
+.nav .network.active {
+  background: url("/img/Icon-Network.png") no-repeat;
+}
+/* line 50, nav.scss */
+.nav .power {
+  background: url("/img/Icon-Run-OFF.png") no-repeat;
+}
+/* line 52, nav.scss */
+.nav .power.active {
+  background: url("/img/Icon-Run.png") no-repeat;
+}
+
+/* line 7, main.scss */
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -7699,14 +7761,14 @@ path.arc {
 }
 
 /* Space out content a bit */
-/* line 14, main.scss */
+/* line 15, main.scss */
 body {
   padding-top: 20px;
   padding-bottom: 20px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
-/* line 22, main.scss */
+/* line 23, main.scss */
 .header,
 .marketing,
 .footer {
@@ -7715,13 +7777,13 @@ body {
 }
 
 /* Custom page header */
-/* line 28, main.scss */
+/* line 29, main.scss */
 .header {
   border-bottom: 1px solid #e5e5e5;
 }
 
 /* Make the masthead heading the same height as the navigation */
-/* line 33, main.scss */
+/* line 34, main.scss */
 .header h3 {
   margin-top: 0;
   margin-bottom: 0;
@@ -7730,67 +7792,38 @@ body {
 }
 
 /* Custom page footer */
-/* line 41, main.scss */
+/* line 42, main.scss */
 .footer {
   padding-top: 19px;
   color: #777;
   border-top: 1px solid #e5e5e5;
 }
 
-/* line 47, main.scss */
+/* line 48, main.scss */
 .container-narrow > hr {
   margin: 30px 0;
 }
 
 /* Main marketing message and sign up button */
-/* line 52, main.scss */
+/* line 53, main.scss */
 .jumbotron {
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
 }
 
-/* line 57, main.scss */
+/* line 58, main.scss */
 .jumbotron .btn {
   font-size: 21px;
   padding: 14px 24px;
 }
 
 /* Supporting marketing content */
-/* line 63, main.scss */
+/* line 64, main.scss */
 .marketing {
   margin: 40px 0;
 }
 
-/* line 67, main.scss */
+/* line 68, main.scss */
 .marketing p + h4 {
   margin-top: 28px;
-}
-
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  /* line 73, main.scss */
-  .container {
-    max-width: 730px;
-  }
-
-  /* Remove the padding we set earlier */
-  /* line 80, main.scss */
-  .header,
-  .marketing,
-  .footer {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  /* Space out the masthead */
-  /* line 85, main.scss */
-  .header {
-    margin-bottom: 30px;
-  }
-
-  /* Remove the bottom border on the jumbotron for visual effect */
-  /* line 89, main.scss */
-  .jumbotron {
-    border-bottom: 0;
-  }
 }

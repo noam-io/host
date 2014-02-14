@@ -42,7 +42,10 @@ module.exports = function (grunt) {
             },
             compass: {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-                tasks: ['compass']
+                tasks: ['compass'],
+                options: {
+                    spawn: false,
+                }
             },
             livereload: {
                 options: {
@@ -175,7 +178,8 @@ module.exports = function (grunt) {
             dist: {},
             server: {
                 options: {
-                    debugInfo: true
+                    debugInfo: true,
+                    spawn: false
                 }
             }
         },
@@ -298,7 +302,7 @@ module.exports = function (grunt) {
                 'coffee',
                 'createDefaultTemplate',
                 'jst',
-                'compass:server',
+                // 'compass:server',
                 'connect:test',
                 'open:test',
                 'watch:livereload'
@@ -310,7 +314,7 @@ module.exports = function (grunt) {
             'coffee:dist',
             'createDefaultTemplate',
             'jst',
-            'compass:server',
+            //'compass:server',
             'connect:livereload',
             'open:server',
             'watch'
