@@ -151,11 +151,13 @@ ui.Views = ui.Views || {};
             var groups = this.svg.selectAll("g.group")
               .data(nodes.filter(function(d) {
                  console.log("categoryNodeFilter",d);
-                 return d.x ? d : null && d.children;
+                 return d.x ? d : null && d.children && d.key !== 'participant';
              }))
             .enter().append("group")
               .attr("class", "group");
+              
 
+            console.log("groups",groups);
 
             var groupArc = d3.svg.arc()
                 .innerRadius(this.d.ry-120)
@@ -163,18 +165,19 @@ ui.Views = ui.Views || {};
                 .startAngle(function(d){ var r=_this.getAngles(d.__data__); return r.min; })
                 .endAngle(function(d){ var r=_this.getAngles(d.__data__); return r.max; });
 
-            console.log("groups",groups);
             console.log("groupArc",groupArc);
 
           this.svg.selectAll("g.arc")
-            .data(groups[0])
+            .data(groups[0].filter(function(d){
+                return d.__data__.name !== 'participant';
+            }))
             .enter().append("svg:path")
             .attr("d", groupArc)
             .attr("class", "groupArc")
             .style("fill", "#1f77b4")
             .style("fill-opacity", 0.5)
             .text(function(d){
-                
+                return d.__data__.name;
             })
 
         },
@@ -192,8 +195,8 @@ ui.Views = ui.Views || {};
                if(d.x > max) max = d.x;
            });
             var pi = Math.PI;
-            console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
-            return { min: (min-2) * (pi/180), max: (max+2) * (pi/180)};
+            // console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
+            return { min: (min) * (pi/180), max: (max) * (pi/180)};
         },
 
         // For sanity
