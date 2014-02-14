@@ -15,7 +15,7 @@ rescue LoadError
   end
 end
 
-NOAM_VERSION = "0.0.1"
+NOAM_VERSION = "0.0.2"
 NOAM_OSX_ID = "com.ideo.noam_server"
 NOAM_OSX_APP_NAME = "Noam"
 
