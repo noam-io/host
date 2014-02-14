@@ -1,0 +1,57 @@
+.nav {
+
+	color: 592685;
+
+	.server-name {
+		text-align:right;
+		font-size: 2em;
+		padding-top: .5em
+	}
+
+	.logo {
+		padding-top:19px;
+		float:left;
+		clear:none;
+		height: 71px;
+	}
+
+	.icon {
+		width: 55px;
+		height: 71px;
+		margin: 0 auto;
+		text-align: bottom;
+		float: left; clear:none;
+		overflow:hidden;
+		background-repeat: no-repeat;
+		position: relative;
+		.label {
+			color: black;
+			position:absolute;
+			bottom:0;left:0;
+			text-align:center;
+
+		}
+	}
+
+	.settings {
+		background: url(/images/Icon-Settings-OFF.png) no-repeat;
+		&.active {
+			background: url(/images/Icon-Settings.png) no-repeat;			
+		}
+	}
+
+	.network {
+		background: url('/images/Icon-Network-OFF.png') no-repeat;
+		&.active, {
+			background: url('/images/Icon-Network.png') no-repeat;			
+		}
+	}
+
+	.power {
+		background: url('/images/Icon-Run-OFF.png') no-repeat;
+		&.active {
+			background: url('/images/Icon-Run.png') no-repeat;			
+		}
+	}
+
+}
