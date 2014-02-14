@@ -15,6 +15,7 @@
         cluster: null,
         line: null,
         svg: null,
+        timer: null,
         colors:[ '#210050','#46007a','#7f00de','#018b88','#01b8b1','#01ead6','#1667af','#01aeff','#6ed1ff','#73115b','#af007c','#d03593' ],
         fakeData: 'javascripts/data/dummy.json',
 
@@ -32,9 +33,37 @@
         render: function(){
             
             
-            
 
         },	
+
+        update: function(eventData) {
+            var _this = this;
+            var d = this.parseEventData(eventData);
+            console.log(d);
+            _.each(d,function(val,key){
+                var select = _this.svg.selectAll("path.link.source-" + val)
+                  //.classed("target", true)
+                  .each(_this.updateNodes("source", true))
+                  .transition()
+                    .style("opacity", 1)
+                    .duration(400);
+                select.transition()
+                    .style("opacity", .4)
+                    .duration(400)
+                    .delay(400);
+              })
+
+
+
+
+            // this.timer = setTimeout(function() {
+            //     _.each(d,function(val,key){
+            //     _this.svg.selectAll("path.link.source-" + d)
+            //       .classed("target", false)
+            //       .each(_this.updateNodes("source", false));
+            //   })
+            // }, 500)
+        },
 
         setupGraph: function() {
             var _this = this;
@@ -131,13 +160,13 @@
             var _this = this;
 
             // Set up groups 
-            var groups = this.svg.selectAll("g.group")
-              .data(nodes.filter(function(d) {
-                 console.log("categoryNodeFilter",d);
-                 return d.x ? d : null && d.children && d.key !== 'participant' && d.name.split('.').length == 2
-             }))
-            .enter().append("group")
-              .attr("class", "group");
+            // var groups = this.svg.selectAll("g.group")
+            //   .data(nodes.filter(function(d) {
+            //      console.log("categoryNodeFilter",d);
+            //      return d.x ? d : null && d.children && d.key !== 'participant' && d.name.split('.').length == 2
+            //  }))
+            // .enter().append("group")
+            //   .attr("class", "group");
               
 
             
@@ -145,18 +174,18 @@
             var groupArc = d3.svg.arc()
                 .innerRadius(this.d.ry-120)
                 .outerRadius(this.d.ry-160)
-                .startAngle(function(d){ var r=_this.getAngles(d.__data__); return r.min; })
-                .endAngle(function(d){ var r=_this.getAngles(d.__data__); return r.max; });
+                .startAngle(function(d){ var r=_this.getAngles(d); return r.min; })
+                .endAngle(function(d){ var r=_this.getAngles(d); return r.max; });
 
         
           this.svg.selectAll("g.arc")
-            .data(groups[0].filter(function(d){
-                return d.__data__.name !== 'participant';
+            .data(nodes.filter(function(d){
+                return d.name !== 'participant';
             }))
             .enter().append("svg:path")
             .attr("d", groupArc)
             .attr("class", function(d) {
-                return "groupArc " + d.__data__.name.split('.')[1];
+                return "groupArc " + d.name.split('.')[1];
             })
             .style("fill", function(d) {
                 return _this.colors[Math.floor(Math.random() * _this.colors.length)]
@@ -164,37 +193,6 @@
             .style("fill-opacity", 0.5)
             .on("mouseover", _this.mouseon)
             .on("mouseout", _this.mouseoff);
-
-            // this.svg.selectAll('text')
-            //     .data( function(d, i) { return d.__data__.name !== 'participant'; })
-                // .enter().append('text')
-                // .attr('text', function(d) { return d.__data__.key })
-
-
-            // var arc_and_text = this.svg.selectAll("g.arc")
-            //     .data(groups[0].filter(function(d){
-            //     return d.__data__.name !== 'participant';
-            // }))
-            //     .enter().append("svg:g")
-            //     .attr("class","arc_and_text");
-
-            // var arc_path = arc_and_text.append("svg:path")
-            //     .attr("d", groupArc)
-            //     .attr("class", "groupArc")
-            //     .attr("id", function(d, i) { return "arc" + i; })
-            //     .style("fill", "#1f77b4")
-            //     .style("fill-opacity", 0.5); //MH: (d.__data__.key) gives names of groupings
-
-            // var arc_text = arc_and_text.append("text")
-            //     .attr("class","arc_text")
-            //     .attr("x", 3)
-            //     .attr("dy", 15);
-
-            // arc_text.append("textPath")
-            //     .attr("xlink:href", function(d, i) { return "#arc" + i; })
-            //     .attr("class","arc_text_path")
-            //     .style("fill","#ffffff")
-            //     .text(function(d, i) { return d.__data__.key; });
 
         },
 
@@ -291,14 +289,23 @@
             return map;
         },
 
+        parseEventData: function(data) {
+            var map=[];    
+            _.each(data, function(val,key) {
+                console.log(val, key);
+                map.push(key.split('sentFrom')[1]);
+            });
+            return map;
+        },
+
         mouseon: function(d) {
             var _this = this;
             //console.log('mouseon',d.name)
-            _this.svg.selectAll("path.link.target-" + d.__data__.name.split('.')[1])
+            _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
               .classed("target", true)
               .each(_this.updateNodes("source", true));
 
-            _this.svg.selectAll("path.link.source-" + d.__data__.name.split('.')[1])
+            _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
               .classed("source", true)
               .each(_this.updateNodes("target", true));
 
@@ -310,18 +317,18 @@
  
         mouseoff:function(d) {
             var _this = this;
-            _this.svg.selectAll("path.link.source-" + d.__data__.name.split('.')[1])
+            _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
               .classed("source", false)
               .each(_this.updateNodes("target", false));
 
-            _this.svg.selectAll("path.link.target-" + d.__data__.name.split('.')[1])
+            _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
               .classed("target", false)
               .each(_this.updateNodes("source", false));
         },
 
 
         updateNodes: function(name, value) {
-            var _this = window.ui.graphView;
+          var _this = this;
           return function(d) {
             //console.log('updateNotdes',this)
             if (value) this.parentNode.appendChild(this);

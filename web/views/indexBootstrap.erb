@@ -66,6 +66,13 @@
 
       <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
 
+      <div class="graph-grid-menu">
+        <ul>
+          <li><a href="#graph" class="graph-button">Graph</a></li>
+          <li><a href="#grid" class="grid-button">Grid</a></li>
+        </ul>
+      </div>
+
       <div class="graph-view starter-template">
           <h1>Noam Graph View</h1>
             <div class="graph"></div>
@@ -75,8 +82,7 @@
       <div class="grid-view starter-template">
 
         <h1>Noam Grid View</h1>
-      </div>
-
+        
       <div id="Channels">
         <table class="table">
           <thead>
@@ -91,6 +97,8 @@
           </tbody>
         </table>
       </div>
+      </div>
+
 
     </div><!-- /.container -->
 
@@ -129,6 +137,7 @@
     <script src="/javascripts/core/NoamRefresher.js"></script>
     <script src="/javascripts/views/indexBootstrap/Player.js"></script>
     <script src="/javascripts/views/index/graph.js"></script>
+    <script src="/javascripts/views/indexBootstrap/ui.js"></script>
     <script src="/javascripts/views/indexBootstrap/Channel.js"></script>
     <script src="/javascripts/views/indexBootstrap/indexBootstrapMain.js"></script>
     <script src="/javascripts/libs/underscore.js"></script>
