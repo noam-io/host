@@ -41,6 +41,12 @@ $(function() {
       if(results['type'] == 'timeout'){
         return;
       }
+
+      
+      console.log('resullts',results)
+
+        window.graphView.init(results);
+
       $("#serverDownError").fadeOut(500);
       // Update Player Headings
       var _players = results['players'];
