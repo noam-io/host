@@ -1,21 +1,26 @@
-/* line 1, nav.scss */
+/* line 3, nav.scss */
 .nav {
-  color: 592685;
+  color: #592685;
 }
-/* line 5, nav.scss */
+/* line 7, nav.scss */
 .nav .server-name {
   text-align: right;
   font-size: 2em;
-  padding-top: 0.5em;
+  padding-top: .5em;
 }
-/* line 11, nav.scss */
+/* line 12, nav.scss */
+.nav .server-name .small {
+  color: black;
+  font-size: .6em;
+}
+/* line 19, nav.scss */
 .nav .logo {
   padding-top: 19px;
   float: left;
   clear: none;
   height: 71px;
 }
-/* line 18, nav.scss */
+/* line 26, nav.scss */
 .nav .icon {
   width: 55px;
   height: 71px;
@@ -27,7 +32,7 @@
   background-repeat: no-repeat;
   position: relative;
 }
-/* line 27, nav.scss */
+/* line 35, nav.scss */
 .nav .icon .label {
   color: black;
   position: absolute;
@@ -35,42 +40,42 @@
   left: 0;
   text-align: center;
 }
-/* line 36, nav.scss */
+/* line 44, nav.scss */
 .nav .settings {
   background: url(/images/Icon-Settings-OFF.png) no-repeat;
 }
-/* line 38, nav.scss */
+/* line 46, nav.scss */
 .nav .settings.active {
   background: url(/images/Icon-Settings.png) no-repeat;
 }
-/* line 43, nav.scss */
+/* line 51, nav.scss */
 .nav .network {
   background: url("/images/Icon-Network-OFF.png") no-repeat;
 }
-/* line 45, nav.scss */
+/* line 53, nav.scss */
 .nav .network.active {
   background: url("/images/Icon-Network.png") no-repeat;
 }
-/* line 50, nav.scss */
+/* line 58, nav.scss */
 .nav .power {
   background: url("/images/Icon-Run-OFF.png") no-repeat;
 }
-/* line 52, nav.scss */
+/* line 60, nav.scss */
 .nav .power.active {
   background: url("/images/Icon-Run.png") no-repeat;
 }
 
-/* line 61, nav.scss */
+/* line 69, nav.scss */
 .graph-grid-menu {
   width: 100%;
   margin: 50px auto;
 }
-/* line 64, nav.scss */
+/* line 72, nav.scss */
 .graph-grid-menu ul {
   width: 201px;
   margin: 0 auto;
 }
-/* line 68, nav.scss */
+/* line 76, nav.scss */
 .graph-grid-menu ul li {
   font-size: 16pt;
   float: left;
@@ -81,12 +86,21 @@
   list-style: none;
   text-align: center;
 }
-/* line 77, nav.scss */
+/* line 85, nav.scss */
 .graph-grid-menu ul li.active {
   background: #eee;
 }
 
-/* line 84, nav.scss */
+/* line 93, nav.scss */
+.menu-title {
+  color: #592685;
+  font-size: 16px;
+  font-weight: 800;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+
+/* line 101, nav.scss */
 .dropdown-item-container {
   width: 100%;
   margin: 0 auto;
@@ -96,7 +110,7 @@
   left: 0;
   background: transparent;
 }
-/* line 92, nav.scss */
+/* line 109, nav.scss */
 .dropdown-item-container .dropdown-item {
   width: 50%;
   height: auto;
@@ -105,4 +119,9 @@
   padding: 5px;
   background: white;
   border: 1px solid #eee;
+}
+/* line 118, nav.scss */
+.dropdown-item-container.settings-container > .dropdown-item {
+  width: 35%;
+  margin: 0 auto;
 }

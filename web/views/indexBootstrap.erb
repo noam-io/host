@@ -53,10 +53,12 @@
               <div class="col-xs-1"><a href="#" class="settings-button"><div class="icon settings"><div class="label">Settings</div></div></a></div>
               <div class="col-xs-1"><a href="#" class="network-button"><div class="icon network">
                 <div class="label">
-                  <%= "#{@server_name}" %> 
-                  <small><%= "#{@ips}" %></small>
+                  Network
                   </div></div></a></div>
-              <div class="col-xs-6 server-name">Test Server</div>
+              <div class="col-xs-6 server-name">
+                <%= "#{@server_name}" %>
+                <span class='small'><%= "#{@ips}" %></span>
+              </div>
               <div class="col-xs-1"><a href="#"><div class="icon power"><div class="label">Power</div></div></a></div>
           </div>
       </div>

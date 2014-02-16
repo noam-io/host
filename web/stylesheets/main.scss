@@ -11,8 +11,18 @@ $icon-font-path: "../bower_components/sass-bootstrap/fonts/";
 }
 
 body {
-    padding-top: 20px;
-    padding-bottom: 20px;
+padding-top: 0!important;
+padding-bottom: 20px;
+
+background: #ddf4fd; 
+background: -moz-linear-gradient(left, #f5fcff 0%, #dcf3fd 100%);
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,#f5fcff), color-stop(100%,#dcf3fd));
+background: -webkit-linear-gradient(left, #f5fcff 0%,#dcf3fd 100%);
+background: -o-linear-gradient(left, #f5fcff 0%,#dcf3fd 100%);
+background: -ms-linear-gradient(left, #f5fcff 0%,#dcf3fd 100%);
+background: linear-gradient(to right, #f5fcff 0%,#dcf3fd 100%);
+
+
 }
 
 .header,
@@ -23,7 +33,10 @@ body {
 }
 
 .header {
+    padding-top: 20px;
+    padding-bottom: 20px;
     border-bottom: 1px solid #e5e5e5;
+    background:white;
 }
 
 .header h3 {
@@ -35,6 +48,7 @@ body {
 
 #mainBody .container {
     height: 100%;
+
 }
 
 /* Custom page footer */

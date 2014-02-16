@@ -5,13 +5,13 @@
     	el: '.graph',
         div: null,
         d: {
-            w: 1140,
-            h: 960,
-            rx: 1140/3,
-            ry: 1140/3
+            w: $(window).height()*.66,
+            h: $(window).height()*.66,
+            rx: $(window).height()*.33,
+            ry: $(window).height()*.33
         },
         d3: null,
-        lastEvent: {},
+        lastEvent: [],
         bundle: null,
         cluster: null,
         line: null,
@@ -54,17 +54,6 @@
                     .duration(400)
                     .delay(400);
               })
-
-
-
-
-            // this.timer = setTimeout(function() {
-            //     _.each(d,function(val,key){
-            //     _this.svg.selectAll("path.link.source-" + d)
-            //       .classed("target", false)
-            //       .each(_this.updateNodes("source", false));
-            //   })
-            // }, 500)
         },
 
         setupGraph: function() {
@@ -83,7 +72,7 @@
             // Setup radial line generator
             this.line = d3.svg.line.radial()
                 .interpolate('bundle')
-                .tension(.35)
+                .tension(.85)
                 .radius( function(d) {
                     return d.y;
                     })
@@ -94,13 +83,15 @@
             // Generates the containing div
             this.div = d3.select('.graph')
                 .insert("div", "h2")
-                .style("width", this.d.w + "px")
+                .style("width", "100%")//this.d.w + "px")
                 .style("height", this.d.h + "px")
                 .style("position", "absolute")
+                .style("left","0px")
                 .style("-webkit-backface-visibility", "hidden");
 
             // Binds svg to the containing div
             this.svg = this.div.append('svg:svg')
+                .style('margin','0 auto')
                 .attr('width',this.d.w)
                 .attr('height',this.d.h)
                 .append('svg:g')
@@ -109,7 +100,7 @@
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
-                .tension(.25)
+                .tension(.85)
                 .radius(function(d) { return d.y; })
                 .angle(function(d) { return d.x / 180 * Math.PI; });
             
@@ -120,57 +111,46 @@
             // d3.json(collectionData, function(data) {
 
                 // Main elements
-                var d = _this.mapToNodes(collectionData),
-                    nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
-                    links = _this.getConnections(nodes),
-                    splines = _this.bundle(links);
+            var d = _this.mapToNodes(collectionData),
+                nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
+                links = _this.getConnections(nodes),
+                splines = _this.bundle(links);
 
-                console.log('mappedData',d);
-                console.log('nodes',nodes);
-                console.log('links',links);
-                console.log('splines',splines);
- 
-                _this.drawCategory(nodes);
+            console.log('mappedData',d);
+            console.log('nodes',nodes);
+            console.log('links',links);
+            console.log('splines',splines);
 
-                 // Establish paths from links
-                var path = _this.svg.selectAll("path.link")
-                    .data(links)
-                    .enter().append("svg:path")
-                    .attr("class", function(d) { return "link name-" + d.source.name.split('.')[1] + " source-" + d.source.name.split('.')[1] + " target-" + d.target.name.split('.')[1]; })
-                    .attr("d", function(d, i) { return _this.line(splines[i]); });
+            _this.drawCategory(nodes);
 
-                    // Establish nodes for text display
-                _this.svg.selectAll("g.node")
-                      .data(nodes.filter(function(d) { return !d.children; }))
-                    .enter().append("svg:g")
-                      .attr("class", "node")
-                      .attr("id", function(d) { return "node-" + d.key; })
-                      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-                    .append("svg:text")
-                      .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
-                      .attr("dy", ".31em")
-                      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-                      .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                      .text(function(d) { return d.name.split('participant.')[1]; })
-                      .on("mouseover", _this.mouseon)
-                      .on("mouseout", _this.mouseoff);                
+             // Establish paths from links
+            var path = _this.svg.selectAll("path.link")
+                .data(links)
+                .enter().append("svg:path")
+                .attr("class", function(d) { return "link name-" + d.source.name.split('.')[1] + " source-" + d.source.name.split('.')[1] + " target-" + d.target.name.split('.')[1]; })
+                .attr("d", function(d, i) { return _this.line(splines[i]); });
+
+                // Establish nodes for text display
+            _this.svg.selectAll("g.node")
+                  .data(nodes.filter(function(d) { return !d.children; }))
+                .enter().append("svg:g")
+                  .attr("class", "node")
+                  .attr("id", function(d) { return "node-" + d.key; })
+                  .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+                .append("svg:text")
+                  .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+                  .attr("dy", ".31em")
+                  .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+                  .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+                  .text(function(d) { return d.name.split('participant.')[1]; })
+                  .on("mouseover", _this.mouseon)
+                  .on("mouseout", _this.mouseoff);                
           // });
         },
 
 
         drawCategory: function(nodes) {
             var _this = this;
-
-            // Set up groups 
-            // var groups = this.svg.selectAll("g.group")
-            //   .data(nodes.filter(function(d) {
-            //      console.log("categoryNodeFilter",d);
-            //      return d.x ? d : null && d.children && d.key !== 'participant' && d.name.split('.').length == 2
-            //  }))
-            // .enter().append("group")
-            //   .attr("class", "group");
-              
-
             
             // Arc Generator
             var groupArc = d3.svg.arc()
@@ -292,22 +272,18 @@
         },
 
         parseEventData: function(data) {
-            var map=[],
-                _this = this;
+            var map=[];
+            var _this = this;
 
             _.each(data, function(val,key) {
-                console.log(val, key);
-                if(typeof _this.lastEvent[key].timestamp === undefined) {
+                _this.lastEvent[key] = _this.lastEvent[key] || {};
+                console.log(_this.lastEvent[key].timestamp,val.timestamp)
+                if(_this.lastEvent[key].timestamp !== val.timestamp) {
                     map.push(key.split('sentFrom')[1]);
-                    _this.lastEvent[key] = val.timestamp;
+                    _this.lastEvent[key].timestamp = val.timestamp;
                 }
-                else if(_this.lastEvent[key].timestamp !== val.timestamp) {
-                    map.push(key.split('sentFrom')[1]);
-                    _this.lastEvent[key] = val.timestamp;
-                }
-
-                // map.push(key.split('sentFrom')[1]);
             });
+            console.log(map)
             return map;
         },
 
