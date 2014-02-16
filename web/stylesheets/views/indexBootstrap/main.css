@@ -1,5 +1,15 @@
 
 
+.navbar-noam {
+	padding: 45px;
+	background-color: #FFFFFF;
+}
+
+.navbar-noam .container {
+	width: 960px;
+	margin: 0px auto;
+}
+
 /* Custom Grid View Styles */
 .player {
 	
@@ -23,6 +33,86 @@
 	margin-top: 10px;
 	padding: 10px;
 }
+
+.navbar-nav>li .nav-item {
+	margin: -15px 25px;
+	background-color: #FFF;
+}
+
+.nav-settings {
+	cursor: pointer;
+}
+
+.nav-settings .img {
+	background-image: url('/images/Icon-Settings-OFF.png');
+	width: 51px;
+	height: 51px;
+	border-width: 0px;
+	
+}
+
+.nav-settings:hover .img {
+	background-image: url('/images/Icon-Settings.png');
+	width: 51px;
+	height: 51px;
+	border-width: 0px;
+}
+
+
+.nav-settings {
+	cursor: pointer;
+}
+
+.nav-settings .img {
+	background-image: url('/images/Icon-Settings-OFF.png');
+	width: 51px;
+	height: 51px;
+	border-width: 0px;
+	
+}
+
+.nav-settings:hover .img {
+	background-image: url('/images/Icon-Settings.png');
+	width: 51px;
+	height: 51px;
+	border-width: 0px;
+}
+
+.nav-run .img {
+	background-image: url('/images/Icon-Run-OFF.png');
+	width: 51px;
+	height: 51px;
+	border-width: 0px;
+	
+}
+
+.nav-run:hover .img {
+	background-image: url('/images/Icon-Run.png');
+	width: 51px;
+	height: 51px;
+	border-width: 0px;
+}
+
+
+.nav-network {
+	cursor: pointer;
+}
+
+.nav-network .img {
+	background-image: url('/images/Icon-Network-OFF.png');
+	width: 51px;
+	height: 51px;
+	border-width: 0px;
+	
+}
+
+.nav-network:hover .img {
+	background-image: url('/images/Icon-Network.png');
+	width: 51px;
+	height: 51px;
+	border-width: 0px;
+}
+
 
 .navbar-nav>li>.dropdown-menu.network {
 	margin-top: 10px;
