@@ -144,7 +144,7 @@
                   .attr("dy", ".31em")
                   .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
                   .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                  .text(function(d) { return d.name.split('participant.')[1]; })
+                  .text(function(d) { return d.name.split('.')[2]; })
                   .on("mouseover", _this.mouseon)
                   .on("mouseout", _this.mouseoff);                
           // });
@@ -162,21 +162,42 @@
                 .endAngle(function(d){ var r=_this.getAngles(d); return r.max; });
 
         
-          this.svg.selectAll("g.arc")
-            .data(nodes.filter(function(d){
-                return d.name !== 'participant' && d.name;
-            }))
-            .enter().append("svg:path")
-            .attr("d", groupArc)
-            .attr("class", function(d) {
-                return "groupArc " + d.name.split('.')[1];
-            })
-            .style("fill", function(d) {
-                return _this.colors[Math.floor(Math.random() * _this.colors.length)]
-            })
-            .style("fill-opacity", 0.5)
-            .on("mouseover", _this.mouseon)
-            .on("mouseout", _this.mouseoff);
+            this.svg.selectAll("g.arc")
+                .data(nodes.filter(function(d){
+                    return d.name !== 'participant' && d.name;
+                }))
+                .enter().append("svg:path")
+                .attr("d", groupArc)
+                .attr("class", function(d) {
+                    return "groupArc " + d.name.split('.')[1];
+                })
+                .style("fill", function(d) {
+                    return _this.colors[Math.floor(Math.random() * _this.colors.length)]
+                })
+                .style("fill-opacity", 0.5)
+                .on("mouseover", _this.mouseon)
+                .on("mouseout", _this.mouseoff);
+
+            _this.svg.selectAll("g.category")
+                .data(nodes.filter(function(d){
+                    return d.name !== 'participant' && d.name && d.children;
+                }))
+                .enter().append("svg:g")
+                  .attr("class", "category")
+                  .attr("id", function(d) { return "node-" + d.key; })
+                  .attr("transform", function(d) { 
+                    var r=_this.getAngles(d)
+                    return "rotate(" + (d.x-100) +") translate(" + (d.y+95) + ")"; })
+                .append("svg:text")
+                  .attr('class','arcText')
+                  .attr("dx", function(d) { return d.x < 45 ? 0 : -0; })
+                  .attr("dy", ".31em")
+                  .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+                  .attr("transform", function(d) { return /*d.x < 180 ? null :*/ "rotate(90)"; })
+                  .text(function(d) { return d.name.split('.')[1]; })
+                  .on("mouseover", _this.mouseon)
+                  .on("mouseout", _this.mouseoff);                
+
 
         },
 
