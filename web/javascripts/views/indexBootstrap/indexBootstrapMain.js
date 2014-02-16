@@ -78,7 +78,11 @@ $(function() {
 
   $(document).ready(function(){
     $('#mainTabs a:last').tab('show');
-
+    $('.dropdown-menu').click(function(){
+      event.stopPropagation();
+      return false;
+    });
+    $('.scrollArea li').popover();
     activityGraph.init();
   });
 

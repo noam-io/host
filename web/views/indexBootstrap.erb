@@ -57,11 +57,81 @@
           <a class="navbar-brand" href="#">Noam Server</a>
         </div>
         <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">GridView</a></li>
-            <li><a href="#about">GraphicView</a></li>
-            <li><a href="#contact">Settings</a></li>
-          </ul>
+          <div class="dropdown">
+            <ul class="nav navbar-nav">
+              <li>
+                <a href="#" data-target="#" id="dLabel" data-toggle="dropdown">Settings</a>
+                <div class="dropdown-menu" aria-labelledby="dLabel">
+                  <div class="menu-title">Noam Server Name</div>
+
+                  <div class="menu-title">Log</div>
+
+                  <div class="menu-title">Settings</div>
+                  <div>
+                    <table>
+                      <tr>
+                        <td>IP</td>
+                        <td>----</td>
+                      </tr>
+                      <tr>
+                        <td>Discovery UDP Broadcast</td>
+                        <td>----</td>
+                      </tr>
+                      <tr>
+                        <td>Websocket Port</td>
+                        <td>---</td>
+                      </tr>
+                      <tr>
+                        <td>UI Port</td>
+                        <td>---</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <a href="#" data-target="#" id="networkPane" data-toggle="dropdown">Network</a>
+                <div class="dropdown-menu network" style="width: 800px;" aria-labelledby="networkPane">
+                  <div class="sectionH">
+                    <div class="menu-title">Traffic</div>
+                  </div>
+                  <div class="sectionH">
+                    <div class="menu-title">Your Participants</div>
+                    <div class="scrollArea">
+                      <ul>
+                        <li class="releaseable">Participant 1</li>
+                        <li class="locked">Participant 1</li>
+                        <li class="releaseable">Participant 1</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="sectionH">
+                    <div class="menu-title">Free Agents</div>
+                    <div class="scrollArea">
+                      <ul>
+                        <li class="releaseable" data-trigger="hover" data-toggle="tooltip" data-title="Some tooltip text!" data-html="true" data-content="Hello <BR/> There">Participant 1</li>
+                        <li class="locked" data-trigger="hover" data-toggle="tooltip" title="Some tooltip text!">Participant 1</li>
+                        <li class="releaseable" data-trigger="hover" data-toggle="tooltip" title="Some tooltip text!">Participant 1</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="sectionH">
+                    <div class="menu-title">In Other Conversations</div>
+                    <div class="scrollArea">
+                      <ul>
+                        <li class="releaseable" data-toggle="tooltip">Participant 1</li>
+                        <li class="locked" data-toggle="tooltip">Participant 1</li>
+                        <li class="releaseable" data-toggle="tooltip">Participant 1</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+
+              </li>
+              <li><a href="#contact">Settings</a></li>
+            </ul>
+          </div>
 
           <div class="pull-right">
             <ul class="nav navbar-nav">
