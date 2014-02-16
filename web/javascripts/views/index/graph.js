@@ -129,7 +129,7 @@
             var path = _this.svg.selectAll("path.link")
                 .data(links)
                 .enter().append("svg:path")
-                .attr("class", function(d) { return "link name-" + d.source.name.split('.')[1] + " source-" + d.source.name.split('.')[1] + " target-" + d.target.name.split('.')[1]; })
+                .attr("class", function(d) { return "link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
                 .attr("d", function(d, i) { return _this.line(splines[i]); });
 
                 // Establish nodes for text display
@@ -249,11 +249,11 @@
             var _this = this;
             console.log('debugdata',data)
             _.each(data.players, function(val,iter) {
-                var i={}, o={};
-                i.name = 'participant.' + val.spalla_id + '.hears';
-                i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
-                i.imports = [];
                 _.each(val.hears, function(dat,jter) { // This player hears certain events
+                    var i={};
+                    i.name = 'participant.' + val.spalla_id + '.' + dat;
+                    i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
+                    i.imports = [];
                     _.each(data.players, function(r) { // Let's check what the others broadcast
                         _.each(r.plays, function(t) { // They play ...
                             if(t === dat) { // If what they play is the same as what we hear...
@@ -263,14 +263,12 @@
                         })
                     });
 
-
-                    // i.imports.push('participant.' + dat.split('sentFrom')[1] + '.plays');
+                    map.push(i);
                 });
-
-                o.name = 'participant.' + val.spalla_id + '.plays';
-                o.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
-                o.imports = [];
                 _.each(val.plays, function(dat,jter) { 
+                    var o = {};
+                    o.name = 'participant.' + val.spalla_id + '.' + dat;
+                    o.imports = [];
                     _.each(data.players, function(r) { 
                         _.each(r.hears, function(t) { 
                             if(t === dat) { 
@@ -278,10 +276,8 @@
                             }
                         })
                     })
+                  map.push(o);
                 });
-
-                map.push(i);
-              //  map.push(o);
             })
             console.log('Map', map)
             return map;
