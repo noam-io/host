@@ -5,10 +5,10 @@
     	el: '.graph',
         div: null,
         d: {
-            w: $(window).height()*.66,
-            h: $(window).height()*.66,
-            rx: $(window).height()*.33,
-            ry: $(window).height()*.33
+            w: $(window).height()*.88,
+            h: $(window).height()*.88,
+            rx: $(window).height()*.44,
+            ry: $(window).height()*.44
         },
         d3: null,
         lastEvent: [],
@@ -291,7 +291,7 @@
                 _this.lastEvent[key] = _this.lastEvent[key] || {};
                 //console.log(_this.lastEvent[key].timestamp,val.timestamp)
                 if(_this.lastEvent[key].timestamp !== val.timestamp) {
-                    map.push(key.split('sentFrom')[1]);
+                    map.push(key);
                     _this.lastEvent[key].timestamp = val.timestamp;
                 }
             });
