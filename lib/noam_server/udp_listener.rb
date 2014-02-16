@@ -65,12 +65,25 @@ module NoamServer
 
   class UdpListener
     def start(udp_listen_port, tcp_listen_port, room_name)
+      @@_room_name = room_name
+      @@_tcp_listen_port = tcp_listen_port
       NoamLogging.info(self, "Listening for lemmas; room name: #{room_name.inspect}")
-      polo_message = Noam::Messages.build_polo(room_name, tcp_listen_port)
+      polo_message = Noam::Messages.build_polo(@@_room_name, @@_tcp_listen_port)
       EM.open_datagram_socket('0.0.0.0', udp_listen_port, UdpHandler) do |handler|
         handler.polo = polo_message
         handler.room_name = room_name
       end
+    end
+
+    def self.sendMaro(ip, port)
+      polo_message = Noam::Messages.build_polo(@@_room_name, @@_tcp_listen_port)
+
+      socket = UDPSocket.new
+      socket.bind("0.0.0.0", @@_tcp_listen_port)
+      socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_BROADCAST, true)
+      socket.connect(ip, port)
+      socket.send(polo_message, 0)
+      socket.close()
     end
   end
 end

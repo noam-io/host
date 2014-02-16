@@ -84,6 +84,7 @@ $(function() {
     });
     $('.scrollArea li').popover();
     activityGraph.init();
+    agentManager.start();
   });
 
 

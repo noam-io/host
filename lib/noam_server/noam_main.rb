@@ -51,6 +51,7 @@ module NoamServer
         @broadcaster.go
         UnconnectedLemmas.instance.reap
         NoamLogging.debug(self, "UnconnectedLemmas: #{UnconnectedLemmas.instance}")
+        NoamLogging.debug(self, "GrabbedLemmas: #{GrabbedLemmas.instance}")
         LocatedServers.instance.reap
         NoamLogging.debug(self, "LocatedServers: #{LocatedServers.instance}")
       end
