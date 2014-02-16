@@ -5,6 +5,7 @@ require 'noam_server/noam_server'
 require 'noam_server/persistence/factory'
 require 'noam_server/udp_broadcaster'
 require 'noam_server/udp_listener'
+require 'noam_server/grabbed_lemmas'
 require 'noam_server/unconnected_lemmas'
 require 'noam_server/web_socket_server'
 

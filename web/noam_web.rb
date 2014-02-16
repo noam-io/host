@@ -3,6 +3,8 @@ require 'json'
 require 'config'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
+require 'noam_server/grabbed_lemmas'
+require 'noam_server/unconnected_lemmas'
 require 'helpers/refresh_helper.rb'
 
 
@@ -45,7 +47,11 @@ end
 NoamServer::UnconnectedLemmas.instance.on_change do ||
   FreeAgentQueue.instance().enqueue_response
   NoamServer::NoamLogging.info(self, "UnconnectedLemmas change...")
-  puts NoamServer::UnconnectedLemmas.instance.getAll()
+end
+
+NoamServer::GrabbedLemmas.instance.on_change do ||
+  FreeAgentQueue.instance().enqueue_response
+  NoamServer::NoamLogging.info(self, "GrabbedLemmas change...")
 end
 
 class RequestQueue

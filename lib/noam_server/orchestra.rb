@@ -62,6 +62,8 @@ module NoamServer
       @unregister_callbacks.each do |callback|
         callback.call(player)
       end
+
+      GrabbedLemmas.instance().delete(spalla_id)
     end
 
     def event_names
