@@ -43,7 +43,7 @@
             console.log(d);
 
             _.each(d,function(val,key){
-                var select = _this.svg.selectAll("path.link.source-" + val)
+                var select = _this.svg.selectAll("path.link.target-" + val)
                   .each(_this.updateNodes("source", true))
                   .transition()
                     .style("opacity", 1)
@@ -251,25 +251,39 @@
             _.each(data.players, function(val,iter) {
                 var i={}, o={};
                 i.name = 'participant.' + val.spalla_id + '.hears';
-                i.size = Math.random() * 5000;
                 i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
                 i.imports = [];
-                _.each(val.hears, function(dat,jter) {
-                    i.imports.push('participant.' + dat.split('sentFrom')[1] + '.plays');
+                _.each(val.hears, function(dat,jter) { // This player hears certain events
+                    _.each(data.players, function(r) { // Let's check what the others broadcast
+                        _.each(r.plays, function(t) { // They play ...
+                            if(t === dat) { // If what they play is the same as what we hear...
+                                console.log('pushing up', t, dat)
+                                i.imports.push('participant.' + r.spalla_id + '.' + t)
+                            }
+                        })
+                    });
+
+
+                    // i.imports.push('participant.' + dat.split('sentFrom')[1] + '.plays');
                 });
 
                 o.name = 'participant.' + val.spalla_id + '.plays';
                 o.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
-                o.size = Math.random() * 5000;
                 o.imports = [];
-                // Commented this out, causes Lemmas that talk to eachother
-                 _.each(val.plays, function(dat,jter) {
-                     o.imports.push('participant.' + dat.split('sentFrom')[1] + '.hears');
-                 });
+                _.each(val.plays, function(dat,jter) { 
+                    _.each(data.players, function(r) { 
+                        _.each(r.hears, function(t) { 
+                            if(t === dat) { 
+                                o.imports.push('participant.' + r.spalla_id + '.' + t)
+                            }
+                        })
+                    })
+                });
 
                 map.push(i);
-                map.push(o);
+              //  map.push(o);
             })
+            console.log('Map', map)
             return map;
         },
 
@@ -279,13 +293,13 @@
 
             _.each(data, function(val,key) {
                 _this.lastEvent[key] = _this.lastEvent[key] || {};
-                console.log(_this.lastEvent[key].timestamp,val.timestamp)
+                //console.log(_this.lastEvent[key].timestamp,val.timestamp)
                 if(_this.lastEvent[key].timestamp !== val.timestamp) {
                     map.push(key.split('sentFrom')[1]);
                     _this.lastEvent[key].timestamp = val.timestamp;
                 }
             });
-            console.log(map)
+            //  console.log(map)
             return map;
         },
 
