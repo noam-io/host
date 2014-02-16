@@ -47,10 +47,12 @@
                   .each(_this.updateNodes("source", true))
                   .transition()
                     .style("opacity", 1)
+                    .style('stroke-width','5px')
                     .duration(400);
-                    
+
                 select.transition()
                     .style("opacity", .4)
+                    .style('stroke-width','2px')
                     .duration(400)
                     .delay(400);
               })
