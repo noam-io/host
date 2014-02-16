@@ -44,11 +44,11 @@
 
             _.each(d,function(val,key){
                 var select = _this.svg.selectAll("path.link.source-" + val)
-                  //.classed("target", true)
                   .each(_this.updateNodes("source", true))
                   .transition()
                     .style("opacity", 1)
                     .duration(400);
+                    
                 select.transition()
                     .style("opacity", .4)
                     .duration(400)
