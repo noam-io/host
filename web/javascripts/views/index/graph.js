@@ -125,12 +125,33 @@
 
             _this.drawCategory(nodes);
 
+            // Draw arrow markers
+            var markers = _this.svg.append("svg:defs").selectAll("marker")
+                .data(links)
+                .enter().append("svg:marker")
+                .attr("id", function(d) { return d.source.name.split('.')[2] })
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 0)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("svg:path")
+                .attr("d", "M0,-5L10,0L0,5")
+                // .attr("transform", function(d) { return "rotate(" + (d.source.x) + ")"; })
+
+
              // Establish paths from links
             var path = _this.svg.selectAll("path.link")
                 .data(links)
                 .enter().append("svg:path")
                 .attr("class", function(d) { return "link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
+                .attr("marker-start", function(d) {
+                  //  if(d.)
+                    return "url(#" + d.source.name.split('.')[2] + ")"; 
+                })
                 .attr("d", function(d, i) { return _this.line(splines[i]); });
+
+
 
                 // Establish nodes for text display
             _this.svg.selectAll("g.node")
@@ -175,8 +196,8 @@
                     return _this.colors[Math.floor(Math.random() * _this.colors.length)]
                 })
                 .style("fill-opacity", 0.5)
-                .on("mouseover", _this.mouseon)
-                .on("mouseout", _this.mouseoff);
+                // .on("mouseover", _this.mouseon)
+                // .on("mouseout", _this.mouseoff);
 
             _this.svg.selectAll("g.category")
                 .data(nodes.filter(function(d){
@@ -187,16 +208,16 @@
                   .attr("id", function(d) { return "node-" + d.key; })
                   .attr("transform", function(d) { 
                     var r=_this.getAngles(d)
-                    return "rotate(" + (d.x-100) +") translate(" + (d.y+95) + ")"; })
+                    console.log(r) // (d.x-100)
+                    return "rotate(" + ((d.x - 100)+r.min*3) +") translate(" + (d.y+95) + ")"; })
                 .append("svg:text")
                   .attr('class','arcText')
-                  .attr("dx", function(d) { return d.x < 45 ? 0 : -0; })
+                  .attr("dx", function(d) { return d.x < 180 ? -20 : 20; })
                   .attr("dy", ".31em")
                   .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-                  .attr("transform", function(d) { return /*d.x < 180 ? null :*/ "rotate(90)"; })
+                  .attr("transform", function(d) { return /*d.x < 180 ? "rotate(-90)" :*/ "rotate(90)"; })
                   .text(function(d) { return d.name.split('.')[1]; })
-                  .on("mouseover", _this.mouseon)
-                  .on("mouseout", _this.mouseoff);                
+                  
 
 
         },
@@ -290,13 +311,13 @@
                     var o = {};
                     o.name = 'participant.' + val.spalla_id + '.' + dat;
                     o.imports = [];
-                    _.each(data.players, function(r) { 
-                        _.each(r.hears, function(t) { 
-                            if(t === dat) { 
-                                o.imports.push('participant.' + r.spalla_id + '.' + t)
-                            }
-                        })
-                    })
+                    // _.each(data.players, function(r) { 
+                    //     _.each(r.hears, function(t) { 
+                    //         if(t === dat) { 
+                    //             o.imports.push('participant.' + r.spalla_id + '.' + t)
+                    //         }
+                    //     })
+                    // })
                   map.push(o);
                 });
             })
@@ -322,7 +343,7 @@
 
         mouseon: function(d) {
             var _this = this;
-            //console.log('mouseon',d.name)
+            console.log('mouseon',d.name)
             _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
               .classed("target", true)
               .each(_this.updateNodes("source", true));
@@ -339,6 +360,7 @@
  
         mouseoff:function(d) {
             var _this = this;
+            console.log('mouseoff',d);
             _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
               .classed("source", false)
               .each(_this.updateNodes("target", false));
