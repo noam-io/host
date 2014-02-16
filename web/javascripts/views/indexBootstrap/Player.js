@@ -7,7 +7,7 @@ function Player(player){
 }
 
 Player.prototype.getObj = function(){
-	return $("#Channels .table thead tr .player[player-name="+this.spalla_id+"]");
+	return $("#Channels .table thead tr .player[player-name="+this.spalla_id.replace(/\s+/g, '-').toLowerCase()+"]");
 }
 
 Player.prototype.addCB = function(cbName, cb){
@@ -69,7 +69,7 @@ Player.prototype.doesPlay = function(event_name){
 
 Player.prototype.toTD = function(){
 	return $("<td></td>")
-				.attr('player-name', this.spalla_id)
+				.attr('player-name', this.spalla_id.replace(/\s+/g, '-').toLowerCase())
 				.addClass('player')
 				.html(this.toString());
 }

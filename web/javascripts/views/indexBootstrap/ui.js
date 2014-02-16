@@ -1,7 +1,14 @@
 $().ready(function() {
 	var active = '.graph';
 
-	$('.grid-view').hide();
+	$('#MainViewToggles a').each(function(){
+		var isfor = $(this).attr('for');
+		if($(this).hasClass('active')){
+			$("."+isfor).show();
+		} else {
+			$("."+isfor).hide();
+		}
+	});
 
 
 	// Graph buttons
@@ -41,7 +48,7 @@ $().ready(function() {
 
 	function closeDropdown() {
 		$('.dropdown-item-container.active').removeClass('active').slideUp();
-		$('.header').find('.active').removeClass('active');
+		$('.nav-button').find('.active').removeClass('active');
 	}
 
 });

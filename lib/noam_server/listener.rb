@@ -29,7 +29,9 @@ module NoamServer
     end
 
     def receive_data data
-      listener.receive_data(data)
+      if NoamServer.on?
+        listener.receive_data(data)
+      end
     end
   end
 end

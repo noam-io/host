@@ -10,17 +10,24 @@ module NoamServer
     attr_accessor :polo, :room_name
 
     def receive_data(message)
+      # If the server is off, ignore marco-polo
+      if not NoamServer.on?
+        NoamLogging.debug(self, "Ignoring message - server off.")
+        return
+      end
+      
       message = Noam::Messages.parse(message)
       if message.message_type == "marco"
         port, ip = get_port_and_ip
-        if message.room_name == @room_name
+        if message.room_name == NoamServer.room_name and NoamServer.room_name != ""
           NoamLogging.debug(self, "Sending polo #{@polo.inspect} to #{ip}:#{port}")
-          send_data(@polo)
+          remember_connected_lemma(ip, port, message)
+          send_data(UdpListener.makeMarco(ip, port))
         else
           remember_unconnected_lemma(ip, port, message)
           if grabbable_lemma?(message)
             NoamLogging.debug(self, "Sending polo #{@polo.inspect} to grabbed lemma: #{ip}:#{port}")
-            send_data(@polo)
+            send_data(UdpListener.makeMarco(ip, port))
           end
         end
       elsif message.message_type == "server_beacon"
@@ -34,6 +41,18 @@ module NoamServer
     def get_port_and_ip
       peername = get_peername
       Socket.unpack_sockaddr_in(peername)
+    end
+
+    def remember_connected_lemma(ip, port, message)
+      GrabbedLemmas.instance.add({
+        :name => message.spalla_id,
+        :desired_room_name => message.room_name,
+        :device_type => message.device_type,
+        :system_version => message.system_version,
+        :ip => ip,
+        :port => port,
+        :last_activity_timestamp => Time.now.getutc
+      })
     end
 
     def remember_unconnected_lemma(ip, port, message)
@@ -68,16 +87,16 @@ module NoamServer
       @@_room_name = room_name
       @@_tcp_listen_port = tcp_listen_port
       NoamLogging.info(self, "Listening for lemmas; room name: #{room_name.inspect}")
-      polo_message = Noam::Messages.build_polo(@@_room_name, @@_tcp_listen_port)
       EM.open_datagram_socket('0.0.0.0', udp_listen_port, UdpHandler) do |handler|
-        handler.polo = polo_message
-        handler.room_name = room_name
       end
     end
 
-    def self.sendMaro(ip, port)
-      polo_message = Noam::Messages.build_polo(@@_room_name, @@_tcp_listen_port)
+    def self.makeMarco(ip, port)
+      Noam::Messages.build_polo(NoamServer.name, @@_tcp_listen_port)
+    end
 
+    def self.sendMaro(ip, port)
+      polo_message = makeMarco(ip, port)
       socket = UDPSocket.new
       socket.bind("0.0.0.0", @@_tcp_listen_port)
       socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_BROADCAST, true)

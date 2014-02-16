@@ -47,19 +47,28 @@
 
   <body>
 
+      <form id="welcomeScreenSubmit">
+        <div id="defaultWelcomeScreen">
+          <img src="images/Logo.png" style="border-bottom: 1px solid #EEE; padding-bottom: 10px;"><Br/><br/>
+          Welcome!  To begin, choose a server name:<BR/>
+          <input type="text" id="newservername" placeholder="servername"><BR/>
+          <input type="submit" value="Begin!">
+        </div>
+      </form>
+
       <div class="header">
           <div class="nav container">
               <div class="col-xs-3 logo"><a href="/"><img src="/images/Logo.png"></a></div>
-              <div class="col-xs-1"><a href="#" class="settings-button"><div class="icon settings"><div class="label">Settings</div></div></a></div>
-              <div class="col-xs-1"><a href="#" class="network-button"><div class="icon network">
+              <div class="col-xs-1"><a href="#" class="nav-button settings-button"><div class="icon settings"><div class="label">Settings</div></div></a></div>
+              <div class="col-xs-1"><a href="#" class="nav-button network-button"><div class="icon network">
                 <div class="label">
                   Network
                   </div></div></a></div>
               <div class="col-xs-6 server-name">
-                <%= "#{@server_name}" %>
-                <span class='small'><%= "#{@ips}" %></span>
+                <div class="server-name-value"></div>
+                <div class='small' style="font-size: 10px; line-height: 10px; font-weight: bold;"><%= "#{@ips}" %></div>
               </div>
-              <div class="col-xs-1"><a href="#"><div class="icon power"><div class="label">Power</div></div></a></div>
+              <div class="col-xs-1" id="powerButtonContainer" style="display: inline;"><a href="#"><div class="icon power"><div class="label">Power</div></div></a></div>
           </div>
       </div>
 
@@ -69,7 +78,11 @@
         <div class="dropdown-item-container settings-container">
           <div class="dropdown-item">
           <div class="menu-title">Noam Server Name</div>
-
+          <form id="renameServer">
+          <div>
+            <input type="text" id="inutRoomName"><button class="btn btn-primary">Save</button>
+          </div>
+          </form>
           <div class="menu-title">Log</div>
 
           <div class="menu-title">Settings</div>
@@ -133,35 +146,30 @@
       <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
 
       <div class="graph-grid-menu">
-        <ul>
-          <li class="active"><a href="#graph" class="graph-button">Graph</a></li>
-          <li><a href="#grid" class="grid-button">Grid</a></li>
+        <ul class="MainViewToggles">
+          <li><a href="#graph" for="graph-view" class="graph-button">GRAPH</a></li>
+          <li class="active"><a href="#grid" for="grid-view" class="grid-button">GRID</a></li>
         </ul>
       </div>
 
       <div class="graph-view starter-template">
-          <h1>Noam Graph View</h1>
-            <div class="graph"></div>
+        <div class="graph"></div>
       </div>
 
 
       <div class="grid-view starter-template">
-
-        <h1>Noam Grid View</h1>
         
-      <div id="Channels">
-        <table class="table">
-          <thead>
-            <tr>
-              <td>Channel Name</td>
-              <td>Last Updated</td>
-              <td>Value</td>
-            </tr>
-          </thead>
-          <tbody>
-
-          </tbody>
-        </table>
+        <div id="Channels">
+          <table class="table">
+            <thead>
+              <tr>
+                <td>Channel Name</td>
+                <td>Last Updated</td>
+                <td>Value</td>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
 
  <!--        <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -173,11 +181,14 @@
           <a class="navbar-brand" href="#">Noam Server</a>
         </div>
         <div class="collapse navbar-collapse">
-          <div class="dropdown">
+          <div class="dropdown noam-dropdown" style="height: 50px; float: left;">
             <ul class="nav navbar-nav">
               <li>
-                <a href="#" data-target="#" id="dLabel" data-toggle="dropdown">Settings</a>
-                <div class="dropdown-menu" aria-labelledby="dLabel">
+                <div class="nav-item nav-settings" data-target="#" id="settingsPane" data-toggle="dropdown">
+                  <div class="img"></div>
+                  Settings
+                </div>
+                <div class="dropdown-menu" aria-labelledby="settingsPane">
                   <div class="menu-title">Noam Server Name</div>
 
                   <div class="menu-title">Log</div>
@@ -206,7 +217,11 @@
                 </div>
               </li>
               <li>
-                <a href="#" data-target="#" id="networkPane" data-toggle="dropdown">Network</a>
+                <div class="nav-item nav-network" data-target="#" id="networkPane" data-toggle="dropdown">
+                  <div class="img"></div>
+                    Network
+                  </a>
+                </div>
                 <div class="dropdown-menu network" style="width: 800px;" aria-labelledby="networkPane">
                   <div class="sectionH">
                     <div class="menu-title">Traffic</div>
@@ -234,18 +249,21 @@
                     </div>
                   </div>
                 </div>
-
-
               </li>
-              <li><a href="#contact">Settings</a></li>
             </ul>
           </div>
 
-          <div class="pull-right">
+          <div class="pull-right"  style="height: 50px; float: left;">
             <ul class="nav navbar-nav">
               <li><a href="#"><%= "#{@server_name}" %></a></li>
               <li><a href="#"><%= "#{@ips}" %></a></li>
-              <li style="padding-top: 8px;"><button class="btn btn-danger">Restart</button></button></li>
+              <li style="padding-top: 8px;">
+                <div class="nav-item nav-run" data-target="#" data-toggle="dropdown" style="margin-top: -10px;">
+                  <div class="img"></div>
+                    Network
+                  </a>
+                </div>
+              </li>
             </ul>
           </div>
         </div><!--/.nav-collapse
@@ -358,7 +376,7 @@
     <script src="/javascripts/libs/d3.v3.min.js"/></script>
     <script src="/javascripts/core/NoamRefresher.js"></script>
     <script src="/javascripts/views/indexBootstrap/Player.js"></script>
-    <script src="/javascripts/views/index/graph.js"></script>
+    <!--<script src="/javascripts/views/index/graph.js"></script>-->
     <script src="/javascripts/views/indexBootstrap/ui.js"></script>
     <script src="/javascripts/views/indexBootstrap/Channel.js"></script>
     <script src="/javascripts/views/indexBootstrap/DetailView.js"></script>
@@ -366,7 +384,6 @@
     <script src="/javascripts/views/indexBootstrap/FreeAgents.js"></script>
     <script src="/javascripts/views/indexBootstrap/indexBootstrapMain.js"></script>
     <script src="/javascripts/libs/underscore.js"></script>
-    <script src="/javascripts/libs/d3/d3.js"></script>
     <script src="/javascripts/libs/d3/d3.layout.js"></script>
   </body>
 </html>

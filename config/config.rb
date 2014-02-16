@@ -2,7 +2,7 @@ require 'logging'
 require 'socket'
 
 CONFIG = {}
-CONFIG[:server_name] = "dbrody"
+CONFIG[:room_name] = ""
 CONFIG[:web_server_port] = 8081
 CONFIG[:broadcast_port] = 1030
 CONFIG[:listen_port] = 7733

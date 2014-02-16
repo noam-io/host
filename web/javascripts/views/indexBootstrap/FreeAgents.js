@@ -2,14 +2,13 @@
 
 var Guest = function(holdingElementQuery, obj, type){
 	this.update(holdingElementQuery, obj, type);
-	this.name = escape(this.name);
 	this.holdingElement = holdingElementQuery;
 	this.draw();
 	this.type = type;
 }
 
 Guest.prototype.getElement = function(){
-	return $(this.holdingElement + " li.lemma_"+this.name);
+	return $(this.holdingElement + " li.lemma_"+this.name.replace(/\s+/g, '-').toLowerCase());
 }
 
 Guest.prototype.setupElementCallbacks = function(){
@@ -28,9 +27,7 @@ Guest.prototype.update = function(holdingElementQuery, obj, type){
 	var elem = this.getElement();
 	this.holdingElement = holdingElementQuery;
 	if(type != this.type){
-		console.log('Different type!');
 		this.type = type;
-		console.log(elem);
 		elem.detach();
 		$(this.holdingElement).append(elem);	
 	}
@@ -69,10 +66,10 @@ Guest.prototype.draw = function(){
 		$(this.holdingElement).append(
 			$("<li></li>")
 				.addClass('releaseable')
-				.addClass('lemma_'+this.name)
+				.addClass('lemma_'+this.name.replace(/\s+/g, '-').toLowerCase())
 				.attr('data-trigger', 'hover')
 				.attr('data-toggle', 'tooltip')
-				.attr('data-title', this.name)
+				.attr('data-title', this.name.replace(/\s+/g, '-').toLowerCase())
 				.attr('data-html', 'true')
 				.attr('data-content', this.getPopoverContent())
 				.html(this.name)
@@ -119,8 +116,8 @@ GuestList.prototype._refresh = function(url, cb){
 	if(!url){
 		return;
 	}
-	
-	$.get(url, self.call_data, null)
+	var time = new Date().getTime();
+	$.get(url+"?"+time, self.call_data, null)
 		.done(function(data){
 			if(data['type'] != 'timeout'){
 				self.loadContent(data);

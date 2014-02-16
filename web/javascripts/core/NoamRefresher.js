@@ -27,8 +27,9 @@ NoamRefresher.prototype.go = function( ) {
   };
 
   var populateFromUrl = function( route ) {
+    var time = new Date().getTime();
     $.ajax({
-      url: route,
+      url: route+"?"+time,
       dataType: 'json',
       success: function( results ){
         setTimeout( softRefresh, 1);
