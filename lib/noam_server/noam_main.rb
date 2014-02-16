@@ -24,6 +24,7 @@ module NoamServer
         EM.stop
       end
 
+      NoamServer.room_name=@config[:server_name]
       @server = NoamServer.new(@config[:listen_port])
       @webserver = WebSocketServer.new(@config[:web_socket_port])
       @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],

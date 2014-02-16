@@ -41,7 +41,7 @@ $().ready(function() {
 
 	function closeDropdown() {
 		$('.dropdown-item-container.active').removeClass('active').slideUp();
-		$('.header').find('.active').removeClass('active');
+		$('.nav-button').find('.active').removeClass('active');
 	}
 
 });

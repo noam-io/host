@@ -48,11 +48,11 @@ $(function() {
       // console.log('newsize',_.size(results['players']));
 
       if(_.size(results['players']) !== window.numberOfPlayers) {
-        window.graphView.init(results);
-        window.numberOfPlayers = _.size(results['players']);
+        //window.graphView.init(results);
+        //window.numberOfPlayers = _.size(results['players']);
       }
 
-      window.graphView.update(results['events']);
+      //window.graphView.update(results['events']);
 
       $("#serverDownError").fadeOut(500);
       // Update Player Headings
@@ -98,6 +98,61 @@ $(function() {
     $('.scrollArea li').popover();
     activityGraph.init();
     agentManager.start();
+
+
+
+
+    // Renaming Server
+    $("#renameServer").submit(function(){
+      var name = $("#renameServer input[type=text]").val();
+      $.post('/settings', {'name': name}, function(data){
+        updateFromSettings(data);
+      });
+      return false;
+    });
+
+    $.get('/settings', null, null)
+      .done(function(data){
+        updateFromSettings(data);
+      })
+      .fail(function(err){
+        console.log("Error: ");
+        console.log(err);
+      });
+
+    $("#powerButtonContainer").click(function(){
+      var setTo =  !$("#powerButtonContainer .power").hasClass('active');
+      $.post('/settings', {'on': setTo}, function(data){
+        updateFromSettings(data);
+      });
+    });
+
+    $("#welcomeScreenSubmit").submit(function(){
+      var name = $("#newservername").val();
+      if(name.length > 0){
+        $.post('/settings', {'name': name, 'on': true}, function(data){
+          if(data['name'] == name){
+            updateFromSettings(data);
+            $("#defaultWelcomeScreen").fadeOut(100);
+          }
+        });
+      }
+      return false;
+    })
+
+    function updateFromSettings(data){
+      $(".server-name-value").html(data['name']);
+      if(data['name'].length > 0){
+        $("#defaultWelcomeScreen").fadeOut(300);
+      }
+      if(data['on']){
+        $("#powerButtonContainer .power").addClass('active');
+      } else {
+        $("#powerButtonContainer .power").removeClass('active');
+      }
+    }
+
+
   });
 
 

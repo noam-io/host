@@ -170,6 +170,32 @@ class NoamApp < Sinatra::Base
     erb :indexBootstrap
   end
 
+  get '/settings' do
+    content_type :json
+    body({
+      :on=>NoamServer::NoamServer.on?,
+      :name=>NoamServer::NoamServer.room_name
+    }.to_json)
+  end
+
+  post '/settings', :provides => :json do
+    if params.include?('name')
+      NoamServer::NoamServer.room_name = params['name']
+    end
+
+    if params.include?('on')
+      toggle = (params['on'] == true) || (params['on'] == 'true')
+      NoamServer::NoamServer.on=toggle
+    end
+
+    content_type :json
+    body({
+      :set=>true,
+      :on=>NoamServer::NoamServer.on?,
+      :name=>NoamServer::NoamServer.room_name
+    }.to_json)
+  end
+
   aget '/arefresh' do
     RefreshQueue.instance().pile do |type|
       state = get_orchestra_state
@@ -187,7 +213,6 @@ class NoamApp < Sinatra::Base
   end
 
   post '/play-event' do
-    puts params
     NoamServer::Orchestra.instance.play( params["name"], params["value"], "Maestro Web" )
     body("ok")
   end

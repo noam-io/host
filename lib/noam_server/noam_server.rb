@@ -6,6 +6,8 @@ require 'noam_server/noam_logging'
 
 module NoamServer
   class NoamServer
+    @@on = false
+    @@_room_name = nil
 
     def initialize(port)
       @port = port
@@ -16,10 +18,30 @@ module NoamServer
       NoamLogging.info(self, "Starting Noam Server at #{@host}:#{@port}")
       begin
         EventMachine::start_server(@host, @port, Listener)
+        @@on = (@@_room_name != "")
       rescue Errno::EADDRINUSE
         NoamLogging.fatal(self, "Unable to start Noam Server - Server port already in use.")
         raise
       end
+    end
+
+    def self.room_name
+      @@_room_name
+    end
+
+    # Rename the server
+    #  This clears some internal state
+    def self.room_name=set_room_name
+      @@_room_name = set_room_name
+      Orchestra.instance.clear()
+    end
+
+    def self.on?
+      @@on
+    end
+
+    def self.on=ison
+      @@on = ison
     end
   end
 end

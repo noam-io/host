@@ -18,6 +18,13 @@ module NoamServer
       @unregister_callbacks = []
     end
 
+    def clear
+      keys = @players.keys()
+      keys.each do |spalla_id|
+        fire_player(spalla_id)
+      end
+    end
+
     def register(player_connection, player)
       spalla_id = player.spalla_id
 
@@ -62,6 +69,11 @@ module NoamServer
 
     def play(event, value, player_id)
       player = players[player_id]
+
+      # This is for ignoring old lemmas when the server changes name
+      if player.nil? or !player.in_right_room?()
+        return
+      end
 
       player.learn_to_play(event) unless player.nil?
       player.last_activity = DateTime.now unless player.nil?
