@@ -1,7 +1,14 @@
 $().ready(function() {
 	var active = '.graph';
 
-	$('.grid-view').hide();
+	$('#MainViewToggles a').each(function(){
+		var isfor = $(this).attr('for');
+		if($(this).hasClass('active')){
+			$("."+isfor).show();
+		} else {
+			$("."+isfor).hide();
+		}
+	});
 
 
 	// Graph buttons

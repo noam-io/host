@@ -116,8 +116,8 @@ GuestList.prototype._refresh = function(url, cb){
 	if(!url){
 		return;
 	}
-	
-	$.get(url, self.call_data, null)
+	var time = new Date().getTime();
+	$.get(url+"?"+time, self.call_data, null)
 		.done(function(data){
 			if(data['type'] != 'timeout'){
 				self.loadContent(data);

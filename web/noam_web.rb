@@ -197,6 +197,7 @@ class NoamApp < Sinatra::Base
   end
 
   aget '/arefresh' do
+    response.headers['Cache-Control'] = 'no-cache'
     RefreshQueue.instance().pile do |type|
       state = get_orchestra_state
       state[:type] = type
@@ -206,6 +207,7 @@ class NoamApp < Sinatra::Base
   end
 
   get '/refresh' do
+    response.headers['Cache-Control'] = 'no-cache'
     state = get_orchestra_state
     state[:type] = :good
     content_type :json
@@ -213,17 +215,20 @@ class NoamApp < Sinatra::Base
   end
 
   post '/play-event' do
+    response.headers['Cache-Control'] = 'no-cache'
     NoamServer::Orchestra.instance.play( params["name"], params["value"], "Maestro Web" )
     body("ok")
   end
 
   get '/guests' do
+    response.headers['Cache-Control'] = 'no-cache'
     response = get_guests(request['types'])
     content_type :json
     body(response.to_json)
   end
 
   aget '/aguests' do
+    response.headers['Cache-Control'] = 'no-cache'
     requestType = request['types']
     FreeAgentQueue.instance().pile do |type|
       response = get_guests(requestType)
@@ -234,6 +239,7 @@ class NoamApp < Sinatra::Base
   end
 
   post '/guests/join' do
+    response.headers['Cache-Control'] = 'no-cache'
     lemmaId = request.body.read
     response = {}
     freeAgentLemma = NoamServer::UnconnectedLemmas.instance().get(lemmaId)
@@ -250,6 +256,7 @@ class NoamApp < Sinatra::Base
   end
 
   post '/guests/free' do
+    response.headers['Cache-Control'] = 'no-cache'
     lemmaId = request.body.read 
     response = {}
     lemma_to_free = NoamServer::GrabbedLemmas.instance().get(lemmaId)
@@ -266,6 +273,7 @@ class NoamApp < Sinatra::Base
 
 
   post '/stop-server' do
+    response.headers['Cache-Control'] = 'no-cache'
     NoamServer::NoamLogging.info(self, "Stopping server from web interface...")
     EM.next_tick do
       EM.stop
