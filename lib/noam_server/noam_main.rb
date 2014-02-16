@@ -2,45 +2,45 @@ require 'config'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'noam_server/persistence/factory'
-require 'noam_server/server_locator'
 require 'noam_server/udp_broadcaster'
+require 'noam_server/udp_listener'
+require 'noam_server/unconnected_lemmas'
 require 'noam_server/web_socket_server'
 
 module NoamServer
   class NoamMain
     attr_accessor :config
 
-    def initialize()
-
+    def initialize
       @config = CONFIG
-      NoamLogging.instance(@config[:logging])
-      NoamLogging.start_up
+      @logger = NoamLogging.instance(@config[:logging])
+      @logger.setLevel(@config[:logging][:level])
+      @logger.start_up
 
-      unless CONFIG[:persistor_class].nil?
-        NoamLogging.info(self, "Using Persistence Class: #{CONFIG[:persistor_class]}")
-        unless Persistence::Factory.get(@config).connected
-          NoamLogging.fatal(self, "Unable to connect to persistent store.")
-          exit
-        end
-      else
-        NoamLogging.info(self, "Not using Persistent Storage.")
+      persistor = Persistence::Factory.get(@config)
+      NoamLogging.info(self, "Using Persistence: #{persistor}")
+      unless persistor.connected
+        NoamLogging.fatal(self, "Unable to connect to persistent store.")
+        EM.stop
       end
 
       @server = NoamServer.new(@config[:listen_port])
       @webserver = WebSocketServer.new(@config[:web_socket_port])
       @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],
-                                        @config[:listen_port])
-      @server_locator = ServerLocator.new(@config[:broadcast_port])
+                                        @config[:server_name],
+                                        @config[:web_server_port])
+      @marcopolo = UdpListener.new
     end
 
     def start
       begin
         @server.start
         @webserver.start
-        @server_locator.start
+        @marcopolo.start(@config[:broadcast_port], @config[:listen_port], @config[:server_name])
       rescue Errno::EADDRINUSE
+        NoamLogging.warn("Exiting due to ports already being occupied")
         fire_server_started_callback
-        exit
+        EM.stop
       rescue Exception => e
         NoamLogging.fatal(self, "Exiting due to bad startup.")
         NoamLogging.error(self, "Startup Error: " + e.to_s)
@@ -49,6 +49,11 @@ module NoamServer
 
       EventMachine.add_periodic_timer(2) do
         @broadcaster.go
+        UnconnectedLemmas.instance.reap
+        NoamLogging.debug(self, "UnconnectedLemmas: #{UnconnectedLemmas.instance}")
+        NoamLogging.debug(self, "GrabbedLemmas: #{GrabbedLemmas.instance}")
+        LocatedServers.instance.reap
+        NoamLogging.debug(self, "LocatedServers: #{LocatedServers.instance}")
       end
     end
 
@@ -59,7 +64,17 @@ end
 ####
 # Default Noam Callbacks
 ##########################
+
+# Dummy Player used for Web UI
+TempPlayer = Struct.new(:spalla_id)
+WebUIPlaceholder = TempPlayer.new("Web UI Lemma")
+
 NoamServer::Orchestra.instance.on_play do |name, value, player|
+
+  unless player
+    player = WebUIPlaceholder
+  end
+
   unless CONFIG[:persistor_class].nil?
     persistor = NoamServer::Persistence::Factory.get(CONFIG)
     EM::defer {

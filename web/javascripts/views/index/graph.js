@@ -11,6 +11,7 @@
             ry: 1140/3
         },
         d3: null,
+        lastEvent: {},
         bundle: null,
         cluster: null,
         line: null,
@@ -40,6 +41,7 @@
             var _this = this;
             var d = this.parseEventData(eventData);
             console.log(d);
+
             _.each(d,function(val,key){
                 var select = _this.svg.selectAll("path.link.source-" + val)
                   //.classed("target", true)
@@ -290,10 +292,21 @@
         },
 
         parseEventData: function(data) {
-            var map=[];    
+            var map=[],
+                _this = this;
+
             _.each(data, function(val,key) {
                 console.log(val, key);
-                map.push(key.split('sentFrom')[1]);
+                if(typeof _this.lastEvent[key].timestamp === undefined) {
+                    map.push(key.split('sentFrom')[1]);
+                    _this.lastEvent[key] = val.timestamp;
+                }
+                else if(_this.lastEvent[key].timestamp !== val.timestamp) {
+                    map.push(key.split('sentFrom')[1]);
+                    _this.lastEvent[key] = val.timestamp;
+                }
+
+                // map.push(key.split('sentFrom')[1]);
             });
             return map;
         },

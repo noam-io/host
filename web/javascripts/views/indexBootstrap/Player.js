@@ -3,13 +3,47 @@
 
 function Player(player){
 	this.update(player);
+	this.cb = {};
 }
 
+Player.prototype.getObj = function(){
+	return $("#Channels .table thead tr .player[player-name="+this.spalla_id+"]");
+}
+
+Player.prototype.addCB = function(cbName, cb){
+	this.cb[cbName] = cb;
+}
+
+Player.prototype.createElementCallbacks = function(){
+	var self = this;
+	self.getObj().click(function(){
+		$(".player").removeClass('active');
+		if(detailViewManager.toggleLemma(self)){
+			self.getObj().addClass('active');	
+		}
+		activityGraph.displayPlayer(self);
+	});
+}
+
+
+
 Player.prototype.update = function(player){
+	var updated = false;
+	var updatedPlayHear = 	('hears' in this) && _.union(this['hears'], player['hears']).length != this['hears'].length &&
+							('plays' in this) && _.union(this['plays'], player['plays']).length != this['hears'].length;
 	for(key in player){
+		updated = updated || (key in this && this[key] != player[key]);
 		this[key] = player[key];
 	}
 	this.draw();
+	if(updated){
+		for(cbName in this.cb){
+			this.cb[cbName](this);
+		}
+	}
+	if(updatedPlayHear){
+		activityGraph.refresh();
+	}
 }
 
 
@@ -49,9 +83,10 @@ Player.prototype.toString = function(){
 
 
 Player.prototype.draw = function(){
-	var obj = $("#Channels .table thead tr .player[player-name="+this.spalla_id+"]");
+	var obj = this.getObj();
 	if(obj.size() == 0){
 		$("#Channels .table thead tr").append(this.toTD());
+		this.createElementCallbacks();
 	} else {
 		$(obj[0]).html(this.toString());
 	}

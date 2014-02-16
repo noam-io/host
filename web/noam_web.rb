@@ -29,38 +29,51 @@ NoamServer::Orchestra.instance.on_play do |name, value, player|
   Statabase.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
-  Request.enqueue_response
+  RefreshQueue.instance().enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_register do |player|
   $last_active_id = player.spalla_id if player
   $last_active_event = ""
-  Request.enqueue_response
+  RefreshQueue.instance().enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_unregister do |player|
-  Request.enqueue_response
+  RefreshQueue.instance().enqueue_response
 end
 
-class Request
-  @@r = Queue.new
-  @@pending_responses = false
+NoamServer::UnconnectedLemmas.instance.on_change do ||
+  FreeAgentQueue.instance().enqueue_response
+  NoamServer::NoamLogging.info(self, "UnconnectedLemmas change...")
+  puts NoamServer::UnconnectedLemmas.instance.getAll()
+end
 
-  def self.pile(&callback)
-    @@r << [callback, Time.now.getutc]
+class RequestQueue
+  def self.instance
+    @instance ||= self.new() 
   end
 
-  def self.enqueue_response
-    @@pending_responses = true
+  def initialize()
+    @instance = nil
+    @r = Queue.new
+    @pending_responses = false
   end
 
-  def self.pending_responses?
-    @@pending_responses
+  def pile(&callback)
+    @r << [callback, Time.now.getutc]
   end
 
-  def self.respond
-    while !@@r.empty?
-      r = @@r.pop
+  def enqueue_response
+    @pending_responses = true
+  end
+
+  def pending_responses?
+    @pending_responses
+  end
+
+  def respond
+    while !@r.empty?
+      r = @r.pop
       begin
         r[0].call :good
       rescue RuntimeError => e
@@ -69,14 +82,14 @@ class Request
         NoamServer::NoamLogging.debug("Respond", "Queued Request has not receiver.")
       end
     end
-    @@pending_responses = false
+    @pending_responses = false
   end
 
-  def self.checktimeouts
-    num_requests = @@r.size
+  def checktimeouts
+    num_requests = @r.size
     timeout_time = CONFIG[:web_server][:time_to_timeout] || 10
     num_requests.times do |i|
-      r = @@r.pop
+      r = @r.pop
       if Time.now.getutc - r[1] > timeout_time
         begin
           r[0].call :timeout
@@ -86,13 +99,22 @@ class Request
           NoamServer::NoamLogging.debug("Respond", "Queued Request has not receiver.")
         end
       else
-        @@r << r
+        @r << r
       end
     end
-
   end
-
 end
+
+
+# Queue to manage aget /refresh requests
+class RefreshQueue < RequestQueue
+end
+
+# Queue to manage aget /free-agents requests
+class FreeAgentQueue < RequestQueue
+end
+
+
 
 $last_active_id = ""
 $last_active_event = ""
@@ -100,6 +122,7 @@ $last_active_event = ""
 class NoamApp < Sinatra::Base
   register Sinatra::Async
 
+  set :bind, '0.0.0.0'
   set :server, 'thin'
   set :public_folder, File.dirname(__FILE__)
   set :port, CONFIG[:web_server_port]
@@ -115,13 +138,17 @@ class NoamApp < Sinatra::Base
   def self.run!
     EM::set_timer_quantum(30)
     EM::add_periodic_timer do
-      if Request.pending_responses?
-        Request.respond
+      if RefreshQueue.instance().pending_responses?
+        RefreshQueue.instance().respond
+      end
+      if FreeAgentQueue.instance().pending_responses?
+        FreeAgentQueue.instance().respond
       end
     end
 
     EM::add_periodic_timer(1) do
-      Request.checktimeouts
+      RefreshQueue.instance().checktimeouts
+      FreeAgentQueue.instance().checktimeouts
     end
 
     @@ips = `ifconfig | grep 'inet ' | awk '{ print $2}'`
@@ -144,7 +171,7 @@ class NoamApp < Sinatra::Base
   end
 
   aget '/arefresh' do
-    Request.pile do |type|
+    RefreshQueue.instance().pile do |type|
       state = get_orchestra_state
       state[:type] = type
       content_type :json
@@ -165,6 +192,54 @@ class NoamApp < Sinatra::Base
     body("ok")
   end
 
+  get '/guests' do
+    response = get_guests(request['types'])
+    content_type :json
+    body(response.to_json)
+  end
+
+  aget '/aguests' do
+    requestType = request['types']
+    FreeAgentQueue.instance().pile do |type|
+      response = get_guests(requestType)
+      response[:type] = type
+      content_type :json
+      body(response.to_json)
+    end
+  end
+
+  post '/guests/join' do
+    lemmaId = request.body.read
+    response = {}
+    freeAgentLemma = NoamServer::UnconnectedLemmas.instance().get(lemmaId)
+    unless freeAgentLemma.nil?
+      NoamServer::UnconnectedLemmas.instance().delete(lemmaId)
+      NoamServer::GrabbedLemmas.instance().add(freeAgentLemma)
+      response[:lemma] = freeAgentLemma
+      response[:status] = 'ok'
+    else 
+      response[:status] = 'nolemma'
+    end
+    content_type :json
+    body(response.to_json)
+  end
+
+  post '/guests/free' do
+    lemmaId = request.body.read 
+    response = {}
+    lemma_to_free = NoamServer::GrabbedLemmas.instance().get(lemmaId)
+    unless lemma_to_free.nil?
+      NoamServer::GrabbedLemmas.instance().delete(lemmaId)
+      NoamServer::UnconnectedLemmas.instance().add(lemma_to_free)
+      response[:status] = 'ok'
+    else 
+      response[:status] = 'fail'
+    end
+    content_type :json
+    body(response.to_json)
+  end
+
+
   post '/stop-server' do
     NoamServer::NoamLogging.info(self, "Stopping server from web interface...")
     EM.next_tick do
@@ -172,6 +247,37 @@ class NoamApp < Sinatra::Base
     end
     body("ok")
   end
+
+
+  ####
+  #
+  ####
+  def get_guests(types)
+    types = types || ['free', 'owned', 'other']
+    response = {}
+    if types.include?('free')
+      response['guests-free'] = NoamServer::UnconnectedLemmas.instance().getAll()
+    end
+
+    if types.include?('owned')
+      response['guests-owned'] = NoamServer::GrabbedLemmas.instance().getAll()
+      
+      # NoamServer::Orchestra.instance.players.each do |spalla_id, player|
+      #   response['guests-owned'][spalla_id] = {
+      #     :spalla_id => spalla_id,
+      #     :device_type => player.device_type,
+      #     :last_activity => format_date( player.last_activity ),
+      #     :system_version => player.system_version,
+      #     :hears => player.hears,
+      #     :plays => player.plays
+      #   }
+      # end
+    end
+    return response
+  end 
+
+
+
 
 
   ####

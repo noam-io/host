@@ -19,7 +19,9 @@
       }
     </style>
     <link href="/stylesheets/bootstrap/bootstrap.min.css" rel="stylesheet">
+
     <link href="/stylesheets/main.css" rel="stylesheet">
+    <link href="/stylesheets/views/indexBootstrap/main.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <style>
@@ -45,30 +47,92 @@
 
   <body>
 
-      <div class="container">
-            <div class="header">
-                <div class="nav container">
-                    <div class="col-xs-3 logo"><a href="/"><img src="/images/Logo.png"></a></div>
-                    <div class="col-xs-1"><a href="#"><div class="icon settings"><div class="label">Settings</div></div></a></div>
-                    <div class="col-xs-1"><a href="#"><div class="icon network">
-                      <div class="label">
-                        <%= "#{@server_name}" %> 
-                        <small><%= "#{@ips}" %></small>
-                        </div></div></a></div>
-                    <div class="col-xs-6 server-name">Test Server</div>
-                    <div class="col-xs-1"><a href="#"><div class="icon power"><div class="label">Power</div></div></a></div>
-                </div>
+      <div class="header">
+          <div class="nav container">
+              <div class="col-xs-3 logo"><a href="/"><img src="/images/Logo.png"></a></div>
+              <div class="col-xs-1"><a href="#" class="settings-button"><div class="icon settings"><div class="label">Settings</div></div></a></div>
+              <div class="col-xs-1"><a href="#" class="network-button"><div class="icon network">
+                <div class="label">
+                  <%= "#{@server_name}" %> 
+                  <small><%= "#{@ips}" %></small>
+                  </div></div></a></div>
+              <div class="col-xs-6 server-name">Test Server</div>
+              <div class="col-xs-1"><a href="#"><div class="icon power"><div class="label">Power</div></div></a></div>
+          </div>
+      </div>
+
+      <div class="container" id="mainBody">
+
+      <!-- Settings Dropdown -->
+        <div class="dropdown-item-container settings-container">
+          <div class="dropdown-item">
+          <div class="menu-title">Noam Server Name</div>
+
+          <div class="menu-title">Log</div>
+
+          <div class="menu-title">Settings</div>
+          <div>
+            <table>
+              <tr>
+                <td>IP</td>
+                <td>----</td>
+              </tr>
+              <tr>
+                <td>Discovery UDP Broadcast</td>
+                <td>----</td>
+              </tr>
+              <tr>
+                <td>Websocket Port</td>
+                <td>---</td>
+              </tr>
+              <tr>
+                <td>UI Port</td>
+                <td>---</td>
+              </tr>
+            </table>
+          </div>
+          </div>
+        </div>
+      <!-- End Settings Dropdown -->
+
+      <!-- Network dropdown -->
+        <div class="dropdown-item-container network-container">
+          <div class="dropdown-item">
+            <div class="sectionH">
+              <div class="menu-title">Traffic</div>
             </div>
-
-
-
+            <div class="sectionH" id="ownedAgentList">
+              <div class="menu-title">Your Guests</div>
+              <div class="scrollArea">
+                <ul></ul>
+              </div>
+            </div>
+            <div class="sectionH" id="freeAgentList">
+              <div class="menu-title">Free Guests</div>
+              <div class="scrollArea">
+                <ul></ul>
+              </div>
+            </div>
+            <div class="sectionH">
+              <div class="menu-title">Other Guests</div>
+              <div class="scrollArea">
+                <ul>
+                  <li class="releaseable" data-toggle="tooltip">Participant 1</li>
+                  <li class="locked" data-toggle="tooltip">Participant 1</li>
+                  <li class="releaseable" data-toggle="tooltip">Participant 1</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- end network dropdown -->
 
 
       <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
 
       <div class="graph-grid-menu">
         <ul>
-          <li><a href="#graph" class="graph-button">Graph</a></li>
+          <li class="active"><a href="#graph" class="graph-button">Graph</a></li>
           <li><a href="#grid" class="grid-button">Grid</a></li>
         </ul>
       </div>
@@ -96,34 +160,188 @@
 
           </tbody>
         </table>
+
+ <!--        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Noam Server</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <div class="dropdown">
+            <ul class="nav navbar-nav">
+              <li>
+                <a href="#" data-target="#" id="dLabel" data-toggle="dropdown">Settings</a>
+                <div class="dropdown-menu" aria-labelledby="dLabel">
+                  <div class="menu-title">Noam Server Name</div>
+
+                  <div class="menu-title">Log</div>
+
+                  <div class="menu-title">Settings</div>
+                  <div>
+                    <table>
+                      <tr>
+                        <td>IP</td>
+                        <td>----</td>
+                      </tr>
+                      <tr>
+                        <td>Discovery UDP Broadcast</td>
+                        <td>----</td>
+                      </tr>
+                      <tr>
+                        <td>Websocket Port</td>
+                        <td>---</td>
+                      </tr>
+                      <tr>
+                        <td>UI Port</td>
+                        <td>---</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <a href="#" data-target="#" id="networkPane" data-toggle="dropdown">Network</a>
+                <div class="dropdown-menu network" style="width: 800px;" aria-labelledby="networkPane">
+                  <div class="sectionH">
+                    <div class="menu-title">Traffic</div>
+                  </div>
+                  <div class="sectionH" id="ownedAgentList">
+                    <div class="menu-title">Your Guests</div>
+                    <div class="scrollArea">
+                      <ul></ul>
+                    </div>
+                  </div>
+                  <div class="sectionH" id="freeAgentList">
+                    <div class="menu-title">Free Guests</div>
+                    <div class="scrollArea">
+                      <ul></ul>
+                    </div>
+                  </div>
+                  <div class="sectionH">
+                    <div class="menu-title">Other Guests</div>
+                    <div class="scrollArea">
+                      <ul>
+                        <li class="releaseable" data-toggle="tooltip">Participant 1</li>
+                        <li class="locked" data-toggle="tooltip">Participant 1</li>
+                        <li class="releaseable" data-toggle="tooltip">Participant 1</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+
+              </li>
+              <li><a href="#contact">Settings</a></li>
+            </ul>
+          </div>
+
+          <div class="pull-right">
+            <ul class="nav navbar-nav">
+              <li><a href="#"><%= "#{@server_name}" %></a></li>
+              <li><a href="#"><%= "#{@ips}" %></a></li>
+              <li style="padding-top: 8px;"><button class="btn btn-danger">Restart</button></button></li>
+            </ul>
+          </div>
+        </div><!--/.nav-collapse
+      </div>
+    </div>
+
+    <div id="mainContainer" class="container">
+      <BR/><BR/>
+      <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
+
+      <ul id="mainTabs" class="nav nav-tabs">
+        <li class="active"><a href="#graphView" data-toggle="tab">Graph</a></li>
+        <li><a href="#gridView" data-toggle="tab">Grid</a></li>
+      </ul>
+
+      <!-- Tab panes --
+      <div class="tab-content">
+        <!-- Graph View Here --
+        <div class="tab-pane" id="graphView">
+          <BR/>
+          <center>
+            <img src="" title="Placeholder for graph view" width="400" height="400">
+          </center>
+        </div>
+        <!-- End Graph View --
+
+        <!-- Grid View of Server--
+        <div class="tab-pane" id="gridView">
+          <div class="starter-template">
+            <h4>Noam Grid View</h4>
+          </div>
+
+          <div id="Channels">
+            <table class="table">
+              <thead>
+                <tr>
+                  <td>Channel Name</td>
+                  <td>Last Updated</td>
+                  <td>Value</td>
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        -->
       </div>
       </div>
 
 
     </div><!-- /.container -->
 
-    <!-- Modals -->
-    <div class="modal fade" id="sendMessage">
-      <form id="sendMessageForm">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Send Message</h4>
-          </div>
-          <div class="modal-body">
-            <p>Channel: <span class="sendMessageChannel"></span></p>
-            <p>Value: <BR><textarea class="sendMessageValue" style="width: 300px;" rows="5"></textarea></p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-      </form>
-    </div><!-- /.modal -->
+    <div id="detailPane" pos="400">
+      <div class="handle">
+        <span class="dir"><</span><BR/>I<BR/>N<BR/>S<BR/>I<BR/>G<BR/>H<BR/>T
+      </div>
+      <div id="detailViews">
 
+        <div id="detailDefault">
+          Click on a Lemma or Topic to view details.
+        </div>
+
+        <div id="detailLemma">
+          <div>
+            <span class="name">Participant 2</span> - <span class="ip">192.168.1.113</span>
+            <span class="newWindow"><a href="#">New Window</a></span>
+          </div>
+          <div class="version">
+            Arduino Lemma v-1.0.1
+          </div>
+          <div class="joinedAt">
+            Joined the conversation at -:--AM (------- ago)
+          </div>
+          <div id="activityGraph">
+          </div>
+        </div>
+
+        <div id="detailTopic">
+          <div>
+            <span class="name">Participant 2</span>
+            <span class="newWindow"><a href="#">New Window</a></span>
+          </div>
+          <div class="status">
+            Joined the conversation at -:--AM (------ ago)
+          </div>
+          <div>
+            Current Value: <span class="value">192.168.1.113</span>
+          </div>
+          <form id="sendMessageForm">
+          <div>
+            <input class="sendMessageValue" type="value"> <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
 
 
@@ -133,12 +351,17 @@
     <script src="/javascripts/libs/jquery-1.8.1.min.js"></script>
     <script src="/javascripts/libs/jquery-ui-1.8.23.custom.min.js"></script>
     <script src="/javascripts/libs/bootstrap.min.js"></script>
+    <script src="/javascripts/libs/underscore-1.6.0-min.js"></script>
     <script src="/javascripts/libs/timeago.js"/></script>
+    <script src="/javascripts/libs/d3.v3.min.js"/></script>
     <script src="/javascripts/core/NoamRefresher.js"></script>
     <script src="/javascripts/views/indexBootstrap/Player.js"></script>
     <script src="/javascripts/views/index/graph.js"></script>
     <script src="/javascripts/views/indexBootstrap/ui.js"></script>
     <script src="/javascripts/views/indexBootstrap/Channel.js"></script>
+    <script src="/javascripts/views/indexBootstrap/DetailView.js"></script>
+    <script src="/javascripts/views/indexBootstrap/GraphicActivity.js"></script>
+    <script src="/javascripts/views/indexBootstrap/FreeAgents.js"></script>
     <script src="/javascripts/views/indexBootstrap/indexBootstrapMain.js"></script>
     <script src="/javascripts/libs/underscore.js"></script>
     <script src="/javascripts/libs/d3/d3.js"></script>

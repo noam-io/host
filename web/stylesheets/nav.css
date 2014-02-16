@@ -59,3 +59,50 @@
 .nav .power.active {
   background: url("/images/Icon-Run.png") no-repeat;
 }
+
+/* line 61, nav.scss */
+.graph-grid-menu {
+  width: 100%;
+  margin: 50px auto;
+}
+/* line 64, nav.scss */
+.graph-grid-menu ul {
+  width: 201px;
+  margin: 0 auto;
+}
+/* line 68, nav.scss */
+.graph-grid-menu ul li {
+  font-size: 16pt;
+  float: left;
+  clear: none;
+  width: 80px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-align: center;
+}
+/* line 77, nav.scss */
+.graph-grid-menu ul li.active {
+  background: #eee;
+}
+
+/* line 84, nav.scss */
+.dropdown-item-container {
+  width: 100%;
+  margin: 0 auto;
+  display: none;
+  position: absolute;
+  top: 130px;
+  left: 0;
+  background: transparent;
+}
+/* line 92, nav.scss */
+.dropdown-item-container .dropdown-item {
+  width: 50%;
+  height: auto;
+  min-height: 150px;
+  margin: 0 auto;
+  padding: 5px;
+  background: white;
+  border: 1px solid #eee;
+}

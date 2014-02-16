@@ -1,8 +1,8 @@
 require 'logging'
-require 'noam_server/server_name'
 require 'socket'
 
 CONFIG = {}
+CONFIG[:server_name] = "dbrody"
 CONFIG[:web_server_port] = 8081
 CONFIG[:broadcast_port] = 1030
 CONFIG[:listen_port] = 7733
@@ -13,12 +13,10 @@ CONFIG[:web_server] = {
 	:time_to_timeout => 10
 }
 
-CONFIG[:server_name] = NoamServer::ServerName.new("#{Socket.gethostname} - Noam Moderator")
-
 # Persistor Types
-#CONFIG[:persistor_class] = :riak
-#CONFIG[:persistor_class] = :memory
-CONFIG[:persistor_class] = :mongodb
+# CONFIG[:persistor_class] = :riak
+# CONFIG[:persistor_class] = :memory
+# CONFIG[:persistor_class] = :mongodb
 
 # Riak Settings
 # NOTE: when using riak, you can point it at a single host:

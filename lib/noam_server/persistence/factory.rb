@@ -16,13 +16,14 @@ module NoamServer
           require 'noam_server/persistence/riak'
           @type = Riak
         else
-          @type = :nil
+          require 'noam_server/persistence/null'
+          @type = Null
         end
-        @type.instance(config[config[:persistor_class]])
+        return @type.instance(config[config[:persistor_class]])
       rescue Exception => e
         NoamLogging.error("Persistence::Factory", "Unable to instantiate persistence for #{config[:persistor_class]}: #{e}")
         require 'noam_server/persistence/memory'
-        return Memory.instance(config[:memory])
+        return Memory.instance({})
       end
     end
   end
