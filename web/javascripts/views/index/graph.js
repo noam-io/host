@@ -164,7 +164,7 @@
         
           this.svg.selectAll("g.arc")
             .data(nodes.filter(function(d){
-                return d.name !== 'participant';
+                return d.name !== 'participant' && d.name;
             }))
             .enter().append("svg:path")
             .attr("d", groupArc)
@@ -263,9 +263,9 @@
                 o.size = Math.random() * 5000;
                 o.imports = [];
                 // Commented this out, causes Lemmas that talk to eachother
-                // _.each(val.plays, function(dat,jter) {
-                //     o.imports.push('participant.' + dat.split('sentFrom')[1] + '.in');
-                // });
+                 _.each(val.plays, function(dat,jter) {
+                     o.imports.push('participant.' + dat.split('sentFrom')[1] + '.hears');
+                 });
 
                 map.push(i);
                 map.push(o);
