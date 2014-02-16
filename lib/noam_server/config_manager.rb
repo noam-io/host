@@ -34,10 +34,6 @@ module NoamServer
 
     # Let our internal hash handle most methods, returning what it likes
     def method_missing(*a,&b)
-      puts "======="
-      puts @h
-      puts a
-      puts b
       @h.send(*a,&b)
     end
 

@@ -142,6 +142,7 @@ $(function() {
 
     function updateFromSettings(data){
       $(".server-name-value").html(data['name']);
+      $("#inutRoomName").val(data['name']);
       if(data['name'].length > 0){
         $("#defaultWelcomeScreen").fadeOut(300);
       }

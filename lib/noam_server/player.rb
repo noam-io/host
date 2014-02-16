@@ -23,7 +23,6 @@ module NoamServer
     end
 
     def in_right_room?()
-      NoamLogging.info(self, "Player in room ?" + NoamServer.room_name + " - " + @room_name)
       @room_name == NoamServer.room_name
     end
 
