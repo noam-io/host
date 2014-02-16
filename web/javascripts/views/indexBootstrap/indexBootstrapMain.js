@@ -2,6 +2,7 @@ $(function() {
 
   var players = {};
   var channels = {};
+  window.numberOfPlayers = 0;
 
   var processManualEventSubmit = function() {
     $.post( this.action, $(this).serialize() );
@@ -43,6 +44,16 @@ $(function() {
       if(results['type'] == 'timeout'){
         return;
       }
+      // console.log('cursize',window.numberOfPlayers)
+      // console.log('newsize',_.size(results['players']));
+
+      if(_.size(results['players']) !== window.numberOfPlayers) {
+        window.graphView.init(results);
+        window.numberOfPlayers = _.size(results['players']);
+      }
+
+      window.graphView.update(results['events']);
+
       $("#serverDownError").fadeOut(500);
       // Update Player Headings
       var _players = results['players'];
@@ -53,6 +64,8 @@ $(function() {
           players[lemma_id].update(_players[lemma_id]);
         }
       }
+
+
 
       // Update Channel Rows
       var _events = results['events'];

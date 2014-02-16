@@ -1,0 +1,61 @@
+/* line 1, nav.scss */
+.nav {
+  color: 592685;
+}
+/* line 5, nav.scss */
+.nav .server-name {
+  text-align: right;
+  font-size: 2em;
+  padding-top: 0.5em;
+}
+/* line 11, nav.scss */
+.nav .logo {
+  padding-top: 19px;
+  float: left;
+  clear: none;
+  height: 71px;
+}
+/* line 18, nav.scss */
+.nav .icon {
+  width: 55px;
+  height: 71px;
+  margin: 0 auto;
+  text-align: bottom;
+  float: left;
+  clear: none;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  position: relative;
+}
+/* line 27, nav.scss */
+.nav .icon .label {
+  color: black;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+}
+/* line 36, nav.scss */
+.nav .settings {
+  background: url(/img/Icon-Settings-OFF.png) no-repeat;
+}
+/* line 38, nav.scss */
+.nav .settings.active {
+  background: url(/img/Icon-Settings.png) no-repeat;
+}
+/* line 43, nav.scss */
+.nav .network {
+  background: url("/img/Icon-Network-OFF.png") no-repeat;
+}
+/* line 45, nav.scss */
+.nav .network.active {
+  background: url("/img/Icon-Network.png") no-repeat;
+}
+/* line 50, nav.scss */
+.nav .power {
+  background: url("/img/Icon-Run-OFF.png") no-repeat;
+}
+/* line 52, nav.scss */
+.nav .power.active {
+  background: url("/img/Icon-Run.png") no-repeat;
+}

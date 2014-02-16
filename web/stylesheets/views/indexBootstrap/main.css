@@ -28,156 +28,6 @@
 	background-color:rgba(0,0,255,0.1);
 }
 
-/* Dropdown Styles */
-.navbar-nav>li>.dropdown-menu {
-	margin-top: 10px;
-	padding: 10px;
-}
-
-.navbar-nav>li .nav-item {
-	margin: -15px 25px;
-	background-color: #FFF;
-}
-
-.nav-settings {
-	cursor: pointer;
-}
-
-.nav-settings .img {
-	background-image: url('/images/Icon-Settings-OFF.png');
-	width: 51px;
-	height: 51px;
-	border-width: 0px;
-	
-}
-
-.nav-settings:hover .img {
-	background-image: url('/images/Icon-Settings.png');
-	width: 51px;
-	height: 51px;
-	border-width: 0px;
-}
-
-
-.nav-settings {
-	cursor: pointer;
-}
-
-.nav-settings .img {
-	background-image: url('/images/Icon-Settings-OFF.png');
-	width: 51px;
-	height: 51px;
-	border-width: 0px;
-	
-}
-
-.nav-settings:hover .img {
-	background-image: url('/images/Icon-Settings.png');
-	width: 51px;
-	height: 51px;
-	border-width: 0px;
-}
-
-.nav-run .img {
-	background-image: url('/images/Icon-Run-OFF.png');
-	width: 51px;
-	height: 51px;
-	border-width: 0px;
-	
-}
-
-.nav-run:hover .img {
-	background-image: url('/images/Icon-Run.png');
-	width: 51px;
-	height: 51px;
-	border-width: 0px;
-}
-
-
-.nav-network {
-	cursor: pointer;
-}
-
-.nav-network .img {
-	background-image: url('/images/Icon-Network-OFF.png');
-	width: 51px;
-	height: 51px;
-	border-width: 0px;
-	
-}
-
-.nav-network:hover .img {
-	background-image: url('/images/Icon-Network.png');
-	width: 51px;
-	height: 51px;
-	border-width: 0px;
-}
-
-
-.navbar-nav>li>.dropdown-menu.network {
-	margin-top: 10px;
-	margin-left: -120px;
-	padding: 10px;
-}
-
-.navbar-nav>li>.dropdown-menu .sectionH {
-	float: left;
-	width: 25%;
-	padding: 5px;
-}
-
-.navbar-nav>li>.dropdown-menu .sectionH .scrollArea {
-	background-color: #eaebeb;
-	border-radius: 5px;
-	max-height: 200px;
-	height: 200px;
-	overflow-y: scroll;
-	overflow-x: scroll;
-}
-
-.navbar-nav>li>.dropdown-menu .sectionH .scrollArea ul {
-	margin: 0px;
-	padding: 0px;
-
-
-}
-
-.navbar-nav>li>.dropdown-menu .sectionH .scrollArea ul li:before {
-	position: absolute;
-	text-align: center;
-	line-height: 12px;
-	width: 14px;
-	height: 14px;
-	margin-left: -20px;
-	margin-top: 4px;
-	border-radius: 7px;
-	content: "+";
-	padding: 0px 3px 0px 3px;
-	font-size: 10px;
-	color: #eaebeb;
-	background-color: #4a047e;
-}
-
-.navbar-nav>li>.dropdown-menu .sectionH .scrollArea ul li.releaseable:hover:before {
-	font-weight: bold;
-	background-color: #7100c5;
-}
-
-.navbar-nav>li>.dropdown-menu .sectionH .scrollArea ul li{
-	font-size: 16px;
-	padding: 3px 0px 3px 25px;
-}
-
-.navbar-nav>li>.dropdown-menu .sectionH .scrollArea ul li:hover{
-	font-size: 16px;
-}
-
-.navbar-nav>li>.dropdown-menu .sectionH .scrollArea ul li.releaseable:hover{
-	background-color: #f4f5f5;
-	cursor: pointer;
-}
-
-
 
 /* Lemma Detail Popup Styles */
 #detailPane {
@@ -245,6 +95,14 @@
 
 #activityGraph line.topic.topic-play {
 	stroke: #F7931E;
+}
+
+
+.sectionH {
+	float: left;
+	width: 25%;
+	height: 150px;
+	padding: 5px;
 }
 
 

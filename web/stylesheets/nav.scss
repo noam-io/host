@@ -1,0 +1,124 @@
+$purpleText: #592685;
+
+.nav {
+
+	color: $purpleText;
+
+	.server-name {
+		text-align:right;
+		font-size: 2em;
+		padding-top: .5em;
+
+		.small {
+			color:black;
+			font-size:.6em;
+		}
+	}
+
+
+	.logo {
+		padding-top:19px;
+		float:left;
+		clear:none;
+		height: 71px;
+	}
+
+	.icon {
+		width: 55px;
+		height: 71px;
+		margin: 0 auto;
+		text-align: bottom;
+		float: left; clear:none;
+		overflow:hidden;
+		background-repeat: no-repeat;
+		position: relative;
+		.label {
+			color: black;
+			position:absolute;
+			bottom:0;left:0;
+			text-align:center;
+
+		}
+	}
+
+	.settings {
+		background: url(/images/Icon-Settings-OFF.png) no-repeat;
+		&.active {
+			background: url(/images/Icon-Settings.png) no-repeat;			
+		}
+	}
+
+	.network {
+		background: url('/images/Icon-Network-OFF.png') no-repeat;
+		&.active, {
+			background: url('/images/Icon-Network.png') no-repeat;			
+		}
+	}
+
+	.power {
+		background: url('/images/Icon-Run-OFF.png') no-repeat;
+		&.active {
+			background: url('/images/Icon-Run.png') no-repeat;			
+		}
+	}
+
+}
+
+
+
+.graph-grid-menu {
+	width: 100%;
+	margin: 50px auto;	
+	ul {
+		width: 201px;
+		margin: 0 auto;
+
+		li {
+			font-size: 16pt;
+			float: left;
+			clear: none;
+			width: 80px;
+			padding: 0; margin: 0;
+			list-style: none;
+			text-align:center;
+
+			&.active {
+			background: #eee;
+			}
+		}
+	}
+}
+
+
+.menu-title {
+	color: $purpleText;
+	font-size: 16px;
+	font-weight: 800;
+	width: 100%;
+	border-bottom: 1px solid #eee;
+
+}
+.dropdown-item-container {
+	width: 100%;
+	margin: 0 auto;
+	display: none;
+	position:absolute;
+	top: 130px; left: 0;
+	background:transparent;
+
+	.dropdown-item {
+		width: 50%; height: auto;
+		min-height: 150px;
+		margin: 0 auto;
+		padding: 5px;
+		background:white;
+		border: 1px solid #eee;
+	}
+
+&.settings-container > .dropdown-item {
+		width: 35%;
+		margin: 0 auto;
+
+
+	}
+}

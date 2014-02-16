@@ -24,6 +24,8 @@ $(function() {
   };
   var refresher = new NoamRefresher( params );
   refresher.go();
+  
+
 
 });
 
