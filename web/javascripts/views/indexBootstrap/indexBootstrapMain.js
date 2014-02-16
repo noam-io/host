@@ -48,11 +48,12 @@ $(function() {
       // console.log('newsize',_.size(results['players']));
 
       if(_.size(results['players']) !== window.numberOfPlayers) {
-        //window.graphView.init(results);
-        //window.numberOfPlayers = _.size(results['players']);
+        $('.graph').html();
+        window.graphView.init(results);
+        window.numberOfPlayers = _.size(results['players']);
+      } else {
+        window.graphView.update(results['events']);
       }
-
-      //window.graphView.update(results['events']);
 
       $("#serverDownError").fadeOut(500);
       // Update Player Headings

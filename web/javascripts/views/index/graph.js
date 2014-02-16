@@ -23,7 +23,7 @@
         init: function(data){
             var _this = this;
 
-            console.log('started graphview')
+            // console.log('started graphview')
 
             _this.setupGraph();
             _this.parseToD3(data);
@@ -40,7 +40,7 @@
         update: function(eventData) {
             var _this = this;
             var d = this.parseEventData(eventData);
-            console.log(d);
+            // console.log(d);
 
             _.each(d,function(val,key){
                 var select = _this.svg.selectAll("path.link.target-" + val)
@@ -118,10 +118,10 @@
                 links = _this.getConnections(nodes),
                 splines = _this.bundle(links);
 
-            console.log('mappedData',d);
-            console.log('nodes',nodes);
-            console.log('links',links);
-            console.log('splines',splines);
+            // console.log('mappedData',d);
+            // console.log('nodes',nodes);
+            // console.log('links',links);
+            // console.log('splines',splines);
 
             _this.drawCategory(nodes);
 
@@ -145,11 +145,11 @@
                 .data(links)
                 .enter().append("svg:path")
                 .attr("class", function(d) { return "link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
-                .attr("marker-start", function(d) {
+                .attr("marker-mid", function(d) {
                   //  if(d.)
                     return "url(#" + d.source.name.split('.')[2] + ")"; 
                 })
-                .attr("d", function(d, i) { return _this.line(splines[i]); });
+                .attr("d", function(d, i) { return _this.line(splines[i]) ; });
 
 
 
@@ -208,7 +208,7 @@
                   .attr("id", function(d) { return "node-" + d.key; })
                   .attr("transform", function(d) { 
                     var r=_this.getAngles(d)
-                    console.log(r) // (d.x-100)
+                    // console.log(r) // (d.x-100)
                     return "rotate(" + ((d.x - 100)+r.min*3) +") translate(" + (d.y+95) + ")"; })
                 .append("svg:text")
                   .attr('class','arcText')
@@ -226,7 +226,7 @@
             var min,max = 0;
             // console.log('getAnglesInput',data.x)
             if(!data.children) {
-                console.log("Noe kids")
+                // console.log("Noe kids")
                 return { min: 0, max:0 };
             }
             min = max = data.children[0].x;
@@ -289,7 +289,7 @@
         mapToNodes: function(data) {
             var map=[];
             var _this = this;
-            console.log('debugdata',data)
+            // console.log('debugdata',data)
             _.each(data.players, function(val,iter) {
                 _.each(val.hears, function(dat,jter) { // This player hears certain events
                     var i={};
@@ -299,7 +299,7 @@
                     _.each(data.players, function(r) { // Let's check what the others broadcast
                         _.each(r.plays, function(t) { // They play ...
                             if(t === dat) { // If what they play is the same as what we hear...
-                                console.log('pushing up', t, dat)
+                                // console.log('pushing up', t, dat)
                                 i.imports.push('participant.' + r.spalla_id + '.' + t)
                             }
                         })
@@ -321,7 +321,7 @@
                   map.push(o);
                 });
             })
-            console.log('Map', map)
+            // console.log('Map', map)
             return map;
         },
 
