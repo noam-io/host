@@ -43,6 +43,7 @@
             // console.log(d);
 
             _.each(d,function(val,key){
+                console.log(val)
                 var select = _this.svg.selectAll("path.link.target-" + val)
                   .each(_this.updateNodes("source", true))
                   .transition()
@@ -55,6 +56,20 @@
                     .style('stroke-width','2px')
                     .duration(400)
                     .delay(400);
+                    // HIghlight 
+                var category = _this.svg.selectAll('.source#node-' + val)
+                    // .each(_this.updateNodes("source", true))
+                  .transition()
+                    .style("opacity", 1)
+                    .style('font-size','10pt')
+                    .duration(400);
+
+                category.transition()
+                     .style("opacity", .4)
+                    // .style('font-size','10pt')
+                    .duration(400)
+                    .delay(400);
+
               })
         },
 
