@@ -20,7 +20,7 @@ ui.Views = ui.Views || {};
         line: null,
         svg: null,
         colors:[ '#210050','#46007a','#7f00de','#018b88','#01b8b1','#01ead6','#1667af','#01aeff','#6ed1ff','#73115b','#af007c','#d03593' ],
-
+        fakeData: 'data/dummy.json',
 
 
         events: {
@@ -32,21 +32,21 @@ ui.Views = ui.Views || {};
             var _this = this;
         	_.bindAll(this, 'render');
 
-            this.collection.fetch({
+            // this.collection.fetch({
 
-                error: function(){
-                    console.log("error");
-                },
-                success: function(collection){
-                _this.setupGraph();
-                _this.parseToD3(collection);
+            //     error: function(){
+            //         console.log("error");
+            //     },
+            //     success: function(collection){
+                
+            //     console.log("rendering", collection);
+            //     }
+
+            // });
+
+_this.setupGraph();
+                _this.parseToD3();
                 _this.render();
-                console.log("rendering", collection);
-                }
-
-            });
-
-
         },
 
         render: function(){
@@ -116,7 +116,7 @@ ui.Views = ui.Views || {};
         parseToD3: function(collectionData) {
             var _this = this;
 
-            d3.json(collectionData, function(data) {
+            d3.json(this.fakeData, function(data) {
 
                 var d = _this.mapToNodes(data),
                     nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
