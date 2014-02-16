@@ -1,4 +1,5 @@
 require 'config'
+require 'noam_server/config_manager'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'noam_server/persistence/factory'
@@ -13,23 +14,23 @@ module NoamServer
 
     def initialize
       @config = CONFIG
-      @logger = NoamLogging.instance(@config[:logging])
-      @logger.setLevel(@config[:logging][:level])
+      @logger = NoamLogging.instance(ConfigManager[:logging])
+      @logger.setLevel(ConfigManager[:logging][:level])
       @logger.start_up
 
-      persistor = Persistence::Factory.get(@config)
+      persistor = Persistence::Factory.get(ConfigManager)
       NoamLogging.info(self, "Using Persistence: #{persistor}")
       unless persistor.connected
         NoamLogging.fatal(self, "Unable to connect to persistent store.")
         EM.stop
       end
 
-      NoamServer.room_name=@config[:server_name]
-      @server = NoamServer.new(@config[:listen_port])
-      @webserver = WebSocketServer.new(@config[:web_socket_port])
-      @broadcaster = UdpBroadcaster.new(@config[:broadcast_port],
-                                        @config[:server_name],
-                                        @config[:web_server_port])
+      NoamServer.room_name=ConfigManager[:room_name]
+      @server = NoamServer.new(ConfigManager[:listen_port])
+      @webserver = WebSocketServer.new(ConfigManager[:web_socket_port])
+      @broadcaster = UdpBroadcaster.new(ConfigManager[:broadcast_port],
+                                        ConfigManager[:room_name],
+                                        ConfigManager[:web_server_port])
       @marcopolo = UdpListener.new
     end
 

@@ -33,6 +33,7 @@ module NoamServer
     #  This clears some internal state
     def self.room_name=set_room_name
       @@_room_name = set_room_name
+      ConfigManager[:room_name] = @@_room_name
       Orchestra.instance.clear()
     end
 
