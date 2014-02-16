@@ -26,6 +26,5 @@ $(function() {
   refresher.go();
   
 
-
 });
 

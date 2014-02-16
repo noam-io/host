@@ -60,6 +60,13 @@ path.arc {
   font: 16pt sans-serif;
 }
 
+/* line 51, graph.scss */
+.marker {
+  stroke: #1f77b4;
+  fill: #1f77b4;
+  opacity: .4;
+}
+
 /* line 3, nav.scss */
 .nav {
   color: #592685;
@@ -130,7 +137,7 @@ path.arc {
 /* line 69, nav.scss */
 .graph-grid-menu {
   width: 100%;
-  margin: 30px auto;
+  margin: 50px auto;
 }
 /* line 72, nav.scss */
 .graph-grid-menu ul {

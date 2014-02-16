@@ -102,7 +102,7 @@
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
-                .tension(.85)
+                .tension(.55)
                 .radius(function(d) { return d.y; })
                 .angle(function(d) { return d.x / 180 * Math.PI; });
             
@@ -129,14 +129,15 @@
             var markers = _this.svg.append("svg:defs").selectAll("marker")
                 .data(links)
                 .enter().append("svg:marker")
-                .attr("id", function(d) { return d.source.name.split('.')[2] })
+                .attr("id", function(d) { return d.target.name.split('.')[2] })
+                .attr("class","marker")
                 .attr("viewBox", "0 -5 10 10")
                 .attr("refX", 0)
-                .attr("markerWidth", 6)
-                .attr("markerHeight", 6)
+                .attr("markerWidth", 4)
+                .attr("markerHeight", 4)
                 .attr("orient", "auto")
                 .append("svg:path")
-                .attr("d", "M0,-5L10,0L0,5")
+                .attr("d", "M0,0L10,0L10,4")
                 // .attr("transform", function(d) { return "rotate(" + (d.source.x) + ")"; })
 
 
