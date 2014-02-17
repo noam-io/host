@@ -43,7 +43,7 @@
             // console.log(d);
 
             _.each(d,function(val,key){
-                console.log(val)
+                // console.log(val)
                 var select = _this.svg.selectAll("path.link.target-" + val)
                   .each(_this.updateNodes("source", true))
                   .transition()
@@ -364,38 +364,38 @@
 
         mouseon: function(d) {
             var _this = this;
-            console.log('mouseon',d.name)
-            _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
+            // console.log('mouseon',d)
+            window.graphView.svg.selectAll("path.link.target-" + d.name.split('.')[2])
               .classed("target", true)
-              .each(_this.updateNodes("source", true));
+              // .each(_this.updateNodes("source", true));
 
-            _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
+            window.graphView.svg.selectAll("path.link.source-" + d.name.split('.')[2])
               .classed("source", true)
-              .each(_this.updateNodes("target", true));
+              // .each(_this.updateNodes("target", true));
 
           // _this.svg.selectAll("groupArc." + d.__data__.name.split('.')[1])
-          this.select('path')
-              .classed("target", true)
-              .attr("fill-opacity",1);
+          // this.select('path')
+          //     .classed("target", true)
+          //     .attr("fill-opacity",1);
             },
  
         mouseoff:function(d) {
             var _this = this;
-            console.log('mouseoff',d);
-            _this.svg.selectAll("path.link.source-" + d.name.split('.')[1])
+            // console.log('mouseoff',d);
+            window.graphView.svg.selectAll("path.link.source-" + d.name.split('.')[2])
               .classed("source", false)
-              .each(_this.updateNodes("target", false));
+              // .each(_this.updateNodes("target", false));
 
-            _this.svg.selectAll("path.link.target-" + d.name.split('.')[1])
+            window.graphView.svg.selectAll("path.link.target-" + d.name.split('.')[2])
               .classed("target", false)
-              .each(_this.updateNodes("source", false));
+              // .each(_this.updateNodes("source", false));
         },
 
 
         updateNodes: function(name, value) {
           var _this = this;
           return function(d) {
-            //console.log('updateNotdes',this)
+            // console.log('updateNodes',name,value)
             if (value) this.parentNode.appendChild(this);
             // _this.svg.select("#node-" + d[name].key).classed(name, value);
           };
