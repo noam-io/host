@@ -212,11 +212,10 @@
                     return "groupArc " + d.name.split('.')[1];
                 })
                 .style("fill", function(d) {
+                    // return _.findWhere(d.children,)
                     return _this.colors[Math.floor(Math.random() * _this.colors.length)]
                 })
                 .style("fill-opacity", 0.5)
-                // .on("mouseover", _this.mouseon)
-                // .on("mouseout", _this.mouseoff);
 
             _this.svg.selectAll("g.category")
                 .data(nodes.filter(function(d){
@@ -313,7 +312,7 @@
                 _.each(val.hears, function(dat,jter) { // This player hears certain events
                     var i={};
                     i.name = 'participant.' + val.spalla_id + '.' + dat;
-                    i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
+                    i.color = null;
                     i.output = false;
                     i.imports = [];
                     _.each(data.players, function(r) { // Let's check what the others broadcast
@@ -331,6 +330,7 @@
                     var o = {};
                     o.name = 'participant.' + val.spalla_id + '.' + dat;
                     o.output = true;
+                    o.color = _this.colors[Math.floor(Math.random()*_this.colors.length)]
                     o.imports = [];
                     // _.each(data.players, function(r) { 
                     //     _.each(r.hears, function(t) { 
