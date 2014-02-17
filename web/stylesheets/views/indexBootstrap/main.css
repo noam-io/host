@@ -3,6 +3,12 @@ Body {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;;
 }
 
+.dataCellLimited {
+	max-width: 150px;
+	overflow: hidden;
+	height: 30px;
+}
+
 
 #defaultWelcomeScreen {
 	position: absolute;

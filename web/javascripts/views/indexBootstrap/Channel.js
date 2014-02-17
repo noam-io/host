@@ -50,7 +50,7 @@ Channel.prototype.toTR = function(players){
 
 	tr.append($("<td></td>").addClass('name').html(this.name.replace(/\s+/g, '-').toLowerCase()));
 	tr.append($("<td></td>").addClass('timestamp').html(this.timestamp));
-	tr.append($("<td></td>").addClass('value').html(this.value_escaped));
+	tr.append($("<td></td>").addClass('dataCellLimited').addClass('value').html(unescape(this.value_escaped)));
 	for(lemma_id in players){
 		if(players[lemma_id] == null){
 			continue;
@@ -91,7 +91,7 @@ Channel.prototype.draw = function(players){
 	} else {
 		obj = $(obj[0]);
 		obj.find('.timestamp').html(this.timestamp);
-		obj.find('.value').html(this.value_escaped);
+		obj.find('.value').html(unescape(this.value_escaped));
 
 		for(lemma_id in players){
 			var hear = players[lemma_id].doesHear(this.name) ? "H" : "";
