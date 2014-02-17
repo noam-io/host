@@ -3,6 +3,12 @@ Body {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;;
 }
 
+.table>thead:first-child>tr:first-child>td {
+	font-weight: bold;
+	border-bottom: 1px solid #DDD;
+}
+
+
 .dataCellLimited {
 	max-width: 150px;
 	overflow: hidden;

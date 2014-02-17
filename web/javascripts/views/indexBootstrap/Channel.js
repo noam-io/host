@@ -48,8 +48,14 @@ Channel.prototype.toTR = function(players){
 				.attr('channel-name', this.name.replace(/\s+/g, '-').toLowerCase())
 				.addClass('channel');
 
+	var activity_substring = "";
+	if(this.timestamp){
+		var start = this.timestamp.indexOf('T') + 1;
+		var len = (this.timestamp.lastIndexOf('+') - 1) - start;
+		activity_substring = this.timestamp.substr(start, len);
+	}
 	tr.append($("<td></td>").addClass('name').html(this.name.replace(/\s+/g, '-').toLowerCase()));
-	tr.append($("<td></td>").addClass('timestamp').html(this.timestamp));
+	tr.append($("<td></td>").addClass('timestamp').html(activity_substring));
 	tr.append($("<td></td>").addClass('dataCellLimited').addClass('value').html(unescape(this.value_escaped)));
 	for(lemma_id in players){
 		if(players[lemma_id] == null){
@@ -90,7 +96,13 @@ Channel.prototype.draw = function(players){
 		this.createElementCallbacks();
 	} else {
 		obj = $(obj[0]);
-		obj.find('.timestamp').html(this.timestamp);
+		var activity_substring = "";
+		if(this.timestamp){
+			var start = this.timestamp.indexOf('T') + 1;
+			var len = (this.timestamp.lastIndexOf('+') - 1) - start;
+			activity_substring = this.timestamp.substr(start, len);
+		}
+		obj.find('.timestamp').html(activity_substring);
 		obj.find('.value').html(unescape(this.value_escaped));
 
 		for(lemma_id in players){

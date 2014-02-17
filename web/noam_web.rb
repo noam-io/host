@@ -220,10 +220,11 @@ class NoamApp < Sinatra::Base
     body(state.to_json)
   end
 
-  post '/play-event' do
+  post '/play-event', :provides => :json do
     response.headers['Cache-Control'] = 'no-cache'
-    NoamServer::Orchestra.instance.play( params["name"], params["value"], "Maestro Web" )
-    body("ok")
+    NoamServer::Orchestra.instance.play( params["name"], params["value"], :web_ui_lemma )
+    content_type :json
+    body({"result" => "ok"}.to_json)
   end
 
   get '/guests' do

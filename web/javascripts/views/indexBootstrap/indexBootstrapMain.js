@@ -17,8 +17,8 @@ $(function() {
     var channel = $("#detailTopic .name").html();
     var value = $(".sendMessageValue").val();
 
-     $.post( '/play-event', {'name': channel, 'value': value}, function(){
-      $(".sendMessageValue").val('');
+     $.post( '/play-event', {'name': channel, 'value': value}, function(data){
+        $(".sendMessageValue").val('');
      });
      $("#sendMessage").modal('hide');
      return false;
