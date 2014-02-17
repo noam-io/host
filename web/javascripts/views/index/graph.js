@@ -56,7 +56,8 @@
                     .style('stroke-width','2px')
                     .duration(400)
                     .delay(400);
-                    // HIghlight 
+                
+                // Highlight sender
                 var category = _this.svg.selectAll('.source#node-' + val)
                     // .each(_this.updateNodes("source", true))
                   .transition()
@@ -162,7 +163,6 @@
                 .enter().append("svg:path")
                 .attr("class", function(d) { return "link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
                 .attr("marker-mid", function(d) {
-                  //  if(d.)
                     return "url(#" + d.source.name.split('.')[2] + ")"; 
                 })
                 .attr("d", function(d, i) { return _this.line(splines[i]) ; });
@@ -174,6 +174,9 @@
                   .data(nodes.filter(function(d) { return !d.children; }))
                 .enter().append("svg:g")
                   .attr("class", "node")
+                  .attr("class", function(d) {
+                    return d.output ? "source" : "target";
+                  })
                   .attr("id", function(d) { return "node-" + d.key; })
                   .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
                 .append("svg:text")
@@ -311,6 +314,7 @@
                     var i={};
                     i.name = 'participant.' + val.spalla_id + '.' + dat;
                     i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)]
+                    i.output = false;
                     i.imports = [];
                     _.each(data.players, function(r) { // Let's check what the others broadcast
                         _.each(r.plays, function(t) { // They play ...
@@ -326,6 +330,7 @@
                 _.each(val.plays, function(dat,jter) { 
                     var o = {};
                     o.name = 'participant.' + val.spalla_id + '.' + dat;
+                    o.output = true;
                     o.imports = [];
                     // _.each(data.players, function(r) { 
                     //     _.each(r.hears, function(t) { 
@@ -392,7 +397,7 @@
           return function(d) {
             //console.log('updateNotdes',this)
             if (value) this.parentNode.appendChild(this);
-            _this.svg.select("#node-" + d[name].key).classed(name, value);
+            // _this.svg.select("#node-" + d[name].key).classed(name, value);
           };
         }
 
