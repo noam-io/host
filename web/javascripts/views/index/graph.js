@@ -225,7 +225,7 @@
                   .attr("transform", function(d) { 
                     var r=_this.getAngles(d)
                     // console.log(r) // (d.x-100)
-                    return "rotate(" + ((d.x - 100)+r.min*3) +") translate(" + (d.y+95) + ")"; })
+                    return "rotate(" + ((d.x - 100)+r.min*3) +") translate(" + (d.y+(_this.d.h*.095)) + ")"; })
                 .append("svg:text")
                   .attr('class','arcText')
                   .attr("dx", function(d) { return d.x < 180 ? -20 : 20; })
