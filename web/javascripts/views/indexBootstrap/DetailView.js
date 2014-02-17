@@ -48,7 +48,7 @@ DetailView.prototype.refresh = function(){
     $("#detailLemma .joinedAt").html("Last activity at " + this.activeLemma.last_activity);
   } else if(this.activeTopic != null){
     $("#detailTopic .name").html(this.activeTopic.name);
-    $("#detailTopic .value").html(this.activeTopic.value_escaped);
+    $("#detailTopic .value").html(unescape(this.activeTopic.value_escaped));
   }
 }
 

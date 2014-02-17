@@ -8,7 +8,7 @@ function Channel(channel, players){
 
 
 Channel.prototype.getObj = function(){
-	return $("#Channels .table tbody .channel[channel-name="+this.name.replace(/\s+/g, '-').toLowerCase()+"]");
+	return $("#Channels .table tbody .channel[channel-name="+this.name.replace(/\s+/g, '-')+"]");
 }
 
 
@@ -45,12 +45,18 @@ Channel.prototype.update = function(channel, players){
 
 Channel.prototype.toTR = function(players){
 	var tr = $("<tr></tr>")
-				.attr('channel-name', this.name.replace(/\s+/g, '-').toLowerCase())
+				.attr('channel-name', this.name.replace(/\s+/g, '-'))
 				.addClass('channel');
 
-	tr.append($("<td></td>").addClass('name').html(this.name.replace(/\s+/g, '-').toLowerCase()));
-	tr.append($("<td></td>").addClass('timestamp').html(this.timestamp));
-	tr.append($("<td></td>").addClass('value').html(this.value_escaped));
+	var activity_substring = "";
+	if(this.timestamp){
+		var start = this.timestamp.indexOf('T') + 1;
+		var len = (this.timestamp.lastIndexOf('+') - 1) - start;
+		activity_substring = this.timestamp.substr(start, len);
+	}
+	tr.append($("<td></td>").addClass('name').html(this.name.replace(/\s+/g, '-')));
+	tr.append($("<td></td>").addClass('timestamp').html(activity_substring));
+	tr.append($("<td></td>").addClass('dataCellLimited').addClass('value').html(unescape(this.value_escaped)));
 	for(lemma_id in players){
 		if(players[lemma_id] == null){
 			continue;
@@ -58,13 +64,13 @@ Channel.prototype.toTR = function(players){
 		var hear = players[lemma_id].doesHear(this.name) ? "H" : "";
 		var plays = players[lemma_id].doesPlay(this.name) ? "P" : "";
 
-		tr.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-').toLowerCase()).html(hear + plays));
+		tr.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
 	}
 	return tr;
 }
 
 Channel.prototype.highlight = function(){
-	var obj = $("#Channels .table tbody .channel[channel-name="+this.name.replace(/\s+/g, '-').toLowerCase()+"]");
+	var obj = $("#Channels .table tbody .channel[channel-name="+this.name.replace(/\s+/g, '-')+"]");
 	if(obj.size() != 0){
 		// Clear previous highlight unanimation
 		if(this.highlightTimeout){
@@ -90,16 +96,22 @@ Channel.prototype.draw = function(players){
 		this.createElementCallbacks();
 	} else {
 		obj = $(obj[0]);
-		obj.find('.timestamp').html(this.timestamp);
-		obj.find('.value').html(this.value_escaped);
+		var activity_substring = "";
+		if(this.timestamp){
+			var start = this.timestamp.indexOf('T') + 1;
+			var len = (this.timestamp.lastIndexOf('+') - 1) - start;
+			activity_substring = this.timestamp.substr(start, len);
+		}
+		obj.find('.timestamp').html(activity_substring);
+		obj.find('.value').html(unescape(this.value_escaped));
 
 		for(lemma_id in players){
 			var hear = players[lemma_id].doesHear(this.name) ? "H" : "";
 			var plays = players[lemma_id].doesPlay(this.name) ? "P" : "";
-			if(obj.find('.'+lemma_id.replace(/\s+/g, '-').toLowerCase()).size() == 0){
-				obj.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-').toLowerCase()).html(hear + plays));
+			if(obj.find('.'+lemma_id.replace(/\s+/g, '-')).size() == 0){
+				obj.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
 			} else {
-				obj.find('.'+lemma_id.replace(/\s+/g, '-').toLowerCase()).html(hear + plays);
+				obj.find('.'+lemma_id.replace(/\s+/g, '-')).html(hear + plays);
 			}
 		}
 	}

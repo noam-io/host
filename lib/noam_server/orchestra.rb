@@ -54,13 +54,16 @@ module NoamServer
       player = players.delete(spalla_id)
       @connections.delete(spalla_id)
 
-      @events.each do |event, actors|
+      @events.delete_if do |event, actors|
         actors.delete(spalla_id)
+        actors.empty?
       end
 
       @unregister_callbacks.each do |callback|
         callback.call(player)
       end
+
+      GrabbedLemmas.instance().delete(spalla_id)
     end
 
     def event_names
@@ -68,16 +71,19 @@ module NoamServer
     end
 
     def play(event, value, player_id)
-      player = players[player_id]
+      # TODO : Need a better way to differentiate the web UI
+      player = nil
+      unless player_id == :web_ui_lemma
+        player = players[player_id]
 
-      # This is for ignoring old lemmas when the server changes name
-      if player.nil? or !player.in_right_room?()
-        return
+        # This is for ignoring old lemmas when the server changes name
+        if player.nil? or !player.in_right_room?()
+          return
+        end
+
+        player.learn_to_play(event) unless player.nil?
+        player.last_activity = DateTime.now unless player.nil?
       end
-
-      player.learn_to_play(event) unless player.nil?
-      player.last_activity = DateTime.now unless player.nil?
-
       @events[event] ||= {}
 
       # We need to dup here since #fire_player can mutate the underlying hashes

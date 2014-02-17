@@ -7,7 +7,7 @@ function Player(player){
 }
 
 Player.prototype.getObj = function(){
-	return $("#Channels .table thead tr .player[player-name="+this.spalla_id.replace(/\s+/g, '-').toLowerCase()+"]");
+	return $("#Channels .table thead tr .player[player-name="+this.spalla_id.replace(/\s+/g, '-')+"]");
 }
 
 Player.prototype.addCB = function(cbName, cb){
@@ -69,16 +69,22 @@ Player.prototype.doesPlay = function(event_name){
 
 Player.prototype.toTD = function(){
 	return $("<td></td>")
-				.attr('player-name', this.spalla_id.replace(/\s+/g, '-').toLowerCase())
+				.attr('player-name', this.spalla_id.replace(/\s+/g, '-'))
 				.addClass('player')
 				.html(this.toString());
 }
 
 Player.prototype.toString = function(){
+	var activity_substring = "";
+	if(this.last_activity){
+		var start = this.last_activity.indexOf('T') + 1;
+		var len = (this.last_activity.lastIndexOf('+') - 1) - start;
+		activity_substring = this.last_activity.substr(start, len);
+	}
 	return 	this.spalla_id+"<BR/>"+
             this.device_type+"<BR/>"+
-            this.system_version+"<BR/>"+
-            this.last_activity;
+            this.system_version+"<BR/>" +
+            activity_substring;
 }
 
 

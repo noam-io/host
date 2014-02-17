@@ -3,6 +3,18 @@ Body {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;;
 }
 
+.table>thead:first-child>tr:first-child>td {
+	font-weight: bold;
+	border-bottom: 1px solid #DDD;
+}
+
+
+.dataCellLimited {
+	max-width: 150px;
+	overflow: hidden;
+	height: 30px;
+}
+
 
 #defaultWelcomeScreen {
 	position: absolute;
@@ -181,6 +193,12 @@ Body {
 }
 
 
+.dropdown-item-container .guestListPane {
+	width: 870px;
+	padding: 10px;
+	height: 250px;
+}
+
 .sectionH {
 	float: left;
 	width: 25%;
@@ -188,4 +206,58 @@ Body {
 	padding: 5px;
 }
 
+.sectionH .scrollArea {
+	background-color: #F6F6F6;
+	border: 1px solid #EEEEEE;
+	border-radius: 5px;
+	height: 200px;
+	max-height: 200px;
+	overflow: scroll;
+}
+
+.sectionH .scrollArea ul li {
+	list-style: none;
+	margin-left: 0;
+	text-indent: -1em;
+	padding: 3px 0em 3px 1em;
+}
+.sectionH .scrollArea ul li.joinable:hover {
+	cursor: pointer;
+	background-color: #EEEEEE;
+}
+
+.sectionH .scrollArea ul li.joinable:before {
+	width: 14px;
+	height: 12px;
+	padding: 0px 4px 3px 4px;
+	margin: -5px 5px 0px -30px;
+	line-height: 8px;
+	color: #eaebeb;
+	border-radius: 8px;
+	font-size: 10px;
+	content: '+';
+	background-color: #a96ed5;
+	content: '+';
+	background-color: 
+}
+
+.sectionH .scrollArea ul li.joinable:before {
+	width: 14px;
+	height: 12px;
+	padding: 0px 4px 3px 4px;
+	margin: -5px 5px 0px -30px;
+	line-height: 8px;
+	color: #eaebeb;
+	border-radius: 8px;
+	font-size: 10px;
+	content: '+';
+	background-color: #a96ed5;
+	content: '+';
+	background-color: 
+}
+
+.sectionH .scrollArea ul li.joinable:hover:before {
+	background-color: #46007a;
+}
+}
 

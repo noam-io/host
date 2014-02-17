@@ -17,8 +17,8 @@ $(function() {
     var channel = $("#detailTopic .name").html();
     var value = $(".sendMessageValue").val();
 
-     $.post( '/play-event', {'name': channel, 'value': value}, function(){
-      $(".sendMessageValue").val('');
+     $.post( '/play-event', {'name': channel, 'value': value}, function(data){
+        $(".sendMessageValue").val('');
      });
      $("#sendMessage").modal('hide');
      return false;
@@ -41,9 +41,6 @@ $(function() {
     asyncRefreshRoute: '/arefresh',
     errorMessage: 'Contacting Maestro &hellip;',
     cb: function(results){
-      if(results['type'] == 'timeout'){
-        return;
-      }
       // console.log('cursize',window.numberOfPlayers)
       // console.log('newsize',_.size(results['players']));
 

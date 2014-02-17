@@ -15,7 +15,7 @@ Guest.prototype.setupElementCallbacks = function(){
 	var self = this;
 	this.getElement().click(function(){
 		$.post('/guests/join', self.name, function(data){
-			console.log(data);
+			
 		});
 	});
 }
@@ -143,7 +143,6 @@ GuestList.prototype.loadContent = function(data){
 }
 
 GuestList.prototype.storeAgent = function(element, obj, type){
-	console.log(obj.name + ' ==> ' + type);
 	if(this.free_agents[obj['name']]){
 		// Already Exists
 		this.free_agents[obj['name']].update(element, obj, type);

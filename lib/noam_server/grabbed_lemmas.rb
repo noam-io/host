@@ -13,7 +13,7 @@ module NoamServer
     end
 
     def add(element)
-      # TODO : Add as super.add(element) or similar
+      self.class.superclass.instance_method(:add).bind(self).call(element)
       @elements[element[:name]] = element
       UdpListener::sendMaro(element[:ip], element[:port])
     end
@@ -21,7 +21,7 @@ module NoamServer
     def delete(element_id)
       element = get(element_id)
       if !element.nil?
-        # TODO : Add as super.delete(element_id) or similar
+        self.class.superclass.instance_method(:delete).bind(self).call(element_id)
         @elements.delete(element[:name])
         Orchestra.instance.fire_player(element[:name])
         return true
