@@ -165,7 +165,10 @@
                 .attr("marker-mid", function(d) {
                     return "url(#" + d.source.name.split('.')[2] + ")"; 
                 })
-                .attr("d", function(d, i) { return  _this.line(splines[i]); });
+                .attr("d", function(d, i) { 
+                    // console.log(d);
+                    return  _this.line(splines[i]); 
+                });
 
 
 
