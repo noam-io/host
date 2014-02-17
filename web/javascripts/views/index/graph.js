@@ -165,7 +165,7 @@
                 .attr("marker-mid", function(d) {
                     return "url(#" + d.source.name.split('.')[2] + ")"; 
                 })
-                .attr("d", function(d, i) { return _this.line(splines[i]) ; });
+                .attr("d", function(d, i) { return  _this.line(splines[i]); });
 
 
 
@@ -300,7 +300,7 @@
                   imports.push({source: map[d.name], target: map[i]});
                 });
             });
-            console.log(imports)
+            // console.log(imports)
             return imports;
         },
 
