@@ -1,4 +1,6 @@
 
+var GridDisplaySpeaks = "<span style=\"background-color: #487BA6; color: #EEE; padding: 1px 5px; border-radius: 5px;\">S</span>";
+var GridDisplayHears = "<span style=\"background-color: #592685; color: #EEE; padding: 1px 5px; border-radius: 5px;\">H</span>";
 
 
 function Channel(channel, players){
@@ -61,8 +63,8 @@ Channel.prototype.toTR = function(players){
 		if(players[lemma_id] == null){
 			continue;
 		}
-		var hear = players[lemma_id].doesHear(this.name) ? "H" : "";
-		var plays = players[lemma_id].doesPlay(this.name) ? "P" : "";
+		var hear = players[lemma_id].doesHear(this.name) ? GridDisplayHears : "";
+		var plays = players[lemma_id].doesPlay(this.name) ? GridDisplaySpeaks : "";
 
 		tr.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
 	}
@@ -106,8 +108,8 @@ Channel.prototype.draw = function(players){
 		obj.find('.value').html(unescape(this.value_escaped));
 
 		for(lemma_id in players){
-			var hear = players[lemma_id].doesHear(this.name) ? "H" : "";
-			var plays = players[lemma_id].doesPlay(this.name) ? "P" : "";
+			var hear = players[lemma_id].doesHear(this.name) ? GridDisplayHears : "";
+			var plays = players[lemma_id].doesPlay(this.name) ? GridDisplaySpeaks : "";
 			if(obj.find('.'+lemma_id.replace(/\s+/g, '-')).size() == 0){
 				obj.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
 			} else {
