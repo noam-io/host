@@ -6,3 +6,7 @@ app/bower_components
 .tmp
 test/bower_components/
 .DS_Store
+/pkg
+/wrappers
+*.log
+*.tar.gz
