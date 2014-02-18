@@ -20,7 +20,11 @@ module NoamServer
     def hear( id_of_player, event_name, event_value )
       if ( !@ear.hear( id_of_player, event_name, event_value ) )
         # TODO : We no longer want to buffer values
-        # @backlog << [id_of_player, event_name, event_value]
+        # Instead we will only send the last value
+        # This is neccessary because the first message sent wont have a connection.
+        # Later, on reconnection it will get the last event if anything was sent
+        # while it was disconnected
+        @backlog = [[id_of_player, event_name, event_value]]
         @ear.new_connection do
           NoamLogging.debug(self, "Player reconnected for lemma '#{id_of_player}' sending '#{event_name}' = #{event_value}")
           on_connection
