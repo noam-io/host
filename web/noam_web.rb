@@ -247,15 +247,14 @@ class NoamApp < Sinatra::Base
 
   post '/guests/join' do
     response.headers['Cache-Control'] = 'no-cache'
-    lemmaId = request.body.read
+    lemma_id = request.body.read
     response = {}
-    freeAgentLemma = NoamServer::UnconnectedLemmas.instance().get(lemmaId)
-    unless freeAgentLemma.nil?
-      NoamServer::UnconnectedLemmas.instance().delete(lemmaId)
-      NoamServer::GrabbedLemmas.instance().add(freeAgentLemma)
-      response[:lemma] = freeAgentLemma
+    free_agent_lemma = NoamServer::UnconnectedLemmas.instance.get(lemma_id)
+    unless free_agent_lemma.nil?
+      NoamServer::GrabbedLemmas.instance.add(free_agent_lemma)
+      response[:lemma] = free_agent_lemma
       response[:status] = 'ok'
-    else 
+    else
       response[:status] = 'nolemma'
     end
     content_type :json
@@ -264,14 +263,14 @@ class NoamApp < Sinatra::Base
 
   post '/guests/free' do
     response.headers['Cache-Control'] = 'no-cache'
-    lemmaId = request.body.read 
+    lemma_id = request.body.read
     response = {}
-    lemma_to_free = NoamServer::GrabbedLemmas.instance().get(lemmaId)
-    unless lemma_to_free.nil?
-      NoamServer::GrabbedLemmas.instance().delete(lemmaId)
-      NoamServer::UnconnectedLemmas.instance().add(lemma_to_free)
+    lemma_to_free = NoamServer::GrabbedLemmas.instance.get(lemma_id)
+    if lemma_to_free
+      NoamServer::GrabbedLemmas.instance.delete(lemma_id)
+      NoamServer::Orchestra.instance.fire_player(lemma_id)
       response[:status] = 'ok'
-    else 
+    else
       response[:status] = 'fail'
     end
     content_type :json

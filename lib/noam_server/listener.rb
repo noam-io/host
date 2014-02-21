@@ -7,25 +7,27 @@ module NoamServer
     attr_accessor :listener, :spalla_id
 
     def post_init
-       port, @ip = Socket.unpack_sockaddr_in(get_peername)
-       handler = MessageHandler.new(@ip)
-       @listener = Noam::TcpListener.new do |msg|
-        # puts 'received raw message: ' + msg
-         begin
-           parsed_message = Noam::Messages.parse(msg)
-           @spalla_id = parsed_message.spalla_id
-           handler.message_received(parsed_message)
-         rescue JSON::ParserError
-            NoamLogging.error(self, "Invalid message received:  #{msg}")
-         rescue => error
-            stack_trace = error.backtrace.join("\n  == ")
-            NoamLogging.warn(self, "Error: #{error.to_s}\n Stack Trace:\n == #{stack_trace}")
-         end
-       end
+      port, @ip = Socket.unpack_sockaddr_in(get_peername)
+      handler = MessageHandler.new(@ip)
+      @listener = Noam::TcpListener.new do |msg|
+        begin
+          parsed_message = Noam::Messages.parse(msg)
+          @spalla_id = parsed_message.spalla_id
+          handler.message_received(parsed_message)
+          if !Orchestra.instance.can_play?(@spalla_id)
+            close_connection_after_writing
+          end
+        rescue JSON::ParserError
+          NoamLogging.error(self, "Invalid message received:  #{msg}")
+        rescue => error
+          stack_trace = error.backtrace.join("\n  == ")
+          NoamLogging.warn(self, "Error: #{error.to_s}\n Stack Trace:\n == #{stack_trace}")
+        end
+      end
     end
 
     def unbind
-      Orchestra.instance.fire_player( @spalla_id )
+      Orchestra.instance.fire_player(@spalla_id)
     end
 
     def receive_data data
