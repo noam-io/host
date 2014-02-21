@@ -52,7 +52,9 @@ module NoamServer
 
     def fire_player(spalla_id)
       player = players.delete(spalla_id)
-      @connections.delete(spalla_id)
+
+      connection = @connections.delete(spalla_id)
+      connection.terminate if connection
 
       @events.delete_if do |event, actors|
         actors.delete(spalla_id)
