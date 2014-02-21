@@ -7,7 +7,7 @@ require 'socket'
 
 module NoamServer
   module UdpHandler
-    attr_accessor :polo, :room_name
+    attr_accessor :polo, :tcp_listen_port
 
     def receive_data(message)
       # If the server is off, ignore marco-polo
@@ -15,19 +15,20 @@ module NoamServer
         NoamLogging.debug(self, "Ignoring message - server off.")
         return
       end
-      
+
       message = Noam::Messages.parse(message)
       if message.message_type == "marco"
         port, ip = get_port_and_ip
+        polo_message = make_polo
         if message.room_name == NoamServer.room_name and NoamServer.room_name != ""
-          NoamLogging.debug(self, "Sending polo #{@polo.inspect} to #{ip}:#{port}")
+          NoamLogging.debug(self, "Sending polo #{polo_message.inspect} to #{ip}:#{port}")
           remember_connected_lemma(ip, port, message)
-          send_data(UdpListener.makeMarco(ip, port))
+          send_data(polo_message)
         else
           remember_unconnected_lemma(ip, port, message)
           if grabbable_lemma?(message)
-            NoamLogging.debug(self, "Sending polo #{@polo.inspect} to grabbed lemma: #{ip}:#{port}")
-            send_data(UdpListener.makeMarco(ip, port))
+            NoamLogging.debug(self, "Sending polo #{polo_message.inspect} to grabbed lemma: #{ip}:#{port}")
+            send_data(polo_message)
           end
         end
       elsif message.message_type == "server_beacon"
@@ -36,6 +37,10 @@ module NoamServer
       else
         NoamLogging.info(self, "UDP handler dropped message because it was not a 'marco' message #{message.inspect}")
       end
+    end
+
+    def make_polo
+      Noam::Messages.build_polo(NoamServer.room_name, tcp_listen_port)
     end
 
     def get_port_and_ip
@@ -83,26 +88,11 @@ module NoamServer
   end
 
   class UdpListener
-    def start(udp_listen_port, tcp_listen_port, room_name)
-      @@_room_name = room_name
-      @@_tcp_listen_port = tcp_listen_port
-      NoamLogging.info(self, "Listening for lemmas; room name: #{room_name.inspect}")
+    def start(udp_listen_port, tcp_listen_port)
+      NoamLogging.info(self, "Listening for lemmas.")
       EM.open_datagram_socket('0.0.0.0', udp_listen_port, UdpHandler) do |handler|
+        handler.tcp_listen_port = tcp_listen_port
       end
-    end
-
-    def self.makeMarco(ip, port)
-      Noam::Messages.build_polo(NoamServer.name, @@_tcp_listen_port)
-    end
-
-    def self.sendMaro(ip, port)
-      polo_message = makeMarco(ip, port)
-      socket = UDPSocket.new
-      socket.bind("0.0.0.0", @@_tcp_listen_port)
-      socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_BROADCAST, true)
-      socket.connect(ip, port)
-      socket.send(polo_message, 0)
-      socket.close()
     end
   end
 end

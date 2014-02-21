@@ -1,3 +1,5 @@
+require 'noam_server/noam_server'
+
 module NoamServer
   class Player
 

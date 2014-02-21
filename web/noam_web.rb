@@ -31,35 +31,35 @@ NoamServer::Orchestra.instance.on_play do |name, value, player|
   Statabase.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
-  RefreshQueue.instance().enqueue_response
+  RefreshQueue.instance.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_register do |player|
   $last_active_id = player.spalla_id if player
   $last_active_event = ""
-  RefreshQueue.instance().enqueue_response
+  RefreshQueue.instance.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_unregister do |player|
-  RefreshQueue.instance().enqueue_response
+  RefreshQueue.instance.enqueue_response
 end
 
 NoamServer::UnconnectedLemmas.instance.on_change do ||
-  FreeAgentQueue.instance().enqueue_response
+  FreeAgentQueue.instance.enqueue_response
   NoamServer::NoamLogging.info(self, "UnconnectedLemmas change...")
 end
 
 NoamServer::GrabbedLemmas.instance.on_change do ||
-  FreeAgentQueue.instance().enqueue_response
+  FreeAgentQueue.instance.enqueue_response
   NoamServer::NoamLogging.info(self, "GrabbedLemmas change...")
 end
 
 class RequestQueue
   def self.instance
-    @instance ||= self.new() 
+    @instance ||= self.new
   end
 
-  def initialize()
+  def initialize
     @instance = nil
     @r = Queue.new
     @pending_responses = false
@@ -144,17 +144,17 @@ class NoamApp < Sinatra::Base
   def self.run!
     EM::set_timer_quantum(30)
     EM::add_periodic_timer do
-      if RefreshQueue.instance().pending_responses?
-        RefreshQueue.instance().respond
+      if RefreshQueue.instance.pending_responses?
+        RefreshQueue.instance.respond
       end
-      if FreeAgentQueue.instance().pending_responses?
-        FreeAgentQueue.instance().respond
+      if FreeAgentQueue.instance.pending_responses?
+        FreeAgentQueue.instance.respond
       end
     end
 
     EM::add_periodic_timer(1) do
-      RefreshQueue.instance().checktimeouts
-      FreeAgentQueue.instance().checktimeouts
+      RefreshQueue.instance.checktimeouts
+      FreeAgentQueue.instance.checktimeouts
     end
 
     @@ips = `ifconfig | grep 'inet ' | awk '{ print $2}'`
@@ -204,7 +204,7 @@ class NoamApp < Sinatra::Base
 
   aget '/arefresh' do
     response.headers['Cache-Control'] = 'no-cache'
-    RefreshQueue.instance().pile do |type|
+    RefreshQueue.instance.pile do |type|
       state = get_orchestra_state
       state[:type] = type
       content_type :json
@@ -237,7 +237,7 @@ class NoamApp < Sinatra::Base
   aget '/aguests' do
     response.headers['Cache-Control'] = 'no-cache'
     requestType = request['types']
-    FreeAgentQueue.instance().pile do |type|
+    FreeAgentQueue.instance.pile do |type|
       response = get_guests(requestType)
       response[:type] = type
       content_type :json
@@ -296,12 +296,12 @@ class NoamApp < Sinatra::Base
     types = types || ['free', 'owned', 'other']
     response = {}
     if types.include?('free')
-      response['guests-free'] = NoamServer::UnconnectedLemmas.instance().getAll()
+      response['guests-free'] = NoamServer::UnconnectedLemmas.instance.get_all
     end
 
     if types.include?('owned')
-      response['guests-owned'] = NoamServer::GrabbedLemmas.instance().getAll()
-      
+      response['guests-owned'] = NoamServer::GrabbedLemmas.instance.get_all
+
       # NoamServer::Orchestra.instance.players.each do |spalla_id, player|
       #   response['guests-owned'][spalla_id] = {
       #     :spalla_id => spalla_id,
@@ -314,7 +314,7 @@ class NoamApp < Sinatra::Base
       # end
     end
     return response
-  end 
+  end
 
 
 

@@ -68,20 +68,17 @@ module NoamServer
       @events.keys.sort
     end
 
+    def can_play?(player_id)
+      player = players[player_id]
+      return (player_id == :web_ui_lemma) || (player && player.in_right_room?)
+    end
+
     def play(event, value, player_id)
-      # TODO : Need a better way to differentiate the web UI
-      player = nil
-      unless player_id == :web_ui_lemma
-        player = players[player_id]
+      return if !can_play?(player_id)
 
-        # This is for ignoring old lemmas when the server changes name
-        if player.nil? or !player.in_right_room?()
-          return
-        end
-
-        player.learn_to_play(event) unless player.nil?
-        player.last_activity = DateTime.now unless player.nil?
-      end
+      player = players[player_id]
+      player.learn_to_play(event) unless player.nil?
+      player.last_activity = DateTime.now unless player.nil?
       @events[event] ||= {}
 
       # We need to dup here since #fire_player can mutate the underlying hashes

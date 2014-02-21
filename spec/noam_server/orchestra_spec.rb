@@ -35,8 +35,8 @@ describe NoamServer::Orchestra do
 
   it "registers players" do
     orchestra.register(connection_1, player_1)
-    connection_1.should_receive(:hear).with( 'player_id', "listens_for_1", 12.42)
-    orchestra.play("listens_for_1", 12.42, 'player_id' )
+    connection_1.should_receive(:hear).with( player_1.spalla_id, "listens_for_1", 12.42)
+    orchestra.play("listens_for_1", 12.42, player_1.spalla_id )
   end
 
   it "deletes newly-registered players from the unconnected list" do
@@ -66,9 +66,9 @@ describe NoamServer::Orchestra do
   end
 
   it "fires a player when there's an exception trying to talk to it" do
-    orchestra.register( connection_1, player_1)
+    orchestra.register(connection_1, player_1)
     connection_1.stub(:hear).and_raise("unknown send_data target")
-    orchestra.play("listens_for_1", 12.42, 'player_id' )
+    orchestra.play("listens_for_1", 12.42, player_1.spalla_id)
     orchestra.players.should == {}
   end
 
@@ -81,13 +81,13 @@ describe NoamServer::Orchestra do
   end
 
   it "replaces existing registration with a new one" do
-    orchestra.register( connection_1, player_1 )
+    orchestra.register(connection_1, player_1)
     connection_1.should_receive( :terminate )
-    orchestra.register( connection_2, player_1 )
+    orchestra.register(connection_2, player_1)
 
     connection_1.should_not_receive(:hear)
-    connection_2.should_receive(:hear).with( 'player_id', "listens_for_1", 12.42)
-    orchestra.play("listens_for_1", 12.42, 'player_id')
+    connection_2.should_receive(:hear).with(player_1.spalla_id, "listens_for_1", 12.42)
+    orchestra.play("listens_for_1", 12.42, player_1.spalla_id)
   end
 
   it 'updates players last activity' do

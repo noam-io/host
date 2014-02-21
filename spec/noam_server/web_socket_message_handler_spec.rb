@@ -35,7 +35,7 @@ describe NoamServer::WebSocketMessageHandler do
     event_value = 'event value'
 
     connection = double('Connection')
-    player = NoamServer::Player.new( '', '', '', [event_name], [], 0, 0)
+    player = NoamServer::Player.new( 'player_id', '', '', [event_name], [], 0, 0)
     orchestra.register( connection, player )
 
     message = Noam::Messages::EventMessage.new({})

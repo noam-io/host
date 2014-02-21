@@ -26,7 +26,7 @@ module NoamServer
         EM.stop
       end
 
-      NoamServer.room_name=ConfigManager[:room_name]
+      NoamServer.room_name = ConfigManager[:room_name]
       @server = NoamServer.new(ConfigManager[:listen_port])
       @webserver = WebSocketServer.new(ConfigManager[:web_socket_port])
       @broadcaster = UdpBroadcaster.new(ConfigManager[:broadcast_port],
@@ -39,7 +39,7 @@ module NoamServer
       begin
         @server.start
         @webserver.start
-        @marcopolo.start(@config[:broadcast_port], @config[:listen_port], @config[:server_name])
+        @marcopolo.start(@config[:broadcast_port], @config[:listen_port])
       rescue Errno::EADDRINUSE
         NoamLogging.warn("Exiting due to ports already being occupied")
         fire_server_started_callback
@@ -51,7 +51,7 @@ module NoamServer
       end
 
       EventMachine.add_periodic_timer(2) do
-        @broadcaster.go
+        @broadcaster.go if NoamServer.on?
         UnconnectedLemmas.instance.reap
         NoamLogging.debug(self, "UnconnectedLemmas: #{UnconnectedLemmas.instance}")
         NoamLogging.debug(self, "GrabbedLemmas: #{GrabbedLemmas.instance}")

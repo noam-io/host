@@ -34,11 +34,12 @@ describe NoamServer::MessageHandler do
     event_value = 'event value'
 
     connection = double('Connection')
-    player = NoamServer::Player.new( '', '', '', [event_name], [], 0, 0)
-    orchestra.register( connection, player )
+    player_id = 'player_id'
+    player = NoamServer::Player.new(player_id, '', '', [event_name], [], 0, 0)
+    orchestra.register(connection, player)
 
     message = Noam::Messages::EventMessage.new({})
-    message.spalla_id = 'player_id'
+    message.spalla_id = player_id
     message.event_name = event_name
     message.event_value = event_value
 

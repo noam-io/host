@@ -23,12 +23,10 @@ module NoamServer
     end
 
     def go
-      if NoamServer.on?
-        broadcast_addresses.each do |address|
-          send_message_to(message_to_broadcast, address, @broadcast_port)
-        end
-        NoamLogging.debug(self, "Broadcasting UDP Message: '#{message_to_broadcast}'")
+      broadcast_addresses.each do |address|
+        send_message_to(message_to_broadcast, address, @broadcast_port)
       end
+      NoamLogging.debug(self, "Broadcasting UDP Message: '#{message_to_broadcast}'")
     end
 
     private

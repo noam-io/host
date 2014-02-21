@@ -15,6 +15,7 @@ describe "UDP Listener" do
   let (:located_servers) { NoamServer::LocatedServers.new }
 
   before :each do
+    NoamServer::NoamServer.stub(:on?).and_return(true)
     Socket.stub(:unpack_sockaddr_in).and_return([1234, "127.0.0.1"])
     NoamServer::UnconnectedLemmas.stub(:instance).and_return(unconnected_lemmas)
     NoamServer::LocatedServers.stub(:instance).and_return(located_servers)
@@ -22,28 +23,32 @@ describe "UDP Listener" do
 
   it "should respond to marco with polo" do
     connection = TestUdpConnection.new
-    connection.polo = "polo message"
-    connection.room_name = "Foo"
+    NoamServer::NoamServer.room_name = "Foo"
     marco = Noam::Messages.build_marco("lemma", "Foo")
-    connection.should_receive(:send_data).with("polo message")
+    connection.should_receive(:send_data).with(connection.make_polo)
     connection.receive_data(marco)
+  end
+
+  it "builds the polo message properly" do
+    connection = TestUdpConnection.new
+    connection.tcp_listen_port = 9876
+    NoamServer::NoamServer.room_name = "Foo"
+    connection.make_polo.should == ["polo", "Foo", 9876].to_json
   end
 
   it "responds with a polo if a grab has been requested" do
     connection = TestUdpConnection.new
-    connection.polo = "polo message"
-    connection.room_name = "Foo"
-    NoamServer::GrabbedLemmas.instance.add("lemma #1")
+    NoamServer::NoamServer.room_name = "Foo"
+    NoamServer::GrabbedLemmas.instance.add({:name => "lemma #1"})
     marco = Noam::Messages.build_marco("lemma #1", "")
-    connection.should_receive(:send_data).with("polo message")
+    connection.should_receive(:send_data).with(connection.make_polo)
     connection.receive_data(marco)
   end
 
   it "does NOT respond with a polo when there's a non-blank room, even if a grab has been requested" do
     connection = TestUdpConnection.new
-    connection.polo = "polo message"
-    connection.room_name = "Foo"
-    NoamServer::GrabbedLemmas.instance.add("lemma #1")
+    NoamServer::NoamServer.room_name = "Foo"
+    NoamServer::GrabbedLemmas.instance.add({:name => "lemma #1"})
     marco = Noam::Messages.build_marco("lemma #1", "Another Room")
     connection.should_not_receive(:send_data)
     connection.receive_data(marco)
@@ -51,7 +56,7 @@ describe "UDP Listener" do
 
   it "should not respond if room name doesn't match" do
     connection = TestUdpConnection.new
-    connection.room_name = "Foo"
+    NoamServer::NoamServer.room_name = "Foo"
     marco = Noam::Messages.build_marco("lemma", "Another")
     connection.should_not_receive(:send_data)
     connection.receive_data(marco)
@@ -59,7 +64,7 @@ describe "UDP Listener" do
 
   it "saves the lemma info to if room name doesn't match" do
     connection = TestUdpConnection.new
-    connection.room_name = "Foo"
+    NoamServer::NoamServer.room_name = "Foo"
     marco = Noam::Messages.build_marco("lemmaID", "Another")
 
     NoamServer::UnconnectedLemmas.instance.get("lemmaID").should == nil
@@ -88,7 +93,7 @@ describe "UDP Listener" do
 
   it "saves located server information" do
     connection = TestUdpConnection.new
-    connection.room_name = "This Room ID"
+    NoamServer::NoamServer.room_name = "Foo"
     beacon = Noam::Messages.build_server_beacon("Another Room ID", 9876)
 
     NoamServer::LocatedServers.instance.get("Another Room ID").should == nil
@@ -105,6 +110,16 @@ describe "UDP Listener" do
       :ip => "127.0.0.1",
       :last_activity_timestamp => now.getutc
     }
+  end
+
+  it "stops listening when the server is off" do
+    connection = TestUdpConnection.new
+    NoamServer::NoamServer.room_name = "Foo"
+    beacon = Noam::Messages.build_server_beacon("Another Room ID", 9876)
+    NoamServer::NoamServer.stub(:on?).and_return(false)
+    Noam::Messages.should_not_receive(:parse)
+
+    connection.receive_data(beacon)
   end
 
 end
