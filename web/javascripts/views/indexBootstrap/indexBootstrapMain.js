@@ -54,9 +54,11 @@ $(function() {
       $("#serverDownError").fadeOut(500);
       // Update Player Headings
       var _players = results['players'];
+      var updateChannels = false;
       for(lemma_id in _players){
         if(!(lemma_id in players)){
           players[lemma_id] = new Player(_players[lemma_id]);
+          updateChannels = true;
         } else {
           players[lemma_id].update(_players[lemma_id]);
         }
@@ -86,6 +88,8 @@ $(function() {
       for(channelName in channels){
         if(channels[channelName].removed){
           delete channels[channelName];
+        } else if(updateChannels){
+          channels[channelName].draw(players);
         }
       }
 

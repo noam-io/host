@@ -9,12 +9,14 @@ function Player(player){
 Player.prototype.remove = function(){
 	var self = this;
 	var obj = self.getObj();
-	obj.fadeOut(1000);
-	$("."+self.spalla_id.replace(/\s+/g, '-')).fadeOut(1000);
+	obj.delay(300).fadeOut(1000);
+	obj.css({'background-color': '#FFCCCC'});
+	$("."+self.spalla_id.replace(/\s+/g, '-')).css({'background-color':'#FFCCCC'});
+	$("."+self.spalla_id.replace(/\s+/g, '-')).delay(300).fadeOut(1000);
 	setTimeout(function(){
 		obj.remove();
 		$("."+self.spalla_id.replace(/\s+/g, '-')).remove();
-	}, 1000);
+	}, 1300);
 }
 
 Player.prototype.getObj = function(){
@@ -82,6 +84,8 @@ Player.prototype.toTD = function(){
 	return $("<td></td>")
 				.attr('player-name', this.spalla_id.replace(/\s+/g, '-'))
 				.addClass('player')
+				.css({'background-color':'#CCFFCC'})
+				.animate({'background-color':'#FFF'}, 1000)
 				.html(this.toString());
 }
 

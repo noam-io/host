@@ -56,7 +56,7 @@
         </div>
       </form>
 
-      <div class="header">
+      <div class="header" style="position: fixed; width: 100%; top: 0px; z-index: 1200;">
           <div class="nav container">
               <div class="col-xs-3 logo"><a href="/"><img src="/images/Logo.png"></a></div>
               <div class="col-xs-1"><a href="#" class="nav-button settings-button"><div class="icon settings"><div class="label">Settings</div></div></a></div>
@@ -157,18 +157,20 @@
 
       <div class="grid-view starter-template">
         <h4><strong>Grid View</strong></h2>
-        <div id="Channels">
-          <table class="table">
-            <thead>
-              <tr>
-                <td>Channel Name</td>
-                <td>Last Updated</td>
-                <td>Value</td>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-
+        <div style="position: relative;">
+          <div id="Channels">
+            <table class="table">
+              <thead>
+                <tr>
+                  <td class="name">Channel Name</td>
+                  <td class="timestamp">Last Updated</td>
+                  <td class="value">Value</td>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
  <!--        <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -309,11 +311,9 @@
             </table>
           </div>
         </div>
+        </div>
         -->
       </div>
-      </div>
-
-
     </div><!-- /.container -->
 
     <div id="detailPane" pos="400">

@@ -1,20 +1,63 @@
 
 Body {
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	margin-top: 120px;
 }
 
 .table>thead:first-child>tr:first-child>td {
 	font-weight: bold;
 	border-bottom: 1px solid #DDD;
+	height: 80px;
+	background-color: #FFF;
 }
 
+.table tr {
+	background-color: #FFF;
+}
+
+.table tr td {
+	width: 200px;
+	height: 40px;
+}
+
+.table tr>td.name {
+	position: absolute;
+	left: 0px;
+	top: auto;
+	width: 100px;
+	border-right: 0px none black;
+	background-color: #FFF;
+}
+
+.table tr>td.timestamp {
+	position: absolute;
+	left: 100px;
+	top: auto;
+	width: 100px;
+	border-right: 0px none black;
+	background-color: #FFF;
+}
+
+.table tr>td.value {
+	position: absolute;
+	left: 200px;
+	top: auto;
+	width: 100px;
+	border-right: 0px none black;
+	background-color: #FFF;
+}
+
+#Channels {
+	padding-left: 300px;
+	overflow-x: scroll;
+	overflow-y: visible;
+}
 
 .dataCellLimited {
 	max-width: 150px;
 	overflow: hidden;
 	height: 30px;
 }
-
 
 #defaultWelcomeScreen {
 	position: absolute;
@@ -197,6 +240,8 @@ Body {
 	width: 870px;
 	padding: 10px;
 	height: 250px;
+	z-index: 1100;
+	position: relative;
 }
 
 .sectionH {
