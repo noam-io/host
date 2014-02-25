@@ -6,6 +6,17 @@ function Player(player){
 	this.cb = {};
 }
 
+Player.prototype.remove = function(){
+	var self = this;
+	var obj = self.getObj();
+	obj.fadeOut(1000);
+	$("."+self.spalla_id.replace(/\s+/g, '-')).fadeOut(1000);
+	setTimeout(function(){
+		obj.remove();
+		$("."+self.spalla_id.replace(/\s+/g, '-')).remove();
+	}, 1000);
+}
+
 Player.prototype.getObj = function(){
 	return $("#Channels .table thead tr .player[player-name="+this.spalla_id.replace(/\s+/g, '-')+"]");
 }

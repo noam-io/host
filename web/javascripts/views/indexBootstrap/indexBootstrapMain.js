@@ -62,7 +62,15 @@ $(function() {
         }
       }
 
-
+      $("#Channels .table thead tr .player").each(function(){
+        var name = $(this).attr('player-name');
+        if(!(name in _players)){
+          if(name in players){
+            players[name].remove();
+            delete players[name];
+          }
+        }
+      });
 
       // Update Channel Rows
       var _events = results['events'];
@@ -72,6 +80,12 @@ $(function() {
           channels[channel_name] = new Channel(_events[channel_name], players); 
         } else {
           channels[channel_name].update(_events[channel_name], players);
+        }
+      }
+
+      for(channelName in channels){
+        if(channels[channelName].removed){
+          delete channels[channelName];
         }
       }
 

@@ -6,8 +6,19 @@ var GridDisplayHears = "<span style=\"background-color: #592685; color: #EEE; pa
 function Channel(channel, players){
 	this.update(channel, players);
 	this.cb = {};
+	this.removed = false;
 }
 
+
+Channel.prototype.remove = function(){
+	var self = this;
+	this.removed = true;
+	var obj = self.getObj();
+	obj.fadeOut(1000);
+	setTimeout(function(){
+		obj.remove();
+	}, 1000);
+}
 
 Channel.prototype.getObj = function(){
 	return $("#Channels .table tbody .channel[channel-name="+this.name.replace(/\s+/g, '-')+"]");
@@ -107,14 +118,21 @@ Channel.prototype.draw = function(players){
 		obj.find('.timestamp').html(activity_substring);
 		obj.find('.value').html(unescape(this.value_escaped));
 
+		var numPH = 0;
 		for(lemma_id in players){
 			var hear = players[lemma_id].doesHear(this.name) ? GridDisplayHears : "";
 			var plays = players[lemma_id].doesPlay(this.name) ? GridDisplaySpeaks : "";
+			if(hear != "" || plays != ""){
+				numPH++;
+			}
 			if(obj.find('.'+lemma_id.replace(/\s+/g, '-')).size() == 0){
 				obj.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
 			} else {
 				obj.find('.'+lemma_id.replace(/\s+/g, '-')).html(hear + plays);
 			}
+		}
+		if(numPH == 0){
+			this.remove();
 		}
 	}
 }
