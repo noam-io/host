@@ -235,13 +235,21 @@ Body {
 	stroke: #F7931E;
 }
 
+.dropdown-item-container .nav-dropdown-container {
+	z-index: 1300;
+	position: fixed;
+	width: 100%;
+}
 
-.dropdown-item-container .guestListPane {
-	width: 870px;
+.dropdown-item-container .nav-dropdown-container .guestListPane {
+	width: 900px;
+	margin: 0px auto;
 	padding: 10px;
 	height: 250px;
-	z-index: 1100;
-	position: relative;
+	border: 1px solid rgba(0,0,0,.2);
+	border-radius: 6px;
+	-webkit-box-shadow: 0 5px 10px rgba(0,0,0,.4);
+	box-shadow: 0 5px 10px rgba(0,0,0,.4);
 }
 
 .sectionH {
@@ -266,6 +274,11 @@ Body {
 	text-indent: -1em;
 	padding: 3px 0em 3px 1em;
 }
+
+.sectionH .scrollArea ul li .popover{
+	z-index: 1300;
+}
+
 .sectionH .scrollArea ul li.joinable:hover {
 	cursor: pointer;
 	background-color: #EEEEEE;
