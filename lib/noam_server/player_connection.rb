@@ -18,7 +18,7 @@ module NoamServer
     end
 
     def hear( id_of_player, event_name, event_value )
-      if ( !@ear.hear( id_of_player, event_name, event_value ) )
+      if ( !@ear.hear( id_of_player, event_name, event_value ) and @ear.active?)
         # TODO : We no longer want to buffer values
         # Instead we will only send the last value
         # This is neccessary because the first message sent wont have a connection.

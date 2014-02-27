@@ -90,7 +90,7 @@ module NoamServer
         rescue => e
           NoamLogging.warn(self, "Error trying to notify player (#{id}) of event (#{event}). Firing them.")
           stackTrace = e.backtrace.join("\n  == ")
-          NoamLogging.warn(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stackTrace}")
+          NoamLogging.debug(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stackTrace}")
           fire_player(id)
         end
       end

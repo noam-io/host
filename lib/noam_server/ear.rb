@@ -15,6 +15,7 @@ module NoamServer
       @conection_pending = false
       @host = host
       @port = port
+      @terminated = false
     end
 
 
@@ -29,8 +30,10 @@ module NoamServer
     end
 
     def send_data(data)
-      @connection.send_data("%06d" % data.bytesize)
-      @connection.send_data(data)
+      if active?
+        @connection.send_data("%06d" % data.bytesize)
+        @connection.send_data(data)
+      end
     end
 
     def new_connection
@@ -46,6 +49,10 @@ module NoamServer
       end
     end
 
+    def active?
+      (not @connection.nil? and not @terminated) or @connection_pending
+    end
+
     def disconnect
       terminate
       @connection = nil
@@ -53,6 +60,7 @@ module NoamServer
     end
 
     def terminate
+      @terminated = true
       @connection.close_connection_after_writing if @connection
     end
   end

@@ -45,9 +45,12 @@ module NoamServer
           connection = WsConnection.new
           ws.onopen    { connection.post_init(ws) }
           ws.onmessage { |msg| connection.receive_data(msg) }
-          ws.onclose   { connection.close }
+          ws.onclose   {
+            connection.close
+          }
           ws.onerror do |err|
             NoamLogging.error(self, "Web Socket Error: #{err}")
+            connection.close
           end
         end
       rescue Errno::EADDRINUSE => e
