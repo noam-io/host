@@ -86,20 +86,18 @@ Player.prototype.toTD = function(){
 				.addClass('player')
 				.css({'background-color':'#CCFFCC'})
 				.animate({'background-color':'#FFF'}, 1000)
-				.html(this.toString());
+				.append(
+					$("<div></div>").addClass('general').html(this.toString())
+				)
+				.append(
+					$("<div></div>").addClass('timeago').html('')
+				);
 }
 
 Player.prototype.toString = function(){
-	var activity_substring = "";
-	if(this.last_activity){
-		var start = this.last_activity.indexOf('T') + 1;
-		var len = (this.last_activity.lastIndexOf('+') - 1) - start;
-		activity_substring = this.last_activity.substr(start, len);
-	}
 	return 	this.spalla_id+"<BR/>"+
             this.device_type+"<BR/>"+
-            this.system_version+"<BR/>" +
-            activity_substring;
+            this.system_version+"<BR/>";
 }
 
 
@@ -109,6 +107,6 @@ Player.prototype.draw = function(){
 		$("#Channels .table thead tr").append(this.toTD());
 		this.createElementCallbacks();
 	} else {
-		$(obj[0]).html(this.toString());
+		$(obj[0]).find('.timeago').html($.timeago(this.last_activity));
 	}
 }

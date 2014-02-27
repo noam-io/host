@@ -7,8 +7,13 @@ Body {
 .table>thead:first-child>tr:first-child>td {
 	font-weight: bold;
 	border-bottom: 1px solid #DDD;
-	height: 80px;
+	height: 90px;
 	background-color: #FFF;
+}
+
+.table>thead:first-child>tr:first-child>td .timeago{
+	font-weight: normal;
+	font-size: 11px;
 }
 
 .table tr {
@@ -34,6 +39,7 @@ Body {
 	left: 100px;
 	top: auto;
 	width: 100px;
+	font-size: 11px;
 	border-right: 0px none black;
 	background-color: #FFF;
 }

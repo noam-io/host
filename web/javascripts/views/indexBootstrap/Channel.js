@@ -54,6 +54,9 @@ Channel.prototype.update = function(channel, players){
 		for(cbName in this.cb){
 			this.cb[cbName](this);
 		}
+	} else if(this.timestamp){
+			var activity_substring = $.timeago(this.timestamp);
+			this.getObj().find('.timestamp').html(activity_substring);
 	}
 }
 
@@ -117,13 +120,9 @@ Channel.prototype.draw = function(players){
 		this.createElementCallbacks();
 	} else {
 		obj = $(obj[0]);
-		var activity_substring = "";
 		if(this.timestamp){
-			var start = this.timestamp.indexOf('T') + 1;
-			var len = (this.timestamp.lastIndexOf('+') - 1) - start;
-			activity_substring = this.timestamp.substr(start, len);
+			obj.find('.timestamp').html($.timeago(this.timestamp));
 		}
-		obj.find('.timestamp').html(activity_substring);
 		var displayVal = unescape(this.value_escaped);
 		obj.find('.value').html(displayVal.substring(0, 10) + ((displayVal.length > 10) ? "..." : ""));
 		obj.find('.value').attr('data-content', displayVal);
