@@ -54,15 +54,25 @@ $(function() {
       $("#serverDownError").fadeOut(500);
       // Update Player Headings
       var _players = results['players'];
+      var updateChannels = false;
       for(lemma_id in _players){
         if(!(lemma_id in players)){
           players[lemma_id] = new Player(_players[lemma_id]);
+          updateChannels = true;
         } else {
           players[lemma_id].update(_players[lemma_id]);
         }
       }
 
-
+      $("#Channels .table thead tr .player").each(function(){
+        var name = $(this).attr('player-name');
+        if(!(name in _players)){
+          if(name in players){
+            players[name].remove();
+            delete players[name];
+          }
+        }
+      });
 
       // Update Channel Rows
       var _events = results['events'];
@@ -72,6 +82,14 @@ $(function() {
           channels[channel_name] = new Channel(_events[channel_name], players); 
         } else {
           channels[channel_name].update(_events[channel_name], players);
+        }
+      }
+
+      for(channelName in channels){
+        if(channels[channelName].removed){
+          delete channels[channelName];
+        } else if(updateChannels){
+          channels[channelName].draw(players);
         }
       }
 

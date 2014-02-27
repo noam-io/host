@@ -8,7 +8,15 @@ var Guest = function(holdingElementQuery, obj, type){
 }
 
 Guest.prototype.getElement = function(){
-	return $(this.holdingElement + " li.lemma_"+this.name.replace(/\s+/g, '-').toLowerCase());
+	return $(this.holdingElement + " li.lemma_"+this.name.replace(/\s+/g, '-'));
+}
+
+Guest.prototype.remove = function(){
+	var self = this;
+	self.getElement().fadeOut(500);
+	setInterval(function(){
+		self.getElement().remove();
+	}, 500);
 }
 
 Guest.prototype.setupElementCallbacks = function(){
@@ -66,15 +74,19 @@ Guest.prototype.draw = function(){
 		$(this.holdingElement).append(
 			$("<li></li>")
 				.addClass('releaseable')
-				.addClass('lemma_'+this.name.replace(/\s+/g, '-').toLowerCase())
-				.attr('data-trigger', 'hover')
-				.attr('data-toggle', 'tooltip')
-				.attr('data-title', this.name.replace(/\s+/g, '-').toLowerCase())
-				.attr('data-html', 'true')
-				.attr('data-content', this.getPopoverContent())
-				.html(this.name)
+				.addClass('lemma_'+this.name.replace(/\s+/g, '-'))
+				.attr('lemma-name', this.name.replace(/\s+/g, '-'))
+				.append(
+					$("<div></div>")
+						.attr('data-trigger', 'hover')
+						.attr('data-toggle', 'tooltip')
+						.attr('data-title', this.name.replace(/\s+/g, '-'))
+						.attr('data-html', 'true')
+						.attr('data-content', this.getPopoverContent())
+						.html(this.name)
+				)
 		);
-		this.getElement().popover();
+		this.getElement().children('div').popover();
 		this.setupElementCallbacks();
 	}
 }
@@ -133,6 +145,7 @@ GuestList.prototype._refresh = function(url, cb){
 
 
 GuestList.prototype.loadContent = function(data){
+	var self = this;
 	for(lemmaId in data['guests-free']){
 		this.storeAgent(this.freeElementQuery, data['guests-free'][lemmaId], 'free');
 	}
@@ -140,6 +153,24 @@ GuestList.prototype.loadContent = function(data){
 	for(lemmaId in data['guests-owned']){
 		this.storeAgent(this.ownedElementQuery, data['guests-owned'][lemmaId], 'owned');
 	}
+
+	// Remove any expired lemmas
+	$(this.ownedElementQuery + " li").each(function(){
+		var lemma_name = $(this).attr('lemma-name');
+		if(!(lemma_name in data['guests-owned']) && self.free_agents[lemma_name]){
+			self.free_agents[lemma_name].remove();
+			delete self.free_agents[lemma_name];
+		}
+	});
+
+	$(this.freeElementQuery + " li").each(function(){
+		var lemma_name = $(this).attr('lemma-name');
+		if(!(lemma_name in data['guests-free']) && self.free_agents[lemma_name]){
+			self.free_agents[lemma_name].remove();
+			delete self.free_agents[lemma_name];
+		}
+	});
+
 }
 
 GuestList.prototype.storeAgent = function(element, obj, type){

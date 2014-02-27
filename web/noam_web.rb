@@ -38,10 +38,12 @@ NoamServer::Orchestra.instance.on_register do |player|
   $last_active_id = player.spalla_id if player
   $last_active_event = ""
   RefreshQueue.instance.enqueue_response
+  FreeAgentQueue.instance.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_unregister do |player|
   RefreshQueue.instance.enqueue_response
+  FreeAgentQueue.instance.enqueue_response
 end
 
 NoamServer::UnconnectedLemmas.instance.on_change do ||
@@ -299,18 +301,19 @@ class NoamApp < Sinatra::Base
     end
 
     if types.include?('owned')
-      response['guests-owned'] = NoamServer::GrabbedLemmas.instance.get_all
-
-      # NoamServer::Orchestra.instance.players.each do |spalla_id, player|
-      #   response['guests-owned'][spalla_id] = {
-      #     :spalla_id => spalla_id,
-      #     :device_type => player.device_type,
-      #     :last_activity => format_date( player.last_activity ),
-      #     :system_version => player.system_version,
-      #     :hears => player.hears,
-      #     :plays => player.plays
-      #   }
-      # end
+      response['guests-owned'] = {}
+      NoamServer::Orchestra.instance.players.dup.each do |spalla_id, player|
+        response['guests-owned'][spalla_id] = {
+          :name => spalla_id,
+          :device_type => player.device_type,
+          :last_activity => format_date( player.last_activity ),
+          :system_version => player.system_version,
+          :hears => player.hears,
+          :plays => player.plays,
+          :ip => player.host,
+          :desired_room_name => player.room_name
+        }
+      end
     end
     return response
   end
@@ -335,18 +338,20 @@ class NoamApp < Sinatra::Base
     players = {}
     events = {}
 
-    @orchestra.players.each do |spalla_id, player|
+    @orchestra.players.dup.each do |spalla_id, player|
       players[spalla_id] = {
         :spalla_id => spalla_id,
         :device_type => player.device_type,
         :last_activity => format_date( player.last_activity ),
         :system_version => player.system_version,
         :hears => player.hears,
-        :plays => player.plays
+        :plays => player.plays,
+        :ip => player.host,
+        :desired_room_name => player.room_name
       }
     end
 
-    @orchestra.event_names.each do |event|
+    @orchestra.event_names.dup.each do |event|
       events[event.to_s] = {
         :value_escaped => value_escaped(@values.get(event)),
         :timestamp => format_date( @values.timestamp(event) )

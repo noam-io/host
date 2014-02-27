@@ -6,6 +6,19 @@ function Player(player){
 	this.cb = {};
 }
 
+Player.prototype.remove = function(){
+	var self = this;
+	var obj = self.getObj();
+	obj.delay(300).fadeOut(1000);
+	obj.css({'background-color': '#FFCCCC'});
+	$("."+self.spalla_id.replace(/\s+/g, '-')).css({'background-color':'#FFCCCC'});
+	$("."+self.spalla_id.replace(/\s+/g, '-')).delay(300).fadeOut(1000);
+	setTimeout(function(){
+		obj.remove();
+		$("."+self.spalla_id.replace(/\s+/g, '-')).remove();
+	}, 1300);
+}
+
 Player.prototype.getObj = function(){
 	return $("#Channels .table thead tr .player[player-name="+this.spalla_id.replace(/\s+/g, '-')+"]");
 }
@@ -71,20 +84,20 @@ Player.prototype.toTD = function(){
 	return $("<td></td>")
 				.attr('player-name', this.spalla_id.replace(/\s+/g, '-'))
 				.addClass('player')
-				.html(this.toString());
+				.css({'background-color':'#CCFFCC'})
+				.animate({'background-color':'#FFF'}, 1000)
+				.append(
+					$("<div></div>").addClass('general').html(this.toString())
+				)
+				.append(
+					$("<div></div>").addClass('timeago').html('')
+				);
 }
 
 Player.prototype.toString = function(){
-	var activity_substring = "";
-	if(this.last_activity){
-		var start = this.last_activity.indexOf('T') + 1;
-		var len = (this.last_activity.lastIndexOf('+') - 1) - start;
-		activity_substring = this.last_activity.substr(start, len);
-	}
 	return 	this.spalla_id+"<BR/>"+
             this.device_type+"<BR/>"+
-            this.system_version+"<BR/>" +
-            activity_substring;
+            this.system_version+"<BR/>";
 }
 
 
@@ -94,6 +107,6 @@ Player.prototype.draw = function(){
 		$("#Channels .table thead tr").append(this.toTD());
 		this.createElementCallbacks();
 	} else {
-		$(obj[0]).html(this.toString());
+		$(obj[0]).find('.timeago').html($.timeago(this.last_activity));
 	}
 }

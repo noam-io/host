@@ -6,8 +6,20 @@ var GridDisplayHears = "<span style=\"background-color: #592685; color: #EEE; pa
 function Channel(channel, players){
 	this.update(channel, players);
 	this.cb = {};
+	this.removed = false;
 }
 
+
+Channel.prototype.remove = function(){
+	var self = this;
+	this.removed = true;
+	var obj = self.getObj();
+	obj.css({'background-color':'#FFCCCC'});
+	obj.delay(300).fadeOut(1000);
+	setTimeout(function(){
+		obj.remove();
+	}, 1300);
+}
 
 Channel.prototype.getObj = function(){
 	return $("#Channels .table tbody .channel[channel-name="+this.name.replace(/\s+/g, '-')+"]");
@@ -42,6 +54,9 @@ Channel.prototype.update = function(channel, players){
 		for(cbName in this.cb){
 			this.cb[cbName](this);
 		}
+	} else if(this.timestamp){
+			var activity_substring = $.timeago(this.timestamp);
+			this.getObj().find('.timestamp').html(activity_substring);
 	}
 }
 
@@ -58,7 +73,14 @@ Channel.prototype.toTR = function(players){
 	}
 	tr.append($("<td></td>").addClass('name').html(this.name.replace(/\s+/g, '-')));
 	tr.append($("<td></td>").addClass('timestamp').html(activity_substring));
-	tr.append($("<td></td>").addClass('dataCellLimited').addClass('value').html(unescape(this.value_escaped)));
+	var displayVal = unescape(this.value_escaped);
+	var valueTR = $("<td></td>").addClass('dataCellLimited').addClass('value').html(
+		displayVal.substring(0, 10) + ((displayVal.length > 10) ? "..." : ""));
+	valueTR.attr('data-trigger', 'hover');
+	valueTR.attr('data-placement', 'right');
+	valueTR.attr('data-content', displayVal);
+	valueTR.popover();
+	tr.append(valueTR);
 	for(lemma_id in players){
 		if(players[lemma_id] == null){
 			continue;
@@ -66,7 +88,7 @@ Channel.prototype.toTR = function(players){
 		var hear = players[lemma_id].doesHear(this.name) ? GridDisplayHears : "";
 		var plays = players[lemma_id].doesPlay(this.name) ? GridDisplaySpeaks : "";
 
-		tr.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
+		tr.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).hide().fadeIn(1000).html(hear + plays));
 	}
 	return tr;
 }
@@ -98,23 +120,28 @@ Channel.prototype.draw = function(players){
 		this.createElementCallbacks();
 	} else {
 		obj = $(obj[0]);
-		var activity_substring = "";
 		if(this.timestamp){
-			var start = this.timestamp.indexOf('T') + 1;
-			var len = (this.timestamp.lastIndexOf('+') - 1) - start;
-			activity_substring = this.timestamp.substr(start, len);
+			obj.find('.timestamp').html($.timeago(this.timestamp));
 		}
-		obj.find('.timestamp').html(activity_substring);
-		obj.find('.value').html(unescape(this.value_escaped));
-
+		var displayVal = unescape(this.value_escaped);
+		obj.find('.value').html(displayVal.substring(0, 10) + ((displayVal.length > 10) ? "..." : ""));
+		obj.find('.value').attr('data-content', displayVal);
+		obj.find('.popover-content').empty().append(displayVal);
+		var numPH = 0;
 		for(lemma_id in players){
 			var hear = players[lemma_id].doesHear(this.name) ? GridDisplayHears : "";
 			var plays = players[lemma_id].doesPlay(this.name) ? GridDisplaySpeaks : "";
+			if(hear != "" || plays != ""){
+				numPH++;
+			}
 			if(obj.find('.'+lemma_id.replace(/\s+/g, '-')).size() == 0){
-				obj.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
+				obj.append($("<td></td>").hide().fadeIn(1000).addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
 			} else {
 				obj.find('.'+lemma_id.replace(/\s+/g, '-')).html(hear + plays);
 			}
+		}
+		if(numPH == 0){
+			this.remove();
 		}
 	}
 }
