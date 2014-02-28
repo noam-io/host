@@ -1,6 +1,6 @@
 function NoamRefresher( params ) {
   this.params = params;
-
+  this.time = 0;
   if(!this.params.cb){
     this.params.cb = function(results){
       console.log(results);
@@ -17,6 +17,7 @@ function NoamRefresher( params ) {
 
 NoamRefresher.prototype.go = function( ) {
   var params = this.params;
+  var self = this;
   
   var softRefresh = function() {
     populateFromUrl( params.asyncRefreshRoute );
@@ -27,11 +28,12 @@ NoamRefresher.prototype.go = function( ) {
   };
 
   var populateFromUrl = function( route ) {
-    var time = new Date().getTime();
     $.ajax({
-      url: route+"?"+time,
+      url: route,
+      data: {'time': self.time},
       dataType: 'json',
       success: function( results ){
+        self.time = results['time'];
         setTimeout( softRefresh, 1);
         params.cb( results );
       },

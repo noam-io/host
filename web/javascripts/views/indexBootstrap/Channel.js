@@ -7,6 +7,7 @@ function Channel(channel, players){
 	this.update(channel, players);
 	this.cb = {};
 	this.removed = false;
+	this.timestamp = new Date();
 }
 
 
@@ -67,9 +68,7 @@ Channel.prototype.toTR = function(players){
 
 	var activity_substring = "";
 	if(this.timestamp){
-		var start = this.timestamp.indexOf('T') + 1;
-		var len = (this.timestamp.lastIndexOf('+') - 1) - start;
-		activity_substring = this.timestamp.substr(start, len);
+		activity_substring = $.timeago(this.timestamp);
 	}
 	tr.append($("<td></td>").addClass('name').html(this.name.replace(/\s+/g, '-')));
 	tr.append($("<td></td>").addClass('timestamp').html(activity_substring));
@@ -81,16 +80,23 @@ Channel.prototype.toTR = function(players){
 	valueTR.attr('data-content', displayVal);
 	valueTR.popover();
 	tr.append(valueTR);
+	var numSH = 0;
 	for(lemma_id in players){
 		if(players[lemma_id] == null){
 			continue;
 		}
 		var hear = players[lemma_id].doesHear(this.name) ? GridDisplayHears : "";
 		var plays = players[lemma_id].doesPlay(this.name) ? GridDisplaySpeaks : "";
-
+		if(hear != "" || plays != ""){
+			numSH++;
+		}
 		tr.append($("<td></td>").addClass(lemma_id.replace(/\s+/g, '-')).hide().fadeIn(1000).html(hear + plays));
 	}
-	return tr;
+	if(numSH > 0){
+		return tr;
+	} else {
+		return null;
+	}
 }
 
 Channel.prototype.highlight = function(){
@@ -116,8 +122,11 @@ Channel.prototype.draw = function(players){
 	var self = this;
 	var obj = self.getObj();
 	if(obj.size() == 0){
-		$("#Channels .table tbody").append(this.toTR(players));
-		this.createElementCallbacks();
+		var newObject = this.toTR(players);
+		if(newObject != null){
+			$("#Channels .table tbody").append(newObject);
+			this.createElementCallbacks();
+		}
 	} else {
 		obj = $(obj[0]);
 		if(this.timestamp){

@@ -1,6 +1,7 @@
 require 'sinatra/async'
 require 'json'
 require 'config'
+require 'noam_server/config_manager'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'noam_server/grabbed_lemmas'
@@ -65,14 +66,28 @@ class RequestQueue
     @instance = nil
     @r = Queue.new
     @pending_responses = false
+    update
+  end
+
+  def update
+    @last_updated = Time.now.to_ms
   end
 
   def pile(&callback)
     @r << [callback, Time.now.getutc]
   end
 
+  def pile_time_check(time, &callback)
+    if time < @last_updated
+      callback.call :good, Time.now.to_ms
+    else
+      @r << [callback, Time.now.getutc]
+    end
+  end
+
   def enqueue_response
     @pending_responses = true
+    update
   end
 
   def pending_responses?
@@ -83,7 +98,7 @@ class RequestQueue
     while !@r.empty?
       r = @r.pop
       begin
-        r[0].call :good
+        r[0].call :good, Time.now.to_ms
       rescue RuntimeError => e
         # This error happens when a page that requested an asynchronous response
         # is no longer active / available to receive the response.
@@ -100,7 +115,7 @@ class RequestQueue
       r = @r.pop
       if Time.now.getutc - r[1] > timeout_time
         begin
-          r[0].call :timeout
+          r[0].call :timeout, Time.now.to_ms
         rescue RuntimeError => e
           # This error happens when a page that requested an asynchronous response
           # is no longer active / available to receive the response.
@@ -172,7 +187,7 @@ class NoamApp < Sinatra::Base
 
   get '/' do
     @server_name = CONFIG[:server_name]
-    @ips = @@ips.split("\n").join(",")
+    @ips = @@ips
     @orchestra = NoamServer::Orchestra.instance
     @values = Statabase
     erb :indexBootstrap
@@ -187,13 +202,15 @@ class NoamApp < Sinatra::Base
   end
 
   post '/settings', :provides => :json do
-    if params.include?('name')
+    if params.include?('name') and NoamServer::NoamServer.room_name != params['name']
       NoamServer::NoamServer.room_name = params['name']
     end
 
     if params.include?('on')
       toggle = (params['on'] == true) || (params['on'] == 'true')
-      NoamServer::NoamServer.on=toggle
+      if(toggle != NoamServer::NoamServer.on)
+        NoamServer::NoamServer.on=toggle
+      end
     end
 
     content_type :json
@@ -206,9 +223,11 @@ class NoamApp < Sinatra::Base
 
   aget '/arefresh' do
     response.headers['Cache-Control'] = 'no-cache'
-    RefreshQueue.instance.pile do |type|
+    requestTime = request['time'] || 0
+    RefreshQueue.instance.pile_time_check(requestTime.to_i) do |type, time|
       state = get_orchestra_state
       state[:type] = type
+      state[:time] = time
       content_type :json
       body(state.to_json)
     end
@@ -216,7 +235,9 @@ class NoamApp < Sinatra::Base
 
   get '/refresh' do
     response.headers['Cache-Control'] = 'no-cache'
+    newtime = Time.now.to_ms
     state = get_orchestra_state
+    state[:time] = newtime
     state[:type] = :good
     content_type :json
     body(state.to_json)
@@ -231,7 +252,9 @@ class NoamApp < Sinatra::Base
 
   get '/guests' do
     response.headers['Cache-Control'] = 'no-cache'
+    newtime = Time.now.to_ms
     response = get_guests(request['types'])
+    response[:time] = newtime
     content_type :json
     body(response.to_json)
   end
@@ -239,9 +262,11 @@ class NoamApp < Sinatra::Base
   aget '/aguests' do
     response.headers['Cache-Control'] = 'no-cache'
     requestType = request['types']
-    FreeAgentQueue.instance.pile do |type|
+    requestTime = request['time'] || 0
+    FreeAgentQueue.instance.pile_time_check(requestTime.to_i) do |type, time|
       response = get_guests(requestType)
       response[:type] = type
+      response[:time] = time
       content_type :json
       body(response.to_json)
     end

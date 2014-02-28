@@ -1,4 +1,3 @@
-require 'noam_server/noam_server'
 
 module NoamServer
   class Player
@@ -9,7 +8,7 @@ module NoamServer
       (@device_type || "").downcase
     end
 
-    def initialize(spalla_id, device_type, system_version, hears, plays, host, port)
+    def initialize(spalla_id, device_type, system_version, hears, plays, host, port, room_name)
       @spalla_id = spalla_id
       @device_type = device_type
       @system_version = system_version
@@ -17,7 +16,7 @@ module NoamServer
       @plays = plays || []
       @host = host
       @port = port
-      @room_name = NoamServer.room_name
+      @room_name = room_name
       NoamLogging.debug(self, "New Player:")
       NoamLogging.debug(self, "   Hears: #{@hears}")
       NoamLogging.debug(self, "   Plays: #{@plays}")
@@ -25,7 +24,7 @@ module NoamServer
     end
 
     def in_right_room?()
-      @room_name == NoamServer.room_name
+      @room_name == NoamServer.room_name or @room_name == ''
     end
 
     def hears?(event)

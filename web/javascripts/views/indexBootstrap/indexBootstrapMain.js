@@ -36,7 +36,7 @@ $(function() {
     }
   }
 
-  setInterval(updateAll, 2000);
+  setInterval(updateAll, 1000);
 
   var params = {
     divToPopulate: 'real-time-data',
@@ -104,9 +104,11 @@ $(function() {
       window.serverUp = false;
       for(channelName in channels){
         channels[channelName].remove();
+        delete channels[channelName];
       }
       for(playerName in players){
         players[playerName].remove();
+        delete players[playerName];
       }
       $("#serverDownError").fadeIn(500);
     }

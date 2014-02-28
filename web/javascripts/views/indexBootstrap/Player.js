@@ -104,8 +104,11 @@ Player.prototype.toString = function(){
 Player.prototype.draw = function(){
 	var obj = this.getObj();
 	if(obj.size() == 0){
-		$("#Channels .table thead tr").append(this.toTD());
-		this.createElementCallbacks();
+		var newObject = this.toTD();
+		if(newObject != null){
+			$("#Channels .table thead tr").append(newObject);
+			this.createElementCallbacks();
+		}
 	} else {
 		$(obj[0]).find('.timeago').html($.timeago(this.last_activity));
 	}

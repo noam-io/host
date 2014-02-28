@@ -21,3 +21,10 @@ end
 def format_date( date )
   date.strftime( "%Y-%m-%dT%H:%M:%S:%L%z" ) if date
 end
+
+# Add conversion from Time to Milliseconds
+class Time
+  def to_ms
+    (self.to_f * 1000.0).to_i
+  end
+end

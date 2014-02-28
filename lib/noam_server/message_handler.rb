@@ -13,7 +13,12 @@ module NoamServer
 
     def message_received(message)      
       if message.is_a?(Noam::Messages::RegisterMessage)
-        player = Player.new( message.spalla_id, message.device_type, message.system_version, message.hears, message.plays, @ip, message.callback_port)
+        room_name = if UnconnectedLemmas.instance.include?(message.spalla_id)
+          UnconnectedLemmas.instance.get(message.spalla_id)[:desired_room_name]
+        else
+          NoamServer.room_name
+        end
+        player = Player.new( message.spalla_id, message.device_type, message.system_version, message.hears, message.plays, @ip, message.callback_port, room_name)
 
         ear = Ear.new( player.host, player.port )
         player_connection = if message.device_type == "arduino"
