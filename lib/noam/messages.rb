@@ -33,7 +33,7 @@ module Noam
     end
 
     class RegisterMessage < Message
-      attr_accessor :callback_port, :hears, :plays, :device_type, :system_version
+      attr_accessor :callback_port, :hears, :plays, :device_type, :system_version, :options
       def initialize(data)
         index = super(data)
         @callback_port = data[index+=1]
@@ -41,6 +41,21 @@ module Noam
         @plays = data[index+=1]
         @device_type = data[index+=1]
         @system_version = data[index+=1]
+        @options = data[index+=1] || {}
+        index
+      end
+    end
+
+    class HeartbeatMessage < Message
+      def initialize(data)
+        index = super(data)
+        index
+      end
+    end
+
+    class HeartbeatAckMessage < Message
+      def initialize(data)
+        index = super(data)
         index
       end
     end
@@ -92,6 +107,8 @@ module Noam
         MarcoMessage.new(raw)
       when "server_beacon"
         ServerBeaconMessage.new(raw)
+      when "heartbeat"
+        HeartbeatMessage.new(raw)
       else
         message
       end
@@ -123,6 +140,10 @@ module Noam
 
     def self.build_server_beacon(room_name, http_port)
       ["server_beacon", room_name, http_port].to_json
+    end
+
+    def self.build_heartbeat_ack(spalla_id)
+      ["heartbeat_ack", spalla_id].to_json
     end
   end
 end

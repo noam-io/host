@@ -53,9 +53,10 @@ module NoamServer
       EventMachine.add_periodic_timer(2) do
         @broadcaster.go if NoamServer.on?
         UnconnectedLemmas.instance.reap
+        LocatedServers.instance.reap
+        Orchestra.instance.check_heartbeats
         NoamLogging.debug(self, "UnconnectedLemmas: #{UnconnectedLemmas.instance}")
         NoamLogging.debug(self, "GrabbedLemmas: #{GrabbedLemmas.instance}")
-        LocatedServers.instance.reap
         NoamLogging.debug(self, "LocatedServers: #{LocatedServers.instance}")
       end
     end

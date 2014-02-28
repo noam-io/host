@@ -322,7 +322,12 @@ class NoamApp < Sinatra::Base
     types = types || ['free', 'owned', 'other']
     response = {}
     if types.include?('free')
-      response['guests-free'] = NoamServer::UnconnectedLemmas.instance.get_all
+      response['guests-free'] = {}
+      NoamServer::UnconnectedLemmas.instance.get_all.dup.each do |spalla_id, object|
+        if object[:desired_room_name] == "" or object[:desired_room_name] == NoamServer::ConfigManager[:room_name]
+          response['guests-free'][spalla_id] = object
+        end
+      end
     end
 
     if types.include?('owned')

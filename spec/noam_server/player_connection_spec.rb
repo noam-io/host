@@ -8,7 +8,7 @@ describe NoamServer::PlayerConnection do
       @args = []
     end
 
-    def hear( *args )
+    def send_data( *args )
       @args << args
       @hear_returns
     end
@@ -19,6 +19,10 @@ describe NoamServer::PlayerConnection do
 
     def new_connection( &callback )
       @callback = callback
+    end
+
+    def active?
+      true
     end
   end
 
@@ -34,9 +38,9 @@ describe NoamServer::PlayerConnection do
     ear.hear_returns = true
 
     connection = described_class.new( ear )
-    connection.hear( 'id', 'name', 'value' )
+    connection.send_event( 'id', 'name', 'value' )
 
-    ear.args_received[ 0 ].should == [ 'id', 'name', 'value' ]
+    ear.args_received[ 0 ].should == [Noam::Messages.build_event( 'id', 'name', 'value' )]
     ear.callback.should be_nil
   end
 
@@ -45,9 +49,9 @@ describe NoamServer::PlayerConnection do
     ear.hear_returns = false
 
     connection = described_class.new( ear )
-    connection.hear( 'id', 'name', 'value' )
+    connection.send_event( 'id', 'name', 'value' )
 
-    ear.args_received[ 0 ].should == [ 'id', 'name', 'value' ]
+    ear.args_received[ 0 ].should == [Noam::Messages.build_event( 'id', 'name', 'value' )]
     ear.callback.should_not be_nil
   end
 
@@ -56,8 +60,8 @@ describe NoamServer::PlayerConnection do
     ear.hear_returns = false
 
     connection = described_class.new( ear )
-    connection.hear( 'id', 'name', 'value' )
-    connection.hear( 'id 2', 'name 2', 'value 2' )
+    connection.send_event( 'id', 'name', 'value' )
+    connection.send_event( 'id 2', 'name 2', 'value 2' )
 
     ear.args_received.clear
     ear.callback.call

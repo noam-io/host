@@ -8,7 +8,8 @@ describe NoamServer::Player do
   let(:plays) { %w(speed volume) }
   let(:host) { "192.168.0.12" }
   let(:port) { 8943 }
-  let(:player) { described_class.new( spalla_id, device_type, system_version, hears, plays, host, port )}
+  let(:room_name) { "RoomName" }
+  let(:player) { described_class.new( spalla_id, device_type, system_version, hears, plays, host, port, room_name )}
 
   it 'has spalla id' do
     player.spalla_id.should == spalla_id
@@ -31,7 +32,6 @@ describe NoamServer::Player do
   end
 
   it 'has last activity' do
-    player.last_activity.should be_nil
     now = DateTime.now
     player.last_activity = now
     player.last_activity.should == now
@@ -41,6 +41,10 @@ describe NoamServer::Player do
     hears.each do |event|
       player.hears?(event).should be_true
     end
+  end
+
+  it 'has room name' do
+    player.room_name.should == room_name
   end
 
   it "does not hear" do

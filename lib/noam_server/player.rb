@@ -8,7 +8,7 @@ module NoamServer
       (@device_type || "").downcase
     end
 
-    def initialize(spalla_id, device_type, system_version, hears, plays, host, port, room_name)
+    def initialize(spalla_id, device_type, system_version, hears, plays, host, port, room_name, options = {})
       @spalla_id = spalla_id
       @device_type = device_type
       @system_version = system_version
@@ -17,10 +17,20 @@ module NoamServer
       @host = host
       @port = port
       @room_name = room_name
+      @options = options
+      @last_activity = DateTime.now
       NoamLogging.debug(self, "New Player:")
       NoamLogging.debug(self, "   Hears: #{@hears}")
       NoamLogging.debug(self, "   Plays: #{@plays}")
       NoamLogging.debug(self, "   Plays: #{@room_name}")
+    end
+
+    def send_heartbeat_acks?()
+      (@options["heartbeat_ack"] === true)
+    end
+
+    def get_heartbeat_rate()
+      @options["heartbeat"] || -1
     end
 
     def in_right_room?()

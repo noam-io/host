@@ -1,3 +1,4 @@
+require 'noam_server/noam_server'
 require 'noam_server/orchestra'
 require 'noam_server/web_socket_message_handler'
 require 'noam/messages'
@@ -8,6 +9,7 @@ describe NoamServer::WebSocketMessageHandler do
   let (:orchestra) { NoamServer::Orchestra.new }
 
   before do
+    NoamServer::NoamServer.stub(:room_name).and_return("RoomName")
     NoamServer::Orchestra.stub(:instance).and_return(orchestra)
   end
 
@@ -35,7 +37,7 @@ describe NoamServer::WebSocketMessageHandler do
     event_value = 'event value'
 
     connection = double('Connection')
-    player = NoamServer::Player.new( 'player_id', '', '', [event_name], [], 0, 0)
+    player = NoamServer::Player.new( 'player_id', '', '', [event_name], [], 0, 0, "RoomName")
     orchestra.register( connection, player )
 
     message = Noam::Messages::EventMessage.new({})
@@ -43,7 +45,7 @@ describe NoamServer::WebSocketMessageHandler do
     message.event_name = event_name
     message.event_value = event_value
 
-    connection.should_receive(:hear).with( 'player_id', event_name, event_value )
+    connection.should_receive(:send_event).with( 'player_id', event_name, event_value )
     handler.message_received( message )
   end
 end

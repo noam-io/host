@@ -25,7 +25,7 @@ describe NoamServer::Ear do
   end
 
   it 'does not send anything with no connection' do
-      ear.hear( 'id', 'name', 'value' ).should be_false
+      ear.send_data( 'sample data' ).should be_false
   end
 
   it 'does not try to make another connection while one is pending' do
@@ -48,7 +48,7 @@ describe NoamServer::Ear do
       end
 
       ear.new_connection( &callback )
-      ear.hear( 'id', 'name', 'value' ).should be_true
+      ear.send_data( 'sample data' ).should be_true
       times_called_back.should == 1
     end
   end

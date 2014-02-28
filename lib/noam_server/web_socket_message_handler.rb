@@ -17,10 +17,20 @@ module NoamServer
         else
           NoamServer.room_name
         end
-        player = Player.new( message.spalla_id, message.device_type, message.system_version, message.hears, message.plays, 0, message.callback_port, room_name)
+        player = Player.new(message.spalla_id,
+                            message.device_type,
+                            message.system_version,
+                            message.hears,
+                            message.plays,
+                            0,
+                            message.callback_port,
+                            room_name,
+                            message.options)
         ear = WebSocketEar.new(@web_socket)
         player_connection = PlayerConnection.new( ear )
         orchestra.register(player_connection, player)
+      elsif message.is_a?(Noam::Messages::HeartbeatMessage)
+        orchestra.heartbeat(message.spalla_id)
       elsif message.is_a?(Noam::Messages::EventMessage)
         orchestra.play(message.event_name, message.event_value, message.spalla_id)
       end

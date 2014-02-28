@@ -18,21 +18,13 @@ module NoamServer
       @terminated = false
     end
 
-
-    def hear(id_of_player, event_name, event_value )
-      message = Noam::Messages.build_event( id_of_player, event_name, event_value )
-      if @connection
-        send_data(message)
+    def send_data(data)
+      if @connection and active?
+        @connection.send_data("%06d" % data.bytesize)
+        @connection.send_data(data)
         return true
       else
         return false
-      end
-    end
-
-    def send_data(data)
-      if active?
-        @connection.send_data("%06d" % data.bytesize)
-        @connection.send_data(data)
       end
     end
 

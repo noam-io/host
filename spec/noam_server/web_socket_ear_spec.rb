@@ -14,10 +14,9 @@ describe NoamServer::WebSocketEar do
       message << data
     end
 
-    ear.hear("id123", "speed", "12")
+    ear.send_data('test message')
 
-    expected = Noam::Messages.build_event( "id123", "speed", "12" )
-    message.should == wire_message(expected)
+    message.should == wire_message('test message')
   end
 
   it "should terminate" do

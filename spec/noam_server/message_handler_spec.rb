@@ -1,3 +1,4 @@
+require 'noam_server/noam_server'
 require 'noam_server/orchestra'
 require 'noam_server/message_handler'
 require 'noam/messages'
@@ -7,6 +8,7 @@ describe NoamServer::MessageHandler do
   let (:orchestra) { NoamServer::Orchestra.new }
 
   before do
+    NoamServer::NoamServer.stub(:room_name).and_return("RoomName")
     NoamServer::Orchestra.stub(:instance).and_return(orchestra)
   end
 
@@ -17,6 +19,7 @@ describe NoamServer::MessageHandler do
     message.system_version = "system version"
     message.callback_port = 4423
     message.hears = ["e1", "e2"]
+    message.options = {}
 
     handler.message_received(message)
 
@@ -35,7 +38,7 @@ describe NoamServer::MessageHandler do
 
     connection = double('Connection')
     player_id = 'player_id'
-    player = NoamServer::Player.new(player_id, '', '', [event_name], [], 0, 0)
+    player = NoamServer::Player.new(player_id, '', '', [event_name], [], 0, 0, "RoomName")
     orchestra.register(connection, player)
 
     message = Noam::Messages::EventMessage.new({})
@@ -43,7 +46,7 @@ describe NoamServer::MessageHandler do
     message.event_name = event_name
     message.event_value = event_value
 
-    connection.should_receive(:hear).with( 'player_id', event_name, event_value )
+    connection.should_receive(:send_event).with( 'player_id', event_name, event_value )
     handler.message_received( message )
   end
 end

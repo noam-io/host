@@ -66,6 +66,28 @@ module NoamServer
       end
     end
 
+    def heartbeat(player_id)
+      NoamLogging.info(self, "Got heatbeat from " + player_id)
+      player = players[player_id]
+      player.last_activity = DateTime.now unless player.nil?
+      if player.send_heartbeat_acks?
+        connection = @connections[player_id]
+        connection.send_heartbeat_ack(player_id)
+      end
+    end
+
+    def check_heartbeats()
+      players.dup.each do |spalla_id, player|
+        if player.get_heartbeat_rate > 0
+          time_since_heartbeat = DateTime.now.to_time - player.last_activity.to_time
+          if time_since_heartbeat > player.get_heartbeat_rate * 2
+            NoamLogging.info(self, "Failed to get heartbeat of " + spalla_id + ": " + time_since_heartbeat.to_f.to_s + " seconds since activity.")
+            fire_player(player.spalla_id)
+          end
+        end
+      end
+    end
+
     def event_names
       @events.keys.sort
     end
@@ -86,7 +108,7 @@ module NoamServer
       # We need to dup here since #fire_player can mutate the underlying hashes
       @events[event].dup.each do |id, player_connection|
         begin
-          player_connection.hear(player_id, event, value)
+          player_connection.send_event(player_id, event, value)
         rescue => e
           NoamLogging.warn(self, "Error trying to notify player (#{id}) of event (#{event}). Firing them.")
           stackTrace = e.backtrace.join("\n  == ")
