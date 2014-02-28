@@ -4,9 +4,12 @@ Body {
 	margin-top: 120px;
 }
 
+.table>tr {
+	border-bottom: 1px solid #DDD;
+}
+
 .table>thead:first-child>tr:first-child>td {
 	font-weight: bold;
-	border-bottom: 1px solid #DDD;
 	height: 90px;
 	background-color: #FFF;
 }
@@ -18,10 +21,11 @@ Body {
 
 .table tr {
 	background-color: #FFF;
+	border-bottom: 1px solid #DDD;
 }
 
 .table tr td {
-	width: 200px;
+	width: 150px;
 	height: 40px;
 }
 
