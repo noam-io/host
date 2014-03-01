@@ -16,6 +16,7 @@ module NoamServer
       @host = host
       @port = port
       @terminated = false
+      new_connection
     end
 
     def send_data(data)
