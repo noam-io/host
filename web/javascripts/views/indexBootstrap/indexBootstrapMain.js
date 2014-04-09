@@ -45,7 +45,7 @@ $(function() {
       // console.log('newsize',_.size(results['players']));
 
       if(_.size(results['players']) !== window.numberOfPlayers) {
-        $('.graph').html();
+        $('.graph').html('');
         window.graphView.init(results);
         window.numberOfPlayers = _.size(results['players']);
       } else {
