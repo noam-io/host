@@ -82,21 +82,13 @@
                 .size([360, this.d.ry-120]) // Degrees, radius
                 .sort( function(a,b){
                     return d3.ascending(a.key, b.key);
+                })
+                .separation(function(a,b){
+                  return 1;//(a.parent == b.parent ? 1 : 2) / a.depth;
                 });
 
             // Setup the layout bundle
             this.bundle = d3.layout.bundle();
-
-            // Setup radial line generator
-            this.line = d3.svg.line.radial()
-                .interpolate('bundle')
-                .tension(.85)
-                .radius( function(d) {
-                    return d.y;
-                    })
-                .angle( function(d) {
-                    return d.x/180 * Math.PI;
-                    });
 
             // Generates the containing div
             this.div = d3.select('.graph')
@@ -118,7 +110,7 @@
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
-                .tension(.55)
+                .tension(0.1)
                 .radius(function(d) { return d.y; })
                 .angle(function(d) { return d.x / 180 * Math.PI; });
             
@@ -129,15 +121,17 @@
             // d3.json(collectionData, function(data) {
 
                 // Main elements
+            // HERE BE DRAGONS!!!
+            // Data munging.    
             var d = _this.mapToNodes(collectionData),
                 nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
                 links = _this.getConnections(nodes),
                 splines = _this.bundle(links);
 
-            // console.log('mappedData',d);
-            // console.log('nodes',nodes);
-            // console.log('links',links);
-            // console.log('splines',splines);
+          console.log('mappedData',d);
+          console.log('nodes',nodes);
+          console.log('links',links);
+          console.log('splines',splines);
 
             _this.drawCategory(nodes);
 
@@ -194,15 +188,20 @@
         },
 
 
+        // Categories are the big block arcs that contain targets
         drawCategory: function(nodes) {
             var _this = this;
             
+            var numOfNodes = (nodes.filter(function(d) {
+              return !d.children && d.parent;
+            })).length;
+
             // Arc Generator
             var groupArc = d3.svg.arc()
                 .innerRadius(this.d.ry-120)
                 .outerRadius(this.d.ry-160)
-                .startAngle(function(d){ var r=_this.getAngles(d); return r.min; })
-                .endAngle(function(d){ var r=_this.getAngles(d); return r.max; });
+                .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
+                .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
 
         
             this.svg.selectAll("g.arc")
@@ -228,7 +227,7 @@
                   .attr("class", "category")
                   .attr("id", function(d) { return "node-" + d.key; })
                   .attr("transform", function(d) { 
-                    var r=_this.getAngles(d)
+                    var r=_this.getAngles({data: d, nodeLength: numOfNodes})
                     // console.log(r) // (d.x-100)
                     return "rotate(" + ((d.x - 100)+r.min*3) +") translate(" + (d.y+(_this.d.h*.095)) + ")"; })
                 .append("svg:text")
@@ -243,7 +242,10 @@
 
         },
 
-        getAngles: function(data) {
+        // assumed arguments {data: d, nodeLength: numOfNodes}
+        getAngles: function(args) {
+            var data = args.data;
+
             var min,max = 0;
             // console.log('getAnglesInput',data.x)
             if(!data.children) {
@@ -256,9 +258,19 @@
                if(d.x > max) max = d.x;
            });
             var pi = Math.PI;
+            
+            // var buffer = the more nodes, the smaller the buffer
+            // var sliceOfPie = (total number of nodes / 360) - artificial gap between each node
+
+            var sliceOfPie = ((360 / args.nodeLength) -2 ) / 2; 
+            console.log('sliceOfPie: ' + sliceOfPie);
+            console.log('args.nodeLength: ' + args.nodeLength);
+
+
             // console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
-            return { min: (min-10) * (pi/180), max: (max+10) * (pi/180)};
+            return { min: (min-sliceOfPie) * (pi/180), max: (max+sliceOfPie) * (pi/180)};
         },
+
 
         // For sanity
         mapHierarchy: function(data) {
