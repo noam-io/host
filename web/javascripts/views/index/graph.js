@@ -164,6 +164,10 @@
                     return  _this.line(splines[i]); 
                 });
 
+                // this.svg.append("svg:path")
+                //   .attr("class", "arc")
+                //   .attr("d", d3.svg.arc().outerRadius(this.d.ry - 120).innerRadius(0).startAngle(Math.PI).endAngle(2 * Math.PI))
+
 
 
                 // Establish nodes for text display
@@ -188,6 +192,13 @@
         },
 
 
+        // Calculates single-line arc length to be used for text alignment along arcs
+        getArcLength: function() {
+
+
+        },
+
+
         // Categories are the big block arcs that contain targets
         drawCategory: function(nodes) {
             var _this = this;
@@ -203,13 +214,24 @@
                 .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
                 .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
 
-        
+            // Text arc generator, go not where we have gone, lest ye emerge a madman - Ethan
+             // Arc Generator
+            var textArc = d3.svg.arc()
+                .innerRadius(this.d.ry-145)
+                .outerRadius(this.d.ry-145)
+                .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
+                .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
+
+
             this.svg.selectAll("g.arc")
                 .data(nodes.filter(function(d){
                     return d.name !== 'participant' && d.name;
                 }))
                 .enter().append("svg:path")
                 .attr("d", groupArc)
+                // .attr("id", function(d) {
+                //     return "groupArcId_" + d.name.split('.')[1];
+                // })
                 .attr("class", function(d) {
                     return "groupArc " + d.name.split('.')[1];
                 })
@@ -219,24 +241,63 @@
                 })
                 .style("fill-opacity", 0.5)
 
-            _this.svg.selectAll("g.category")
+
+            this.svg.selectAll("g.arc2")
+                .data(nodes.filter(function(d){
+                    return d.name !== 'participant' && d.name;
+                }))
+                .enter().append("svg:path")
+                .attr("d", textArc)
+                .attr("id", function(d) {
+                    return "groupArcId_" + d.name.split('.')[1];
+                })
+                // .attr("class", function(d) {
+                //     return "groupArc " + d.name.split('.')[1];
+                // // })
+                // .style("fill", function(d) {
+                //     // return _.findWhere(d.children,)
+                //     return _this.colors[Math.floor(Math.random() * _this.colors.length)]
+                // })
+                .style("fill-opacity", 0.0);
+
+
+
+           _this.svg.selectAll("g.category")
                 .data(nodes.filter(function(d){
                     return d.name !== 'participant' && d.name && d.children;
                 }))
-                .enter().append("svg:g")
-                  .attr("class", "category")
+                .enter().append("svg:text")
+                  .attr("class","category")
+                  .attr("text-anchor", "left")
+                  .attr('style', 'padding: 20px')
                   .attr("id", function(d) { return "node-" + d.key; })
-                  .attr("transform", function(d) { 
-                    var r=_this.getAngles({data: d, nodeLength: numOfNodes})
-                    // console.log(r) // (d.x-100)
-                    return "rotate(" + ((d.x - 100)+r.min*3) +") translate(" + (d.y+(_this.d.h*.095)) + ")"; })
-                .append("svg:text")
-                  .attr('class','arcText')
-                  .attr("dx", function(d) { return d.x < 180 ? -20 : 20; })
-                  .attr("dy", ".31em")
-                  .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-                  .attr("transform", function(d) { return /*d.x < 180 ? "rotate(-90)" :*/ "rotate(90)"; })
+                .append("svg:textPath")
+                  .attr('startOffset', '5px')
+                  .attr("xlink:href", function(d) {return "#groupArcId_" + d.name.split('.')[1]})
                   .text(function(d) { return d.name.split('.')[1]; })
+
+
+
+            // _this.svg.selectAll("g.category")
+            //     .data(nodes.filter(function(d){
+            //         return d.name !== 'participant' && d.name && d.children;
+            //     }))
+            //     .enter().append("svg:g")
+            //       .attr("class", "category")
+            //       .attr("id", function(d) { return "node-" + d.key; })
+            //       .attr("transform", function(d) { 
+            //         var r=_this.getAngles({data: d, nodeLength: numOfNodes})
+            //         // console.log(r) // (d.x-100)
+            //         return "rotate(" + ((d.x - 100)+r.min*3) +") translate(" + (d.y+(_this.d.h*.095)) + ")"; })
+            //     .append("svg:text")
+            //       .attr('class','arcText')
+            //       .attr("dx", function(d) { return d.x < 180 ? -20 : 20; })
+            //       .attr("dy", ".31em")
+            //       .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+            //       .attr("transform", function(d) { return /*d.x < 180 ? "rotate(-90)" :*/ "rotate(90)"; })
+            //       .text(function(d) { return d.name.split('.')[1]; })
+            //         .enter("svg:textPath")
+            //           .attr("xlink:href", function(d) {return "groupArcId_" + d.name.split('.')[1]});
                   
 
 
