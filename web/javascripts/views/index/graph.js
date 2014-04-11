@@ -18,6 +18,7 @@
         svg: null,
         timer: null,
         colors:[ '#210050','#46007a','#7f00de','#018b88','#01b8b1','#01ead6','#1667af','#01aeff','#6ed1ff','#73115b','#af007c','#d03593' ],
+        lemmaToColor: [],
         fakeData: 'javascripts/data/dummy.json',
 
         init: function(data){
@@ -128,37 +129,18 @@
                 links = _this.getConnections(nodes),
                 splines = _this.bundle(links);
 
-          // console.log('mappedData',d);
-          // console.log('nodes',nodes);
+          console.log('mappedData',d);
+          console.log('nodes',nodes);
           // console.log('links',links);
           // console.log('splines',splines);
 
             _this.drawCategory(nodes);
-
-            // Draw arrow markers
-            var markers = _this.svg.append("svg:defs").selectAll("marker")
-                .data(links)
-                .enter().append("svg:marker")
-                .attr("id", function(d) { return d.target.name.split('.')[2] })
-                .attr("class","marker")
-                .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 0)
-                .attr("markerWidth", 4)
-                .attr("markerHeight", 4)
-                .attr("orient", "auto")
-                .append("svg:path")
-                .attr("d", "M0,0L10,0L10,4")
-                // .attr("transform", function(d) { return "rotate(" + (d.source.x) + ")"; })
-
 
              // Establish paths from links
             var path = _this.svg.selectAll("path.link")
                 .data(links)
                 .enter().append("svg:path")
                 .attr("class", function(d) { return "link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
-                .attr("marker-mid", function(d) {
-                    return "url(#" + d.source.name.split('.')[2] + ")"; 
-                })
                 .attr("d", function(d, i) { 
                     // console.log(d);
                     return  _this.line(splines[i]); 
@@ -171,7 +153,7 @@
 
 
                 // Establish nodes for text display
-            _this.svg.selectAll("g.node")
+            var textGroup = _this.svg.selectAll("g.node")
                   .data(nodes.filter(function(d) { return !d.children; }))
                 .enter().append("svg:g")
                   .attr("class", "node")
@@ -180,14 +162,36 @@
                   })
                   .attr("id", function(d) { return "node-" + d.key; })
                   .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-                .append("svg:text")
+
+
+            textGroup.append("svg:text")
                   .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
                   .attr("dy", ".31em")
                   .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
                   .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
                   .text(function(d) { return d.name.split('.')[2]; })
                   .on("mouseover", _this.mouseon)
-                  .on("mouseout", _this.mouseoff);                
+                  .on("mouseout", _this.mouseoff)
+
+
+            textGroup.append('svg:path')
+                      .attr('d', function(d) { 
+                        var x = 37, y = 0, size=10;
+                        if (d.output)
+                          return 'm -'+x+' '+y+' l 0 '+size+' l -'+size+' -'+size+' l '+size+' -'+size+''
+                        else
+                          return 'm -' + (x+5) + ' '+y+' l 0 '+size+' l '+size+' -'+size+' l -'+size+' -'+size+''
+                      })
+                      .attr("style", function(d) { 
+                        if (d.output)
+                         return "fill:"+_this.getColor(d);
+                        else
+                         return "fill: #fff";
+
+                      })
+
+
+
           // });
         },
 
@@ -236,10 +240,9 @@
                     return "groupArc " + d.name.split('.')[1];
                 })
                 .style("fill", function(d) {
-                    // return _.findWhere(d.children,)
-                    return _this.colors[Math.floor(Math.random() * _this.colors.length)]
+                     return _this.getColor(d);
                 })
-                .style("fill-opacity", 0.5)
+                .style("fill-opacity", 1.)
 
 
             this.svg.selectAll("g.arc2")
@@ -251,13 +254,6 @@
                 .attr("id", function(d) {
                     return "groupArcId_" + d.name.split('.')[1];
                 })
-                // .attr("class", function(d) {
-                //     return "groupArc " + d.name.split('.')[1];
-                // // })
-                // .style("fill", function(d) {
-                //     // return _.findWhere(d.children,)
-                //     return _this.colors[Math.floor(Math.random() * _this.colors.length)]
-                // })
                 .style("fill-opacity", 0.0);
 
 
@@ -309,11 +305,26 @@
             return { min: (min-sliceOfPie) * (pi/180), max: (max+sliceOfPie) * (pi/180)};
         },
 
+        // This function consumes a node and returns the color of the lemma
+        getColor: function(node) {
+          var color, search;
+          if(node.depth < 2) return "red";
+          if(node.depth >= 2) search = node.name.split('.')[1];
+          color = _.findWhere(this.lemmaToColor, {'key':search});
+          if(typeof color === 'undefined') {
+            color = this.colors[Math.floor(Math.random() * this.colors.length)];
+            this.lemmaToColor.push({'key':search, 'color': color})
+            console.log("Adding a new color for ", search )
+          } else {
+            color = color.color
+          }
+          console.log(search,'color:',color)
+          return color;
+        },
 
         // For sanity
         mapHierarchy: function(data) {
             var map = {};
-
             function find(name, data) {
                 var node = map[name], i;
                 if (!node) {
@@ -365,7 +376,7 @@
                 _.each(val.hears, function(dat,jter) { // This player hears certain events
                     var i={};
                     i.name = 'participant.' + val.spalla_id + '.' + dat;
-                    i.color = null;
+                    i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)];
                     i.output = false;
                     i.imports = [];
                     _.each(data.players, function(r) { // Let's check what the others broadcast
