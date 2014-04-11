@@ -40,6 +40,7 @@
         update: function(eventData) {
             var _this = this;
             var d = this.parseEventData(eventData);
+            // console.log(d);
 
             _.each(d,function(val,key){
                 // console.log(val)
@@ -81,9 +82,6 @@
                 .size([360, this.d.ry-120]) // Degrees, radius
                 .sort( function(a,b){
                     return d3.ascending(a.key, b.key);
-                })
-                .separation(function(a,b){
-                  return 1;//(a.parent == b.parent ? 1 : 2) / a.depth;
                 });
 
             // Setup the layout bundle
@@ -109,10 +107,9 @@
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
-                .tension(0.3)
-                .radius(function(d) { return d.y - 52; })
+                .tension(0.1)
+                .radius(function(d) { return d.y; })
                 .angle(function(d) { return d.x / 180 * Math.PI; });
-
             
         },
 
@@ -120,18 +117,19 @@
             var _this = this;
             // d3.json(collectionData, function(data) {
 
-            // Main elements
-            // HERE BE DRAGONS!!!
-            // Data munging.    
+                // Main elements
+
+            // Getting data into the correct format
+            // HERE BE DRAGONS!!!    
             var d = _this.mapToNodes(collectionData),
                 nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
                 links = _this.getConnections(nodes),
                 splines = _this.bundle(links);
 
-          // console.log('mappedData',d);
-          // console.log('nodes',nodes);
-          // console.log('links',links);
-          // console.log('splines',splines);
+            // console.log('mappedData',d);
+            // console.log('nodes',nodes);
+            // console.log('links',links);
+            // console.log('splines',splines);
 
             _this.drawCategory(nodes);
 
@@ -164,10 +162,6 @@
                     return  _this.line(splines[i]); 
                 });
 
-                // this.svg.append("svg:path")
-                //   .attr("class", "arc")
-                //   .attr("d", d3.svg.arc().outerRadius(this.d.ry - 120).innerRadius(0).startAngle(Math.PI).endAngle(2 * Math.PI))
-
 
 
                 // Establish nodes for text display
@@ -192,46 +186,23 @@
         },
 
 
-        // Calculates single-line arc length to be used for text alignment along arcs
-        getArcLength: function() {
-
-
-        },
-
-
-        // Categories are the big block arcs that contain targets
         drawCategory: function(nodes) {
             var _this = this;
             
-            var numOfNodes = (nodes.filter(function(d) {
-              return !d.children && d.parent;
-            })).length;
-
             // Arc Generator
             var groupArc = d3.svg.arc()
                 .innerRadius(this.d.ry-120)
                 .outerRadius(this.d.ry-160)
-                .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
-                .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
+                .startAngle(function(d){ var r=_this.getAngles(d); return r.min; })
+                .endAngle(function(d){ var r=_this.getAngles(d); return r.max; });
 
-            // Text arc generator, go not where we have gone, lest ye emerge a madman - Ethan
-             // Arc Generator
-            var textArc = d3.svg.arc()
-                .innerRadius(this.d.ry-145)
-                .outerRadius(this.d.ry-145)
-                .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
-                .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
-
-
+        
             this.svg.selectAll("g.arc")
                 .data(nodes.filter(function(d){
                     return d.name !== 'participant' && d.name;
                 }))
                 .enter().append("svg:path")
                 .attr("d", groupArc)
-                // .attr("id", function(d) {
-                //     return "groupArcId_" + d.name.split('.')[1];
-                // })
                 .attr("class", function(d) {
                     return "groupArc " + d.name.split('.')[1];
                 })
@@ -241,49 +212,30 @@
                 })
                 .style("fill-opacity", 0.5)
 
-
-            this.svg.selectAll("g.arc2")
-                .data(nodes.filter(function(d){
-                    return d.name !== 'participant' && d.name;
-                }))
-                .enter().append("svg:path")
-                .attr("d", textArc)
-                .attr("id", function(d) {
-                    return "groupArcId_" + d.name.split('.')[1];
-                })
-                // .attr("class", function(d) {
-                //     return "groupArc " + d.name.split('.')[1];
-                // // })
-                // .style("fill", function(d) {
-                //     // return _.findWhere(d.children,)
-                //     return _this.colors[Math.floor(Math.random() * _this.colors.length)]
-                // })
-                .style("fill-opacity", 0.0);
-
-
-
-           _this.svg.selectAll("g.category")
+            _this.svg.selectAll("g.category")
                 .data(nodes.filter(function(d){
                     return d.name !== 'participant' && d.name && d.children;
                 }))
-                .enter().append("svg:text")
-                  .attr("class","category")
-                  .attr("text-anchor", "left")
-                  .attr('fill', 'white')
+                .enter().append("svg:g")
+                  .attr("class", "category")
                   .attr("id", function(d) { return "node-" + d.key; })
-                .append("svg:textPath")
-                  .attr('startOffset', '5px')
-                  .attr("xlink:href", function(d) {return "#groupArcId_" + d.name.split('.')[1]})
+                  .attr("transform", function(d) { 
+                    var r=_this.getAngles(d)
+                    // console.log(r) // (d.x-100)
+                    return "rotate(" + ((d.x - 100)+r.min*3) +") translate(" + (d.y+(_this.d.h*.095)) + ")"; })
+                .append("svg:text")
+                  .attr('class','arcText')
+                  .attr("dx", function(d) { return d.x < 180 ? -20 : 20; })
+                  .attr("dy", ".31em")
+                  .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+                  .attr("transform", function(d) { return /*d.x < 180 ? "rotate(-90)" :*/ "rotate(90)"; })
                   .text(function(d) { return d.name.split('.')[1]; })
+                  
 
 
         },
 
-
-        // assumed arguments {data: d, nodeLength: numOfNodes}
-        getAngles: function(args) {
-            var data = args.data;
-
+        getAngles: function(data) {
             var min,max = 0;
             // console.log('getAnglesInput',data.x)
             if(!data.children) {
@@ -296,19 +248,9 @@
                if(d.x > max) max = d.x;
            });
             var pi = Math.PI;
-            
-            // var buffer = the more nodes, the smaller the buffer
-            // var sliceOfPie = (total number of nodes / 360) - artificial gap between each node
-
-            var sliceOfPie = ((360 / args.nodeLength) -2 ) / 2; 
-            // console.log('sliceOfPie: ' + sliceOfPie);
-            // console.log('args.nodeLength: ' + args.nodeLength);
-
-
             // console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
-            return { min: (min-sliceOfPie) * (pi/180), max: (max+sliceOfPie) * (pi/180)};
+            return { min: (min-10) * (pi/180), max: (max+10) * (pi/180)};
         },
-
 
         // For sanity
         mapHierarchy: function(data) {
