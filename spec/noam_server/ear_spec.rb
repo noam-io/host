@@ -25,7 +25,8 @@ describe NoamServer::Ear do
   end
 
   it 'does not send anything with no connection' do
-      ear.send_data( 'sample data' ).should be_false
+    ear.disconnect
+    ear.send_data( 'sample data' ).should be_false
   end
 
   it 'does not try to make another connection while one is pending' do
