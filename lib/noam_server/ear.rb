@@ -1,28 +1,28 @@
 require 'noam/messages'
+require 'noam_server/connection_pool'
 
 module NoamServer
   module EarHandler
     attr_accessor :parent
     def unbind
-      parent.disconnect
+      parent.terminate
     end
   end
 
   class Ear
+
     attr_accessor :host, :port
 
     def initialize(host, port)
-      @conection_pending = false
-      @host = host
-      @port = port
-      @terminated = false
+      self.host = host
+      self.port = port
       new_connection
     end
 
     def send_data(data)
-      if @connection and active?
-        @connection.send_data("%06d" % data.bytesize)
-        @connection.send_data(data)
+      if active?
+        connection.send_data("%06d" % data.bytesize)
+        connection.send_data(data)
         return true
       else
         return false
@@ -30,31 +30,25 @@ module NoamServer
     end
 
     def new_connection
-      unless @connection_pending
-        @connection_pending = true
-#        p "testing" + @host.to_s + " : " + @port.to_s
-        EventMachine::connect(@host, @port, EarHandler) do |connection|
-          @connection = connection
-          @connection.parent = self
-          yield(@connection) if block_given?
-          @connection_pending = false
-        end
+      EventMachine::connect(host, port, EarHandler) do |connection|
+        self.connection = connection
+        connection.parent = self
+        yield(connection) if block_given?
       end
     end
 
     def active?
-      (not @connection.nil? and not @terminated) or @connection_pending
-    end
-
-    def disconnect
-      terminate
-      @connection = nil
-      @connection_pending = false
+      ConnectionPool.include?(connection)
     end
 
     def terminate
-      @terminated = true
-      @connection.close_connection_after_writing if @connection
+      connection.close_connection_after_writing if connection
+      self.connection = nil
     end
+
+    private
+
+    attr_accessor :connection
+
   end
 end

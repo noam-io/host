@@ -10,13 +10,12 @@ describe NoamServer::WebSocketEar do
   before(:each) do
     @web_socket = double("EM Web Socket", :signature => 1337)
     @ear = NoamServer::WebSocketEar.new(@web_socket)
-    @reactor = Mocks::Reactor.new
-    EventMachine::Reactor.stub(:instance).and_return(@reactor)
+    NoamServer::ConnectionPool.stub(:include?).with(@web_socket).and_return(false)
   end
 
   describe "#send_data" do
     it "sends data with an active connection" do
-      @reactor.connect_to(@web_socket)
+      NoamServer::ConnectionPool.stub(:include?).with(@web_socket).and_return(true)
       message = ""
       @web_socket.stub(:send) do |data|
         message << data
@@ -28,30 +27,33 @@ describe NoamServer::WebSocketEar do
     end
 
     it "does not send data with no active connection" do
+      NoamServer::ConnectionPool.stub(:include?).with(@web_socket).and_return(false)
       @web_socket.should_not_receive(:send)
       @ear.send_data('test message')
     end
   end
 
   describe "#active?" do
-    it "is not active if the reactor does not know about the web socket" do
+    it "is false when the connection pool does not include the web socket" do
+      NoamServer::ConnectionPool.stub(:include?).with(@web_socket).and_return(false)
       @ear.should_not be_active
     end
 
-    it "is active if the reactor is keeping track of the web socket" do
-      @reactor.connect_to(@web_socket)
+    it "is true when the connection pool includes the web socket" do
+      NoamServer::ConnectionPool.stub(:include?).with(@web_socket).and_return(true)
       @ear.should be_active
     end
   end
 
   describe "#terminate" do
     it "closes the web socket with an active connection" do
-      @reactor.connect_to(@web_socket)
+      NoamServer::ConnectionPool.stub(:include?).with(@web_socket).and_return(true)
       @web_socket.should_receive(:close_websocket)
       @ear.terminate
     end
 
     it "does not close an already closed connection" do
+      NoamServer::ConnectionPool.stub(:include?).with(@web_socket).and_return(false)
       @web_socket.should_not_receive(:close_websocket)
       @ear.terminate
     end

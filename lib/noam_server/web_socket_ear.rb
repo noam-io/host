@@ -1,5 +1,5 @@
 require 'noam/messages'
-require 'em/pure_ruby'
+require 'noam_server/connection_pool'
 
 module NoamServer
   class WebSocketEar
@@ -16,7 +16,7 @@ module NoamServer
     end
 
     def active?
-      !EventMachine::Reactor.instance.get_selectable(web_socket.signature).nil?
+      ConnectionPool.include?(web_socket)
     end
 
     def terminate
