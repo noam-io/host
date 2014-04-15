@@ -48,12 +48,14 @@
                   .each(_this.updateNodes("source", true))
                   .transition()
                     .style("opacity", 1)
-                    .style('stroke-width','5px')
+                    .style('stroke-width','3px')
+                    .attr("stroke", function(d) { return _this.getColor(d.target.parent)})
                     .duration(400);
 
                 select.transition()
-                    .style("opacity", .4)
+                    .style("opacity", .1)
                     .style('stroke-width','2px')
+                    .attr("stroke", "black")
                     .duration(400)
                     .delay(400);
                 
@@ -62,8 +64,17 @@
                     // .each(_this.updateNodes("source", true))
                   .transition()
                     .style("opacity", 1)
-                    .style('font-size','10pt')
+                    // .style('font-size','10pt')
                     .duration(400);
+
+                // Highlight receiver
+                var category = _this.svg.selectAll('.target#node-' + val)
+                    // .each(_this.updateNodes("source", true))
+                  .transition()
+                    .style("opacity", 1)
+                    // .style('font-size','10pt')
+                    .duration(400);
+
 
                 category.transition()
                      .style("opacity", .4)
@@ -141,6 +152,7 @@
                 .data(links)
                 .enter().append("svg:path")
                 .attr("class", function(d) { return "link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
+                .attr("stroke", function(d) {return _this.getColor(d.target.parent)})
                 .attr("d", function(d, i) { 
                     // console.log(d);
                     return  _this.line(splines[i]); 
@@ -314,11 +326,11 @@
           if(typeof color === 'undefined') {
             color = this.colors[Math.floor(Math.random() * this.colors.length)];
             this.lemmaToColor.push({'key':search, 'color': color})
-            console.log("Adding a new color for ", search )
+            // console.log("Adding a new color for ", search )
           } else {
             color = color.color
           }
-          console.log(search,'color:',color)
+          // console.log(search,'color:',color)
           return color;
         },
 
