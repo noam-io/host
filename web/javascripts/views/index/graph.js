@@ -156,7 +156,10 @@
                 .attr("d", function(d, i) { 
                     // console.log(d);
                     return  _this.line(splines[i]); 
-                });
+                })
+                .on("mouseover", _this.hoverLine)
+                .on("mouseout", _this.hoverOffLine)
+                .on("click", _this.clickLine);
 
                 // this.svg.append("svg:path")
                 //   .attr("class", "arc")
@@ -184,7 +187,7 @@
                   .text(function(d) { return d.name.split('.')[2]; })
                   .on("mouseover", _this.hoverTopic)
                   .on("mouseout", _this.hoverOffTopic)
-                  .on("mouseout", _this.clickTopic)
+                  .on("click", _this.clickTopic)
 
 
             textGroup.append('svg:path')
@@ -258,7 +261,7 @@
                 .style("fill-opacity", 1.)
                 .on("mouseover", _this.hoverLemma)
                 .on("mouseout", _this.hoverOffLemma)
-                .on("mouseout", _this.clickLemma)
+                .on("click", _this.clickLemma)
 
 
             this.svg.selectAll("g.arc2")
