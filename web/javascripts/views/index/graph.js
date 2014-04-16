@@ -256,9 +256,9 @@
                      return _this.getColor(d);
                 })
                 .style("fill-opacity", 1.)
-                .on("mouseover", _this.hoverArc)
-                .on("mouseout", _this.hoverOffArc)
-                .on("mouseout", _this.clickArc)
+                .on("mouseover", _this.hoverLemma)
+                .on("mouseout", _this.hoverOffLemma)
+                .on("mouseout", _this.clickLemma)
 
 
             this.svg.selectAll("g.arc2")
@@ -454,22 +454,22 @@
         },
 
         // Arc, i.e. categories
-        hoverArc: function(d) {
-
+        hoverLemma: function(d) {
+            console.log('hover lemma',d);
         },
 
-        hoverOffArc: function(d) {
-
+        hoverOffLemma: function(d) {
+            console.log('hover off lemma',d);
         },
 
-        clickArc: function(d) {
-
+        clickLemma: function(d) {
+            console.log('click lemma',d);
         },
 
         // Topics, i.e. node renders
         hoverTopic: function(d) {
             var _this = this;
-            // console.log('mouseon',d)
+            console.log('hover topic',d)
             window.graphView.svg.selectAll("path.link.target-" + d.name.split('.')[2])
               .classed("target", true)
               // .each(_this.updateNodes("source", true));
@@ -480,7 +480,7 @@
 
         hoverOffTopic: function(d) {
             var _this = this;
-            // console.log('mouseoff',d);
+            console.log('hover off topic',d);
             window.graphView.svg.selectAll("path.link.source-" + d.name.split('.')[2])
               .classed("source", false)
               // .each(_this.updateNodes("target", false));
@@ -490,19 +490,20 @@
         },
 
         clickTopic: function(d) {
-
+            console.log('click topic',d);
         },
 
         // Lines between nodes
         hoverLine: function(d) {
-
+            console.log('hover on line',d);
         },
 
         hoverOffLine: function(d) {
-
+            console.log('hover off line',d);
         },
 
         clickLine: function(d) {
+            console.log('click line',d);
 
         }
 
