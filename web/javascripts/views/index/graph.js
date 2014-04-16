@@ -331,7 +331,8 @@
           if(node.depth >= 2) search = node.name.split('.')[1];
           color = _.findWhere(this.lemmaToColor, {'key':search});
           if(typeof color === 'undefined') {
-            color = this.colors[Math.floor(Math.random() * this.colors.length)];
+            var iter = Math.floor(Math.random() * this.colors.length);
+            color = this.colors[this.lemmaToColor.length%this.colors.length];
             this.lemmaToColor.push({'key':search, 'color': color})
             // console.log("Adding a new color for ", search )
           } else {
