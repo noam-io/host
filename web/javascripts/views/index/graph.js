@@ -121,7 +121,7 @@
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
-                .tension(0.3)
+                .tension(.0)
                 .radius(function(d) { return d.y - 52; })
                 .angle(function(d) { return d.x / 180 * Math.PI; });
 
@@ -282,7 +282,7 @@
                 .append("svg:textPath")
                   .attr('startOffset', '5px')
                   .attr("xlink:href", function(d) {return "#groupArcId_" + d.name.split('.')[1]})
-                  .text(function(d) { return d.name.split('.')[1]; })
+                  .text(function(d) { console.log(d); return d.name.split('.')[1] + ' - ' + d.children[0].type; }) // <-- Shaky motherfuckin edifice right here
 
 
         },
@@ -388,6 +388,7 @@
                 _.each(val.hears, function(dat,jter) { // This player hears certain events
                     var i={};
                     i.name = 'participant.' + val.spalla_id + '.' + dat;
+                    i.type = val.device_type;
                     i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)];
                     i.output = false;
                     i.imports = [];
@@ -406,6 +407,7 @@
                     var o = {};
                     o.name = 'participant.' + val.spalla_id + '.' + dat;
                     o.output = true;
+                    o.type = val.device_type;
                     o.color = _this.colors[Math.floor(Math.random()*_this.colors.length)]
                     o.imports = [];
                     // _.each(data.players, function(r) { 
