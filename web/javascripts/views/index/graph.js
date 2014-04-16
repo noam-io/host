@@ -182,8 +182,9 @@
                   .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
                   .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
                   .text(function(d) { return d.name.split('.')[2]; })
-                  .on("mouseover", _this.mouseon)
-                  .on("mouseout", _this.mouseoff)
+                  .on("mouseover", _this.hoverTopic)
+                  .on("mouseout", _this.hoverOffTopic)
+                  .on("mouseout", _this.clickTopic)
 
 
             textGroup.append('svg:path')
@@ -255,6 +256,9 @@
                      return _this.getColor(d);
                 })
                 .style("fill-opacity", 1.)
+                .on("mouseover", _this.hoverArc)
+                .on("mouseout", _this.hoverOffArc)
+                .on("mouseout", _this.clickArc)
 
 
             this.svg.selectAll("g.arc2")
@@ -440,7 +444,30 @@
             return map;
         },
 
-        mouseon: function(d) {
+        updateNodes: function(name, value) {
+          var _this = this;
+          return function(d) {
+            // console.log('updateNodes',name,value)
+            if (value) this.parentNode.appendChild(this);
+            // _this.svg.select("#node-" + d[name].key).classed(name, value);
+          };
+        },
+
+        // Arc, i.e. categories
+        hoverArc: function(d) {
+
+        },
+
+        hoverOffArc: function(d) {
+
+        },
+
+        clickArc: function(d) {
+
+        },
+
+        // Topics, i.e. node renders
+        hoverTopic: function(d) {
             var _this = this;
             // console.log('mouseon',d)
             window.graphView.svg.selectAll("path.link.target-" + d.name.split('.')[2])
@@ -449,15 +476,9 @@
 
             window.graphView.svg.selectAll("path.link.source-" + d.name.split('.')[2])
               .classed("source", true)
-              // .each(_this.updateNodes("target", true));
+        },
 
-          // _this.svg.selectAll("groupArc." + d.__data__.name.split('.')[1])
-          // this.select('path')
-          //     .classed("target", true)
-          //     .attr("fill-opacity",1);
-            },
- 
-        mouseoff:function(d) {
+        hoverOffTopic: function(d) {
             var _this = this;
             // console.log('mouseoff',d);
             window.graphView.svg.selectAll("path.link.source-" + d.name.split('.')[2])
@@ -466,18 +487,28 @@
 
             window.graphView.svg.selectAll("path.link.target-" + d.name.split('.')[2])
               .classed("target", false)
-              // .each(_this.updateNodes("source", false));
         },
 
+        clickTopic: function(d) {
 
-        updateNodes: function(name, value) {
-          var _this = this;
-          return function(d) {
-            // console.log('updateNodes',name,value)
-            if (value) this.parentNode.appendChild(this);
-            // _this.svg.select("#node-" + d[name].key).classed(name, value);
-          };
+        },
+
+        // Lines between nodes
+        hoverLine: function(d) {
+
+        },
+
+        hoverOffLine: function(d) {
+
+        },
+
+        clickLine: function(d) {
+
         }
+
+
+
+
 
     };
 
