@@ -140,8 +140,8 @@
                 links = _this.getConnections(nodes),
                 splines = _this.bundle(links);
 
-          console.log('mappedData',d);
-          console.log('nodes',nodes);
+          // console.log('mappedData',d);
+          // console.log('nodes',nodes);
           // console.log('links',links);
           // console.log('splines',splines);
 
@@ -259,9 +259,23 @@
                      return _this.getColor(d);
                 })
                 .style("fill-opacity", 1.)
-                .on("mouseover", _this.hoverLemma)
-                .on("mouseout", _this.hoverOffLemma)
+                // .on("mouseover", _this.hoverLemma)
+                // .on("mouseout", _this.hoverOffLemma)
                 .on("click", _this.clickLemma)
+                .popover(function(d,i){
+                     console.log(d)   ;
+                    return {    
+                      // The title that will be displayed on the popover
+                      title: "A title",
+                      //A d3 svg element
+                      content: "test",
+                      placement: "fixed",
+                      gravity: "right",
+                      position: [d.x,d.y],
+                      displacement: [0,20],            
+                      mousemove: false,
+                      };
+                });
 
 
             this.svg.selectAll("g.arc2")
@@ -289,7 +303,7 @@
                 .append("svg:textPath")
                   .attr('startOffset', '5px')
                   .attr("xlink:href", function(d) {return "#groupArcId_" + d.name.split('.')[1]})
-                  .text(function(d) { console.log(d); return d.name.split('.')[1] + ' - ' + d.children[0].type; }) // <-- Shaky motherfuckin edifice right here
+                  .text(function(d) { return d.name.split('.')[1] + ' - ' + d.children[0].type; }) // <-- Shaky motherfuckin edifice right here
 
 
         },
