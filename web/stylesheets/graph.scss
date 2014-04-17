@@ -57,3 +57,19 @@ path.arc {
 .graph textpath {
   margin-bottom: 22px;
 }
+
+
+.lemma-overlay {
+  display: none;
+  width: 640px; 
+  height: 480px;
+  background: white;
+  .data-row {
+    float: left; 
+    clear: both; 
+    width: 100%; 
+    height: auto;
+  }
+}
+
+

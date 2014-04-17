@@ -8,7 +8,8 @@
             w: $(window).height()*.88,
             h: $(window).height()*.88,
             rx: $(window).height()*.44,
-            ry: $(window).height()*.44
+            ry: $(window).height()*.44,
+            overlayPadding: $(window).height()*.2
         },
         d3: null,
         lastEvent: [],
@@ -29,6 +30,8 @@
             _this.setupGraph();
             _this.parseToD3(data);
             _this.render();
+
+            _.bindAll(window.graphView,'hoverLemma','clickLemma','hoverOffLemma');
 
         },
 
@@ -230,6 +233,9 @@
         // Categories are the big block arcs that contain targets
         drawCategory: function(nodes) {
             var _this = this;
+            var innerPadding = 120;
+            var outerPadding = 160;
+            var textPathPadding = 145;
             
             var numOfNodes = (nodes.filter(function(d) {
               return !d.children && d.parent;
@@ -237,16 +243,16 @@
 
             // Arc Generator
             var groupArc = d3.svg.arc()
-                .innerRadius(this.d.ry-120)
-                .outerRadius(this.d.ry-160)
+                .innerRadius(this.d.ry-innerPadding)
+                .outerRadius(this.d.ry-outerPadding)
                 .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
                 .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
 
             // Text arc generator, go not where we have gone, lest ye emerge a madman - Ethan
              // Arc Generator
             var textArc = d3.svg.arc()
-                .innerRadius(this.d.ry-145)
-                .outerRadius(this.d.ry-145)
+                .innerRadius(this.d.ry-textPathPadding)
+                .outerRadius(this.d.ry-textPathPadding)
                 .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
                 .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
 
@@ -270,20 +276,25 @@
                 // .on("mouseover", _this.hoverLemma)
                 // .on("mouseout", _this.hoverOffLemma)
                 .on("click", _this.clickLemma)
-                .popover(function(d,i){
-                     console.log(d)   ;
-                    return {    
-                      // The title that will be displayed on the popover
-                      title: "A title",
-                      //A d3 svg element
-                      content: "test",
-                      placement: "fixed",
-                      gravity: "right",
-                      position: [d.x,d.y],
-                      displacement: [0,20],            
-                      mousemove: false,
-                      };
-                });
+                .on("mouseover", _this.hoverLemma)
+                .on("mouseleave", _this.hoverOffLemma);
+                // .popover(function(d,i){
+                //     var angle=_this.getAngles({data: d, nodeLength: numOfNodes});
+                //     var radius=_this.d.ry-outerPadding;
+                //     return {    
+                //       // The title that will be displayed on the popover
+                //       title: "A title",
+                //       //A d3 svg element
+                //       content: "test",
+                //       placement: "fixed",
+                //       gravity: "right",
+                //       position: [radius.middle -90 , d.y ],
+                //       displacement: [0,20],            
+                //       mousemove: true,
+                //       };
+                // });
+
+                // .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
 
 
             this.svg.selectAll("g.arc2")
@@ -343,7 +354,7 @@
 
 
             // console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
-            return { min: (min-sliceOfPie) * (pi/180), max: (max+sliceOfPie) * (pi/180)};
+            return { min: (min-sliceOfPie) * (pi/180), max: (max+sliceOfPie) * (pi/180), middle:(max+min)/2 };
         },
 
         // This function consumes a node and returns the color of the lemma
@@ -481,11 +492,26 @@
 
         // Arc, i.e. categories
         hoverLemma: function(d) {
-            console.log('hover lemma',d);
+          var _this = window.graphView;
+          console.log("trigger hoverLemma",d)
+          var $overlay = $('.lemma-overlay');
+          $overlay.css({
+            background: _this.getColor(d),
+            width: _this.d.ry-_this.d.overlayPadding,
+            height: _this.d.ry-_this.d.overlayPadding,
+            marginTop: _this.d.ry/2
+          })
+          $overlay.find('.header h1').html(d.name);
+
+
+          $overlay.fadeIn(150);
+
+
         },
 
         hoverOffLemma: function(d) {
             console.log('hover off lemma',d);
+            $('.lemma-overlay').fadeOut(50);
         },
 
         clickLemma: function(d) {
