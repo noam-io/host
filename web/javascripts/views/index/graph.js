@@ -60,15 +60,23 @@
                     .delay(400);
                 
                 // Highlight sender
-                var category = _this.svg.selectAll('.source#node-' + val)
+                var sender = _this.svg.selectAll('.source#node-' + val)
                     // .each(_this.updateNodes("source", true))
                   .transition()
                     .style("opacity", 1)
                     // .style('font-size','10pt')
                     .duration(400);
+
+
+                sender.transition()
+                     .style("opacity", .4)
+                    // .style('font-size','10pt')
+                    .duration(400)
+                    .delay(400);
+
 
                 // Highlight receiver
-                var category = _this.svg.selectAll('.target#node-' + val)
+                var receiver = _this.svg.selectAll('.target#node-' + val)
                     // .each(_this.updateNodes("source", true))
                   .transition()
                     .style("opacity", 1)
@@ -76,7 +84,7 @@
                     .duration(400);
 
 
-                category.transition()
+                receiver.transition()
                      .style("opacity", .4)
                     // .style('font-size','10pt')
                     .duration(400)
@@ -140,8 +148,8 @@
                 links = _this.getConnections(nodes),
                 splines = _this.bundle(links);
 
-          console.log('mappedData',d);
-          console.log('nodes',nodes);
+          // console.log('mappedData',d);
+          // console.log('nodes',nodes);
           // console.log('links',links);
           // console.log('splines',splines);
 
