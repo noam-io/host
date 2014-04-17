@@ -217,7 +217,7 @@
 
                       })
 
-
+            _this.drawHoverArcs(nodes);          
 
           // });
         },
@@ -259,13 +259,11 @@
 
             this.svg.selectAll("g.arc")
                 .data(nodes.filter(function(d){
-                    return d.name !== 'participant' && d.name;
+                    // return d.name !== 'participant' && d.name;
+                    return d.depth == 2 && d.name;
                 }))
                 .enter().append("svg:path")
                 .attr("d", groupArc)
-                // .attr("id", function(d) {
-                //     return "groupArcId_" + d.name.split('.')[1];
-                // })
                 .attr("class", function(d) {
                     return "groupArc " + d.name.split('.')[1];
                 })
@@ -273,33 +271,15 @@
                      return _this.getColor(d);
                 })
                 .style("fill-opacity", 1.)
-                // .on("mouseover", _this.hoverLemma)
-                // .on("mouseout", _this.hoverOffLemma)
                 .on("click", _this.clickLemma)
                 .on("mouseover", _this.hoverLemma)
                 .on("mouseleave", _this.hoverOffLemma);
-                // .popover(function(d,i){
-                //     var angle=_this.getAngles({data: d, nodeLength: numOfNodes});
-                //     var radius=_this.d.ry-outerPadding;
-                //     return {    
-                //       // The title that will be displayed on the popover
-                //       title: "A title",
-                //       //A d3 svg element
-                //       content: "test",
-                //       placement: "fixed",
-                //       gravity: "right",
-                //       position: [radius.middle -90 , d.y ],
-                //       displacement: [0,20],            
-                //       mousemove: true,
-                //       };
-                // });
-
-                // .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
 
 
             this.svg.selectAll("g.arc2")
                 .data(nodes.filter(function(d){
-                    return d.name !== 'participant' && d.name;
+                    // return d.name !== 'participant' && d.name;
+                    return d.depth == 2 && d.name;
                 }))
                 .enter().append("svg:path")
                 .attr("d", textArc)
@@ -307,7 +287,6 @@
                     return "groupArcId_" + d.name.split('.')[1];
                 })
                 .style("fill-opacity", 0.0);
-
 
 
            _this.svg.selectAll("g.category")
@@ -322,10 +301,48 @@
                 .append("svg:textPath")
                   .attr('startOffset', '5px')
                   .attr("xlink:href", function(d) {return "#groupArcId_" + d.name.split('.')[1]})
-                  .text(function(d) { return d.name.split('.')[1] + ' - ' + d.children[0].type; }) // <-- Shaky motherfuckin edifice right here
-
+                  // .text(function(d) { return d.name.split('.')[1] + ' - ' + d.children[0].type; }) // <-- Shaky motherfuckin edifice right here
+                  .text(function(d) { return d.name.split('.')[1]; })
+                  .on("mouseover", _this.hoverLemma)
+                  .on("mouseleave", _this.hoverOffLemma);
 
         },
+
+
+        // Draw transparent arcs that overlay the lemma arcs. This creates hover zones.
+        drawHoverArcs: function(nodes) {
+            var _this = this;
+            var innerPadding = 110;
+            var outerPadding = 170;
+            var textPathPadding = 145;
+            
+            var numOfNodes = (nodes.filter(function(d) {
+              return !d.children && d.parent;
+            })).length;
+
+            // Arc Generator for the hover arcs overlaying each lemma
+            var hoverArc = d3.svg.arc()
+                .innerRadius(this.d.ry-innerPadding)
+                .outerRadius(this.d.ry-outerPadding)
+                .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
+                .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
+
+            this.svg.selectAll("g.hover_arc")
+                .data(nodes.filter(function(d){
+                    //return d.name !== 'participant' && d.name;
+                    return d.depth == 2 && d.name;
+                }))
+                .enter().append("svg:path")
+                .attr("d", hoverArc)
+                .attr("class", function(d) {
+                    return "hoverArc " + d.name.split('.')[1];
+                })
+                .style("fill-opacity", 0)
+                .on("click", _this.clickLemma)
+                .on("mouseover", _this.hoverLemma)
+                .on("mouseleave", _this.hoverOffLemma);
+
+        },        
 
 
         // assumed arguments {data: d, nodeLength: numOfNodes}
@@ -492,21 +509,19 @@
 
         // Arc, i.e. categories
         hoverLemma: function(d) {
+          console.log('ethan test: ' + d);
+          console.dir(d);
+
           var _this = window.graphView;
-          console.log("trigger hoverLemma",d)
           var $overlay = $('.lemma-overlay');
           $overlay.css({
             background: _this.getColor(d),
             width: _this.d.ry-_this.d.overlayPadding,
             height: _this.d.ry-_this.d.overlayPadding,
-            marginTop: _this.d.ry/2
+            marginTop: _this.d.ry/2 + 30
           })
           $overlay.find('.header h1').html(d.name);
-
-
           $overlay.fadeIn(150);
-
-
         },
 
         hoverOffLemma: function(d) {
