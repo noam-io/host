@@ -271,9 +271,6 @@
                      return _this.getColor(d);
                 })
                 .style("fill-opacity", 1.)
-                .on("click", _this.clickLemma)
-                .on("mouseover", _this.hoverLemma)
-                .on("mouseleave", _this.hoverOffLemma);
 
 
             this.svg.selectAll("g.arc2")
@@ -303,8 +300,6 @@
                   .attr("xlink:href", function(d) {return "#groupArcId_" + d.name.split('.')[1]})
                   // .text(function(d) { return d.name.split('.')[1] + ' - ' + d.children[0].type; }) // <-- Shaky motherfuckin edifice right here
                   .text(function(d) { return d.name.split('.')[1]; })
-                  .on("mouseover", _this.hoverLemma)
-                  .on("mouseleave", _this.hoverOffLemma);
 
         },
 
@@ -448,6 +443,8 @@
                     i.name = 'participant.' + val.spalla_id + '.' + dat;
                     i.type = val.device_type;
                     i.color = _this.colors[Math.floor(Math.random() * _this.colors.length)];
+                    i.version = val.system_version,
+                    i.lastActive = val.last_activity
                     i.output = false;
                     i.imports = [];
                     _.each(data.players, function(r) { // Let's check what the others broadcast
@@ -509,18 +506,52 @@
 
         // Arc, i.e. categories
         hoverLemma: function(d) {
-          console.log('ethan test: ' + d);
-          console.dir(d);
-
           var _this = window.graphView;
           var $overlay = $('.lemma-overlay');
           $overlay.css({
-            background: _this.getColor(d),
             width: _this.d.ry-_this.d.overlayPadding,
-            height: _this.d.ry-_this.d.overlayPadding,
+            // height: _this.d.ry-_this.d.overlayPadding,
             marginTop: _this.d.ry/2 + 30
           })
-          $overlay.find('.header h1').html(d.name);
+          $overlay.find('.header')
+            .css('background', _this.getColor(d))
+            .html(d.name);
+          $overlay.find('.type').html(d.children[0].type);
+          
+          $overlay.find('.last-active').html(function(){
+            // return "Kilgore was here"
+            var s = null;
+            // _.each() is a syncronous function (supposedly)
+            _.each(d.children, function(val,i) {
+              var t = val.lastActive;
+              if(!s) s=new Date(String(t).replace("T"," "));
+              else s = new Date(String(t).replace("T"," ")) > s ? new Date(String(t).replace("T"," ")) : s;
+            })
+            //http://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
+            // if(Object.prototype.toString.call(s) !== "[object Date]") s = "N/A";
+            // console.log("Output of last active", s)
+            return  "Last Active: "  + s.toLocaleTimeString();
+          });
+
+          $overlay.find('.hear').html(function(){
+            var s = "";
+            // _.each() is a syncronous function (supposedly)
+            _.each(d.children, function(val,i) {
+              if(val.output) return;
+              s += (val.key + " "); 
+            })
+            return s;
+          });
+
+          $overlay.find('.say').html(function(){
+            var s = "";
+            // _.each() is a syncronous function (supposedly)
+            _.each(d.children, function(val,i) {
+              if(!val.output) return;
+              s += (val.key + " "); 
+            })
+            return s;
+          });
           $overlay.fadeIn(150);
         },
 
