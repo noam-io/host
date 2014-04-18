@@ -19,8 +19,8 @@ describe NoamServer::Orchestra do
                                            ["plays_1", "plays_2"] , ip_1, 111, "RoomName")}
   let(:player_2) { NoamServer::Player.new( id_2, 'Pi', 'System Version', [], [], ip_2, 222, "RoomName") }
 
-  let(:ear_1) { NoamServer::Ear.new(ip_1, 1234) }
-  let(:ear_2) { NoamServer::Ear.new(ip_2, 2345) }
+  let(:ear_1) { NoamServer::Ear.new(ip_1, 1234, nil) }
+  let(:ear_2) { NoamServer::Ear.new(ip_2, 2345, nil) }
 
   let(:connection_1) { NoamServer::PlayerConnection.new( ear_1 )}
   let(:connection_2) { NoamServer::PlayerConnection.new( ear_2 )}

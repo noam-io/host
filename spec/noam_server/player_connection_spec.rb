@@ -2,7 +2,6 @@ require 'noam_server/player_connection'
 
 describe NoamServer::PlayerConnection do
   class MockEar
-    attr_accessor :hear_returns, :callback
 
     def initialize
       @args = []
@@ -10,20 +9,12 @@ describe NoamServer::PlayerConnection do
 
     def send_data( *args )
       @args << args
-      @hear_returns
     end
 
     def args_received
       @args
     end
 
-    def new_connection( &callback )
-      @callback = callback
-    end
-
-    def active?
-      true
-    end
   end
 
   it "terminates" do
@@ -35,38 +26,12 @@ describe NoamServer::PlayerConnection do
 
   it 'delegates hear to ear' do
     ear = MockEar.new
-    ear.hear_returns = true
 
     connection = described_class.new( ear )
     connection.send_event( 'id', 'name', 'value' )
 
     ear.args_received[ 0 ].should == [Noam::Messages.build_event( 'id', 'name', 'value' )]
-    ear.callback.should be_nil
   end
 
-  it 'requests a new connection when ear does not hear' do
-    ear = MockEar.new
-    ear.hear_returns = false
-
-    connection = described_class.new( ear )
-    connection.send_event( 'id', 'name', 'value' )
-
-    ear.args_received[ 0 ].should == [Noam::Messages.build_event( 'id', 'name', 'value' )]
-    ear.callback.should_not be_nil
-  end
-
-  it 'when ear does not hear, keep track of ' do
-    ear = MockEar.new
-    ear.hear_returns = false
-
-    connection = described_class.new( ear )
-    connection.send_event( 'id', 'name', 'value' )
-    connection.send_event( 'id 2', 'name 2', 'value 2' )
-
-    ear.args_received.clear
-    ear.callback.call
-
-    ear.args_received.count.should == 1
-  end
 end
 

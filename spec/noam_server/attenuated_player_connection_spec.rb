@@ -14,10 +14,6 @@ describe NoamServer::AttenuatedPlayerConnection do
       @message = message
       @hear_returns.shift
     end
-
-    def new_connection( &callback )
-      @callback = callback
-    end
   end
 
   let( :sender ){AttenMockEar.new}
@@ -119,38 +115,18 @@ describe NoamServer::AttenuatedPlayerConnection do
     sender.times_heard.should == 2
   end
 
-  it "should handle hear failures" do
-    sender.hear_returns = [false]
-    sender.should_receive(:new_connection)
-    player.send_event( "id", "name", "value", now )
-  end
-
   it "should send out the last value when a connection is made" do
     sender.hear_returns = [false, true, true]
 
     player.send_event( "id", "name", "value", now )
     player.send_event( "id2", "name", "value2", now )
-    sender.callback.call
     msg = Noam::Messages.build_event( "id2", "name", "value2" )
     sender.message.should == msg
-  end
-
-  it "should handle failure on timeout sends" do
-    sender.hear_returns = [true, false, true]
-    EM::run do
-      player.send_event( "id", "name", "value", now )
-      player.send_event( "id2", "name", "value2", now )
-      wait_for(2)
-    end
-    sender.callback.call
-
-    msg = Noam::Messages.build_event( "id2", "name", "value2" )
-    sender.message.should == msg
-    sender.times_heard.should == 3
   end
 
   it "terminates" do
     sender.should_receive(:terminate).once
     player.terminate
   end
+
 end

@@ -23,9 +23,6 @@ module NoamServer
       web_socket.close_websocket if active?
     end
 
-    def new_connection
-    end
-
     private
 
     attr_accessor :web_socket

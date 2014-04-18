@@ -1,4 +1,3 @@
-require 'em/pure_ruby'
 require 'noam_server/ear'
 
 def wire_message(expected_message)
@@ -8,73 +7,124 @@ end
 describe NoamServer::Ear do
   let( :host ){ '127.0.0.1' }
   let( :port ){ 5663 }
-  let( :ear ){ described_class.new( host, port )}
+  let( :ear ){ described_class.new(host, port, nil)}
 
-  it 'calls back on new connection' do
-    times_called_back = 0
-    callback = proc do |connection|
-      times_called_back += 1
-      EM::stop_event_loop
+  class MockConnection
+
+    attr_accessor :sent_messages, :closed, :callback_delegate
+
+    def initialize
+      self.sent_messages = []
+      self.closed = false
     end
 
-    EM::run do
-      ear.new_connection( &callback )
+    def send_data(message)
+      sent_messages << message
     end
 
-    times_called_back.should == 1
+    def close_connection_after_writing
+      self.closed = true
+    end
+
+    def closed?
+      closed
+    end
+
   end
 
-  describe "#send_data" do
-    it 'does not send anything with no connection' do
-      ear.terminate
-      ear.send_data( 'sample data' ).should be_false
-    end
-
-    it 'does not try to make another connection when one is created' do
-      times_called_back = 0
-
-      module TestConnection
-        def receive_data( data )
-          message = wire_message( Orchestra::Messages.build_event( 'id', 'name', 'value' ))
-          data.should == message
-          EM::stop_event_loop
-        end
-      end
-
-      EM::run do
-        server = EventMachine::start_server( host, port, TestConnection )
-
-        callback = proc do |connection|
-          times_called_back += 1
-          EM::stop_event_loop
-        end
-
-        ear.new_connection( &callback )
-        ear.send_data( 'sample data' ).should be_true
-        times_called_back.should == 1
-      end
-    end
-  end
-
-  describe "#active?" do
+  describe "sending data" do
     before(:each) do
-      @tcp_socket = double("TCP Socket", :signature => 1337,
-        :parent= => nil, :close_connection_after_writing => nil)
-      EventMachine.stub(:connect).
-                   with(host, port, NoamServer::EarHandler).
-                   and_yield(@tcp_socket)
-      @ear = NoamServer::Ear.new(host, port)
+      @connection = MockConnection.new
+      EventMachine.stub(:connect).and_yield(@connection)
     end
 
-    it "is false when the connection pool does not include the TCP socket" do
-      NoamServer::ConnectionPool.stub(:include?).with(@tcp_socket).and_return(false)
-      @ear.should_not be_active
+    context "with the connection created on initialization" do
+      it "creates a connection" do
+        EventMachine.should_receive(:connect).
+                     with(host, port, NoamServer::EarHandler).
+                     and_yield(@connection)
+
+        ear.send_data("foobar")
+      end
+
+      it "sends data across the connection" do
+        ear.send_data("foobar")
+
+        @connection.sent_messages.should == ["000006", "foobar"]
+      end
+
+      it "does not catch any errors raised attempting to connect" do
+        EventMachine.should_receive(:connect).and_raise("some error")
+
+        expect {
+          ear.send_data("wat")
+        }.to raise_error("some error")
+      end
+
+      it "sets the callback delegate for the connection" do
+        ear.send_data("foobar")
+
+        @connection.callback_delegate.should == ear
+      end
     end
 
-    it "is true when the connection pool includes the TCP socket" do
-      NoamServer::ConnectionPool.stub(:include?).with(@tcp_socket).and_return(true)
-      @ear.should be_active
+    context "with an active connection" do
+      it "does not create a new connection" do
+        ear.send_data("foo")
+        EventMachine.should_not_receive(:connect)
+        ear.send_data("bar")
+
+        @connection.sent_messages.should include("foo")
+        @connection.sent_messages.should include("bar")
+      end
+
+      it "makes a new connection if we close the connection" do
+        ear.send_data("foo")
+        ear.terminate
+        EventMachine.should_receive(:connect)
+
+        ear.send_data("foobar")
+      end
+    end
+
+    context "while making a connection" do
+      before(:each) do
+        ear.terminate
+      end
+
+      it "does not make a new connection" do
+        EventMachine.stub(:connect)
+        ear.send_data("foo")
+
+        EventMachine.should_not_receive(:connect)
+
+        ear.send_data("foobar")
+
+        @connection.sent_messages.should == []
+      end
+
+      it "forwards the data when a connection is made" do
+        ear.send_data("foobar")
+
+        @connection.sent_messages.should == ["000006", "foobar"]
+      end
+    end
+  end
+
+  describe "terminate" do
+    before(:each) do
+      @connection = MockConnection.new
+      EventMachine.stub(:connect).and_yield(@connection)
+    end
+
+    it "closes the active connection" do
+      ear.send_data("foobar")
+
+      ear.terminate
+
+      @connection.should be_closed
     end
   end
 
 end
+

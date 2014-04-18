@@ -21,11 +21,14 @@ describe NoamServer::MessageHandler do
     message.hears = ["e1", "e2"]
     message.options = {}
 
-    handler.message_received(message)
+    connection = double("TCP Connection")
+
+    handler.message_received(message, connection)
 
     orchestra.events["e1"].size.should == 1
     orchestra.events["e1"]["1234"].port.should == 4423
     orchestra.events["e1"]["1234"].host.should == "127.0.0.2"
+    orchestra.events["e1"]["1234"].ear.incoming_connection.should == connection
 
     orchestra.players["1234"].spalla_id.should == '1234'
     orchestra.players["1234"].device_type.should == 'device type'
@@ -47,6 +50,6 @@ describe NoamServer::MessageHandler do
     message.event_value = event_value
 
     connection.should_receive(:send_event).with( 'player_id', event_name, event_value )
-    handler.message_received( message )
+    handler.message_received( message, connection )
   end
 end
