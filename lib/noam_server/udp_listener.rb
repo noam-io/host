@@ -3,6 +3,7 @@ require 'noam_server/noam_logging'
 require 'noam_server/grabbed_lemmas'
 require 'noam_server/located_servers'
 require 'noam_server/unconnected_lemmas'
+require 'em/pure_ruby'
 require 'socket'
 
 module NoamServer
