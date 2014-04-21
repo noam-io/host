@@ -132,7 +132,7 @@
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
-                .tension(.5)
+                .tension(.0)
                 .radius(function(d) { return d.y - 52; })
                 .angle(function(d) { return d.x / 180 * Math.PI; });
 
@@ -371,9 +371,9 @@
                     return "hoverArc " + d.name.split('.')[1];
                 })
                 .style("fill-opacity", 0)
-                .on("click", _this.clickLemma)
-                .on("mouseover", _this.hoverLemma)
-                .on("mouseleave", _this.hoverOffLemma);
+                .on("click", _this.clickLemma);
+                // .on("mouseover", _this.hoverLemma)
+                // .on("mouseleave", _this.hoverOffLemma);
 
         },        
 
