@@ -12,6 +12,7 @@
             overlayPadding: $(window).height()*.2
         },
         d3: null,
+        dta: {},
         lastEvent: [],
         bundle: null,
         cluster: null,
@@ -24,7 +25,7 @@
 
         init: function(data){
             var _this = this;
-
+            this.data = data;
             // console.log('started graphview')
 
             _this.setupGraph();
@@ -381,6 +382,7 @@
                 // .on("mouseover", _this.hoverLemma)
                 // .on("mouseleave", _this.hoverOffLemma);
 
+
         },        
 
 
@@ -602,6 +604,20 @@
 
         clickLemma: function(d) {
             console.log('click lemma',d);
+            var _this = window.graphView;
+            var lemma = _.findWhere(_this.data.players,{'spalla_id':d.key});
+            console.log(lemma);
+
+          
+            if(detailViewManager.toggleLemma(lemma)){
+              console.log("You did something, my friend. Be happy. Drink syrup.")
+            }
+            activityGraph.displayPlayer(lemma);
+
+
+
+
+
         },
 
         // Topics, i.e. node renders

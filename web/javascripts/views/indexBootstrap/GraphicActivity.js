@@ -24,33 +24,33 @@ GraphicActivity.prototype.init = function(){
 	var self = this;
 	var margin = {top: 12, right: 0, bottom: 20, left: 40};
 
-	// // this.x = d3.time.scale()
-	// //     .domain([this.now - this.duration * 1000, this.now])
-	// //     .range([0, this.width - 100]);
+	this.x = d3.time.scale()
+	    .domain([this.now - this.duration * 1000, this.now])
+	    .range([0, this.width - 100]);
 
-	// this.svg = d3.select("#activityGraph").append("p").append("svg")
-	//     .attr("width", this.width + margin.left + margin.right)
-	//     .attr("height", this.height + margin.top + margin.bottom)
-	//     .style("margin-left", -margin.left + "px")
-	//     .append("g")
-	//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	this.svg = d3.select("#activityGraph").append("p").append("svg")
+	    .attr("width", this.width + margin.left + margin.right)
+	    .attr("height", this.height + margin.top + margin.bottom)
+	    .style("margin-left", -margin.left + "px")
+	    .append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-	// this.svg.append("defs").append("clipPath")
-	//     .attr("id", "clip")
-	//     .append("rect")
-	//     .attr("width", this.width)
-	//     .attr("height", this.height);
+	this.svg.append("defs").append("clipPath")
+	    .attr("id", "clip")
+	    .append("rect")
+	    .attr("width", this.width)
+	    .attr("height", this.height);
 
-	// this.axis = this.svg.append("g")
-	//     .attr("class", "x axis")
-	//     .attr("stroke-width", "1")
-	//     .attr("transform", "translate(0," + 15 + ")")
-	//     .call(self.x.axis = d3.svg.axis().scale(self.x).orient("top"));
+	this.axis = this.svg.append("g")
+	    .attr("class", "x axis")
+	    .attr("stroke-width", "1")
+	    .attr("transform", "translate(0," + 15 + ")")
+	    .call(self.x.axis = d3.svg.axis().scale(self.x).orient("top"));
 
-	// var self = this;
-	// setInterval(function(){
-	// 	self.tick();
-	// }, this.duration);
+	var self = this;
+	setInterval(function(){
+		self.tick();
+	}, this.duration);
 }
 
 GraphicActivity.prototype.addActivity = function(topic){
