@@ -102,12 +102,17 @@
             // Setup the data clustering
             this.cluster = d3.layout.cluster()
                 .size([360, this.d.ry-120]) // Degrees, radius
-                .sort( function(a,b){
+                .sort( function(a,b) {
                     return d3.ascending(a.key, b.key);
                 })
                 .separation(function(a,b){
                   return 1;//(a.parent == b.parent ? 1 : 2) / a.depth;
                 });
+
+
+
+
+
 
             // Setup the layout bundle
             this.bundle = d3.layout.bundle();
@@ -173,7 +178,8 @@
 
             // Main elements
             // HERE BE DRAGONS!!!
-            // Data munging.    
+            // Data munging.  
+
             var d = _this.mapToNodes(collectionData),
                 nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
                 links = _this.getConnections(nodes),
