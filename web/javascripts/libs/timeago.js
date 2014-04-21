@@ -21,6 +21,8 @@
       return inWords($.timeago.parse(timestamp));
     } else if (typeof timestamp === "number") {
       return inWords(new Date(timestamp));
+    } else if(timestamp == null){
+      return '';
     } else {
       return inWords($.timeago.datetime(timestamp));
     }
@@ -36,7 +38,7 @@
         prefixFromNow: null,
         suffixAgo: "ago",
         suffixFromNow: "from now",
-        seconds: "just seconds",//"less than a minute",
+        seconds: "%d seconds",//"less than a minute",
         minute: "about a minute",
         minutes: "%d minutes",
         hour: "about an hour",
@@ -73,8 +75,8 @@
         var value = ($l.numbers && $l.numbers[number]) || number;
         return string.replace(/%d/i, value);
       }
-
-      var words = seconds < 45 && substitute($l.seconds, Math.round(seconds)) ||
+      var words = ((minutes < 10)?'0':'')+Math.round(minutes) + ":"+((seconds < 10)?'0':'') + Math.round(seconds);
+      /*var words = seconds < 60 && substitute($l.seconds, Math.round(seconds)) ||
         seconds < 90 && substitute($l.minute, 1) ||
         minutes < 45 && substitute($l.minutes, Math.round(minutes)) ||
         minutes < 90 && substitute($l.hour, 1) ||
@@ -85,7 +87,7 @@
         days < 365 && substitute($l.months, Math.round(days / 30)) ||
         years < 1.5 && substitute($l.year, 1) ||
         substitute($l.years, Math.round(years));
-
+      */
       var separator = $l.wordSeparator === undefined ?  " " : $l.wordSeparator;
       return $.trim([prefix, words, suffix].join(separator));
     },

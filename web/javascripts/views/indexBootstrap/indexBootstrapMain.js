@@ -3,6 +3,7 @@ $(function() {
   var players = {};
   var channels = {};
   window.numberOfPlayers = 0;
+  window.serverUp = false;
 
   var processManualEventSubmit = function() {
     $.post( this.action, $(this).serialize() );
@@ -25,15 +26,17 @@ $(function() {
   });
 
   var updateAll = function(){
-    for(player_name in players){
-      players[player_name].draw();
-    }
-    for(channel_name in channels){
-      channels[channel_name].draw(players);
+    if(window.serverUp){
+      for(player_name in players){
+        players[player_name].draw();
+      }
+      for(channel_name in channels){
+        channels[channel_name].draw(players);
+      }
     }
   }
 
-  setInterval(updateAll, 2000);
+  setInterval(updateAll, 1000);
 
   var params = {
     divToPopulate: 'real-time-data',
@@ -41,6 +44,7 @@ $(function() {
     asyncRefreshRoute: '/arefresh',
     errorMessage: 'Contacting Maestro &hellip;',
     cb: function(results){
+      window.serverUp = true;
       // console.log('cursize',window.numberOfPlayers)
       // console.log('newsize',_.size(results['players']));
 
@@ -55,15 +59,25 @@ $(function() {
       $("#serverDownError").fadeOut(500);
       // Update Player Headings
       var _players = results['players'];
+      var updateChannels = false;
       for(lemma_id in _players){
         if(!(lemma_id in players)){
           players[lemma_id] = new Player(_players[lemma_id]);
+          updateChannels = true;
         } else {
           players[lemma_id].update(_players[lemma_id]);
         }
       }
 
-
+      $("#Channels .table thead tr .player").each(function(){
+        var name = $(this).attr('player-name');
+        if(!(name in _players)){
+          if(name in players){
+            players[name].remove();
+            delete players[name];
+          }
+        }
+      });
 
       // Update Channel Rows
       var _events = results['events'];
@@ -76,10 +90,27 @@ $(function() {
         }
       }
 
+      for(channelName in channels){
+        if(channels[channelName].removed){
+          delete channels[channelName];
+        } else if(updateChannels){
+          channels[channelName].draw(players);
+        }
+      }
+
       // Refresh detail view
       detailViewManager.refresh();
     },
     errorcb: function(error){
+      window.serverUp = false;
+      for(channelName in channels){
+        channels[channelName].remove();
+        delete channels[channelName];
+      }
+      for(playerName in players){
+        players[playerName].remove();
+        delete players[playerName];
+      }
       $("#serverDownError").fadeIn(500);
     }
   };

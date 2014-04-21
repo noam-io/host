@@ -33,7 +33,9 @@ $().ready(function() {
 			return;
 		}
 		closeDropdown();
-		$('.settings-container').addClass('active').slideDown();
+		$('.settings-container').addClass('active').show();
+		$('.settings-container .dropdown-item').hide().fadeIn(300);
+
 		$(this).find('.icon').addClass('active');
 	})
 
@@ -43,12 +45,14 @@ $().ready(function() {
 			return;
 		}
 		closeDropdown();
-		$('.network-container').addClass('active').slideDown();
+		$('.network-container').addClass('active').show();
+		$('.network-container .dropdown-item').hide().fadeIn(300);
 		$(this).find('.icon').addClass('active');
 	})
 
 	function closeDropdown() {
-		$('.dropdown-item-container.active').removeClass('active').slideUp();
+		$('.dropdown-item-container.active .dropdown-item').fadeOut(300);
+		$('.dropdown-item-container.active').removeClass('active');
 		$('.nav-button').find('.active').removeClass('active');
 	}
 

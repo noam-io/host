@@ -1,6 +1,9 @@
 require 'em/pure_ruby'
 require 'noam/tcp_listener'
+require 'noam_server/config_manager'
+require 'noam_server/grabbed_lemmas'
 require 'noam_server/listener'
+require 'noam_server/orchestra'
 require 'noam_server/message_handler'
 require 'noam_server/noam_logging'
 
@@ -34,7 +37,8 @@ module NoamServer
     def self.room_name=set_room_name
       @@_room_name = set_room_name
       ConfigManager[:room_name] = @@_room_name
-      Orchestra.instance.clear()
+      Orchestra.instance.clear
+      GrabbedLemmas.instance.clear
     end
 
     def self.on?

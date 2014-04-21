@@ -11,18 +11,18 @@ describe NoamServer::GrabbedLemmas do
   end
 
   it "allows adding to the list & retrieving" do
-    @lemmas.add("Lemma #1")
-    @lemmas.add("Lemma #2")
+    @lemmas.add({:name => "Lemma #1"})
+    @lemmas.add({:name => "Lemma #2"})
 
     @lemmas.include?("Lemma #1").should == true
     @lemmas.include?("Lemma #2").should == true
   end
 
   it "allows releasing from the list" do
-    @lemmas.add("Lemma #1")
-    @lemmas.add("Lemma #2")
+    @lemmas.add({:name => "Lemma #1"})
+    @lemmas.add({:name => "Lemma #2"})
 
-    @lemmas.release("Lemma #1")
+    @lemmas.delete("Lemma #1")
 
     @lemmas.include?("Lemma #1").should == false
     @lemmas.include?("Lemma #2").should == true

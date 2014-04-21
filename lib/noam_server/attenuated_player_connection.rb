@@ -1,6 +1,15 @@
 module NoamServer
   class AttenuatedPlayerConnection
 
+    def port
+      @ear.port
+    end
+
+    def host
+      @ear.host
+    end
+
+
     def initialize( ear, min_interval )
       @ear = ear
       @min_interval = min_interval
@@ -10,16 +19,23 @@ module NoamServer
       @last_sent_id = {}
     end
 
-    def hear( id, name, value, now = Time.now )
-      remaining = time_left(now, name)
+    def send_event( id_of_player, event_name, event_value, now = Time.now )
+      remaining = time_left(now, event_name)
       if remaining <= 0
-        try_hear(id, name, value, now)
+        msg = Noam::Messages.build_event( id_of_player, event_name, event_value )
+        send_message(id_of_player, event_name, msg, now)
       else
         @timer.cancel if @timer
         @timer = EM::Timer.new(remaining) do
-          try_hear( id, name, value, now + remaining )
+          msg = Noam::Messages.build_event( id_of_player, event_name, event_value )
+          send_message(id_of_player, event_name, msg, now + remaining)
         end
       end
+    end
+
+    def send_heartbeat_ack( id_of_player, now = Time.now )
+      msg = Noam::Messages.build_heartbeat_ack( id_of_player )
+      send_message(id_of_player, '__heartbeat', msg, now)
     end
 
     def terminate
@@ -32,15 +48,16 @@ module NoamServer
       ( @last_send_time[event_name] + @min_interval ) - now
     end
 
-    def try_hear(id, name, value, now)
-      @last_sent_value[name] = value
-      @last_sent_id[name] = id
+    def send_message(id_of_player, name, message, now)
+      @last_sent_value[name] = message
 
-      if @ear.hear( id, name, value )
+      if @ear.send_data( message )
         @last_send_time[name] = now
       else
         @ear.new_connection do
-          @ear.hear( @last_sent_id[name], name, @last_sent_value[name] )
+          msg = @last_sent_value[name]
+          NoamLogging.debug(self, "Player '#{id_of_player}' reconnected sending '#{msg}'")
+          @ear.send_data( msg )
           @last_send_time[name] = now
         end
       end

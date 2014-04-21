@@ -1,5 +1,6 @@
 require 'logger'
 require 'config'
+require 'noam_server/noam_server'
 require 'noam_server/orchestra'
 require 'noam_server/player'
 require 'noam_server/player_connection'
@@ -15,13 +16,17 @@ describe NoamServer::Orchestra do
   let(:ip_2) { '192.168.3.2' }
   let(:player_1 ) { NoamServer::Player.new( id_1, 'Virtual Machine', 'System Version',
                                            ["listens_for_1", "listens_for_2"],
-                                           ["plays_1", "plays_2"] , ip_1, 111)}
-  let(:player_2) { NoamServer::Player.new( id_2, 'Pi', 'System Version', [], [], ip_2, 222) }
+                                           ["plays_1", "plays_2"] , ip_1, 111, "RoomName")}
+  let(:player_2) { NoamServer::Player.new( id_2, 'Pi', 'System Version', [], [], ip_2, 222, "RoomName") }
 
-  let(:connection_1) { NoamServer::PlayerConnection.new( player_1 )}
-  let(:connection_2) { NoamServer::PlayerConnection.new( player_2 )}
+  let(:ear_1) { NoamServer::Ear.new(ip_1, 1234) }
+  let(:ear_2) { NoamServer::Ear.new(ip_2, 2345) }
+
+  let(:connection_1) { NoamServer::PlayerConnection.new( ear_1 )}
+  let(:connection_2) { NoamServer::PlayerConnection.new( ear_2 )}
 
   before(:each) do
+    NoamServer::NoamServer.stub(:room_name).and_return("RoomName")
     NoamServer::UnconnectedLemmas.stub(:instance).and_return(unconnected_lemmas)
   end
 
@@ -35,8 +40,8 @@ describe NoamServer::Orchestra do
 
   it "registers players" do
     orchestra.register(connection_1, player_1)
-    connection_1.should_receive(:hear).with( 'player_id', "listens_for_1", 12.42)
-    orchestra.play("listens_for_1", 12.42, 'player_id' )
+    connection_1.should_receive(:send_event).with( player_1.spalla_id, "listens_for_1", 12.42)
+    orchestra.play("listens_for_1", 12.42, player_1.spalla_id )
   end
 
   it "deletes newly-registered players from the unconnected list" do
@@ -56,7 +61,7 @@ describe NoamServer::Orchestra do
     orchestra.register( connection_1, player_1 )
     player_3 = NoamServer::Player.new( "Web #3", 'Virtual Machine', 'System Version',
                                       ["listens_for_1", "listens_for_2"],
-                                      ["plays_1", "plays_2"] , "1.2.3.4", 333)
+                                      ["plays_1", "plays_2"] , "1.2.3.4", 333, "RoomName")
     connection_3 = NoamServer::PlayerConnection.new( player_3 )
     orchestra.register(connection_3, player_3)
 
@@ -66,9 +71,9 @@ describe NoamServer::Orchestra do
   end
 
   it "fires a player when there's an exception trying to talk to it" do
-    orchestra.register( connection_1, player_1)
-    connection_1.stub(:hear).and_raise("unknown send_data target")
-    orchestra.play("listens_for_1", 12.42, 'player_id' )
+    orchestra.register(connection_1, player_1)
+    connection_1.stub(:send_event).and_raise("unknown send_data target")
+    orchestra.play("listens_for_1", 12.42, player_1.spalla_id)
     orchestra.players.should == {}
   end
 
@@ -81,13 +86,13 @@ describe NoamServer::Orchestra do
   end
 
   it "replaces existing registration with a new one" do
-    orchestra.register( connection_1, player_1 )
+    orchestra.register(connection_1, player_1)
     connection_1.should_receive( :terminate )
-    orchestra.register( connection_2, player_1 )
+    orchestra.register(connection_2, player_1)
 
-    connection_1.should_not_receive(:hear)
-    connection_2.should_receive(:hear).with( 'player_id', "listens_for_1", 12.42)
-    orchestra.play("listens_for_1", 12.42, 'player_id')
+    connection_1.should_not_receive(:send_event)
+    connection_2.should_receive(:send_event).with(player_1.spalla_id, "listens_for_1", 12.42)
+    orchestra.play("listens_for_1", 12.42, player_1.spalla_id)
   end
 
   it 'updates players last activity' do

@@ -132,7 +132,7 @@
             // Line generator
             this.line = d3.svg.line.radial()
                 .interpolate("bundle")
-                .tension(.0)
+                .tension(.5)
                 .radius(function(d) { return d.y - 52; })
                 .angle(function(d) { return d.x / 180 * Math.PI; });
 

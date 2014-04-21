@@ -52,7 +52,9 @@ module NoamServer
 
     def fire_player(spalla_id)
       player = players.delete(spalla_id)
-      @connections.delete(spalla_id)
+
+      connection = @connections.delete(spalla_id)
+      connection.terminate if connection
 
       @events.delete_if do |event, actors|
         actors.delete(spalla_id)
@@ -62,38 +64,55 @@ module NoamServer
       @unregister_callbacks.each do |callback|
         callback.call(player)
       end
+    end
 
-      GrabbedLemmas.instance().delete(spalla_id)
+    def heartbeat(player_id)
+      NoamLogging.info(self, "Got heatbeat from " + player_id)
+      player = players[player_id]
+      player.last_activity = DateTime.now unless player.nil?
+      if player.send_heartbeat_acks?
+        connection = @connections[player_id]
+        connection.send_heartbeat_ack(player_id)
+      end
+    end
+
+    def check_heartbeats()
+      players.dup.each do |spalla_id, player|
+        if player.get_heartbeat_rate > 0
+          time_since_heartbeat = DateTime.now.to_time - player.last_activity.to_time
+          if time_since_heartbeat > player.get_heartbeat_rate * 2
+            NoamLogging.info(self, "Failed to get heartbeat of " + spalla_id + ": " + time_since_heartbeat.to_f.to_s + " seconds since activity.")
+            fire_player(player.spalla_id)
+          end
+        end
+      end
     end
 
     def event_names
       @events.keys.sort
     end
 
+    def can_play?(player_id)
+      player = players[player_id]
+      return (player_id == :web_ui_lemma) || (player && player.in_right_room?)
+    end
+
     def play(event, value, player_id)
-      # TODO : Need a better way to differentiate the web UI
-      player = nil
-      unless player_id == :web_ui_lemma
-        player = players[player_id]
+      return if !can_play?(player_id)
 
-        # This is for ignoring old lemmas when the server changes name
-        if player.nil? or !player.in_right_room?()
-          return
-        end
-
-        player.learn_to_play(event) unless player.nil?
-        player.last_activity = DateTime.now unless player.nil?
-      end
+      player = players[player_id]
+      player.learn_to_play(event) unless player.nil?
+      player.last_activity = DateTime.now unless player.nil?
       @events[event] ||= {}
 
       # We need to dup here since #fire_player can mutate the underlying hashes
       @events[event].dup.each do |id, player_connection|
         begin
-          player_connection.hear(player_id, event, value)
+          player_connection.send_event(player_id, event, value)
         rescue => e
           NoamLogging.warn(self, "Error trying to notify player (#{id}) of event (#{event}). Firing them.")
           stackTrace = e.backtrace.join("\n  == ")
-          NoamLogging.warn(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stackTrace}")
+          NoamLogging.debug(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stackTrace}")
           fire_player(id)
         end
       end

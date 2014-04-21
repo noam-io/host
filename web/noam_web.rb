@@ -1,6 +1,7 @@
 require 'sinatra/async'
 require 'json'
 require 'config'
+require 'noam_server/config_manager'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'noam_server/grabbed_lemmas'
@@ -31,46 +32,62 @@ NoamServer::Orchestra.instance.on_play do |name, value, player|
   Statabase.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
-  RefreshQueue.instance().enqueue_response
+  RefreshQueue.instance.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_register do |player|
   $last_active_id = player.spalla_id if player
   $last_active_event = ""
-  RefreshQueue.instance().enqueue_response
+  RefreshQueue.instance.enqueue_response
+  FreeAgentQueue.instance.enqueue_response
 end
 
 NoamServer::Orchestra.instance.on_unregister do |player|
-  RefreshQueue.instance().enqueue_response
+  RefreshQueue.instance.enqueue_response
+  FreeAgentQueue.instance.enqueue_response
 end
 
 NoamServer::UnconnectedLemmas.instance.on_change do ||
-  FreeAgentQueue.instance().enqueue_response
+  FreeAgentQueue.instance.enqueue_response
   NoamServer::NoamLogging.info(self, "UnconnectedLemmas change...")
 end
 
 NoamServer::GrabbedLemmas.instance.on_change do ||
-  FreeAgentQueue.instance().enqueue_response
+  FreeAgentQueue.instance.enqueue_response
   NoamServer::NoamLogging.info(self, "GrabbedLemmas change...")
 end
 
 class RequestQueue
   def self.instance
-    @instance ||= self.new() 
+    @instance ||= self.new
   end
 
-  def initialize()
+  def initialize
     @instance = nil
     @r = Queue.new
     @pending_responses = false
+    update
+  end
+
+  def update
+    @last_updated = Time.now.to_ms
   end
 
   def pile(&callback)
     @r << [callback, Time.now.getutc]
   end
 
+  def pile_time_check(time, &callback)
+    if time < @last_updated
+      callback.call :good, Time.now.to_ms
+    else
+      @r << [callback, Time.now.getutc]
+    end
+  end
+
   def enqueue_response
     @pending_responses = true
+    update
   end
 
   def pending_responses?
@@ -81,7 +98,7 @@ class RequestQueue
     while !@r.empty?
       r = @r.pop
       begin
-        r[0].call :good
+        r[0].call :good, Time.now.to_ms
       rescue RuntimeError => e
         # This error happens when a page that requested an asynchronous response
         # is no longer active / available to receive the response.
@@ -98,7 +115,7 @@ class RequestQueue
       r = @r.pop
       if Time.now.getutc - r[1] > timeout_time
         begin
-          r[0].call :timeout
+          r[0].call :timeout, Time.now.to_ms
         rescue RuntimeError => e
           # This error happens when a page that requested an asynchronous response
           # is no longer active / available to receive the response.
@@ -144,17 +161,17 @@ class NoamApp < Sinatra::Base
   def self.run!
     EM::set_timer_quantum(30)
     EM::add_periodic_timer do
-      if RefreshQueue.instance().pending_responses?
-        RefreshQueue.instance().respond
+      if RefreshQueue.instance.pending_responses?
+        RefreshQueue.instance.respond
       end
-      if FreeAgentQueue.instance().pending_responses?
-        FreeAgentQueue.instance().respond
+      if FreeAgentQueue.instance.pending_responses?
+        FreeAgentQueue.instance.respond
       end
     end
 
     EM::add_periodic_timer(1) do
-      RefreshQueue.instance().checktimeouts
-      FreeAgentQueue.instance().checktimeouts
+      RefreshQueue.instance.checktimeouts
+      FreeAgentQueue.instance.checktimeouts
     end
 
     @@ips = `ifconfig | grep 'inet ' | awk '{ print $2}'`
@@ -170,7 +187,7 @@ class NoamApp < Sinatra::Base
 
   get '/' do
     @server_name = CONFIG[:server_name]
-    @ips = @@ips.split("\n").join(",")
+    @ips = @@ips
     @orchestra = NoamServer::Orchestra.instance
     @values = Statabase
     erb :indexBootstrap
@@ -185,13 +202,15 @@ class NoamApp < Sinatra::Base
   end
 
   post '/settings', :provides => :json do
-    if params.include?('name')
+    if params.include?('name') and NoamServer::NoamServer.room_name != params['name']
       NoamServer::NoamServer.room_name = params['name']
     end
 
     if params.include?('on')
       toggle = (params['on'] == true) || (params['on'] == 'true')
-      NoamServer::NoamServer.on=toggle
+      if(toggle != NoamServer::NoamServer.on)
+        NoamServer::NoamServer.on=toggle
+      end
     end
 
     content_type :json
@@ -204,9 +223,11 @@ class NoamApp < Sinatra::Base
 
   aget '/arefresh' do
     response.headers['Cache-Control'] = 'no-cache'
-    RefreshQueue.instance().pile do |type|
+    requestTime = request['time'] || 0
+    RefreshQueue.instance.pile_time_check(requestTime.to_i) do |type, time|
       state = get_orchestra_state
       state[:type] = type
+      state[:time] = time
       content_type :json
       body(state.to_json)
     end
@@ -214,7 +235,9 @@ class NoamApp < Sinatra::Base
 
   get '/refresh' do
     response.headers['Cache-Control'] = 'no-cache'
+    newtime = Time.now.to_ms
     state = get_orchestra_state
+    state[:time] = newtime
     state[:type] = :good
     content_type :json
     body(state.to_json)
@@ -229,7 +252,9 @@ class NoamApp < Sinatra::Base
 
   get '/guests' do
     response.headers['Cache-Control'] = 'no-cache'
+    newtime = Time.now.to_ms
     response = get_guests(request['types'])
+    response[:time] = newtime
     content_type :json
     body(response.to_json)
   end
@@ -237,9 +262,11 @@ class NoamApp < Sinatra::Base
   aget '/aguests' do
     response.headers['Cache-Control'] = 'no-cache'
     requestType = request['types']
-    FreeAgentQueue.instance().pile do |type|
+    requestTime = request['time'] || 0
+    FreeAgentQueue.instance.pile_time_check(requestTime.to_i) do |type, time|
       response = get_guests(requestType)
       response[:type] = type
+      response[:time] = time
       content_type :json
       body(response.to_json)
     end
@@ -247,15 +274,14 @@ class NoamApp < Sinatra::Base
 
   post '/guests/join' do
     response.headers['Cache-Control'] = 'no-cache'
-    lemmaId = request.body.read
+    lemma_id = request.body.read
     response = {}
-    freeAgentLemma = NoamServer::UnconnectedLemmas.instance().get(lemmaId)
-    unless freeAgentLemma.nil?
-      NoamServer::UnconnectedLemmas.instance().delete(lemmaId)
-      NoamServer::GrabbedLemmas.instance().add(freeAgentLemma)
-      response[:lemma] = freeAgentLemma
+    free_agent_lemma = NoamServer::UnconnectedLemmas.instance.get(lemma_id)
+    unless free_agent_lemma.nil?
+      NoamServer::GrabbedLemmas.instance.add(free_agent_lemma)
+      response[:lemma] = free_agent_lemma
       response[:status] = 'ok'
-    else 
+    else
       response[:status] = 'nolemma'
     end
     content_type :json
@@ -264,14 +290,14 @@ class NoamApp < Sinatra::Base
 
   post '/guests/free' do
     response.headers['Cache-Control'] = 'no-cache'
-    lemmaId = request.body.read 
+    lemma_id = request.body.read
     response = {}
-    lemma_to_free = NoamServer::GrabbedLemmas.instance().get(lemmaId)
-    unless lemma_to_free.nil?
-      NoamServer::GrabbedLemmas.instance().delete(lemmaId)
-      NoamServer::UnconnectedLemmas.instance().add(lemma_to_free)
+    lemma_to_free = NoamServer::GrabbedLemmas.instance.get(lemma_id)
+    if lemma_to_free
+      NoamServer::GrabbedLemmas.instance.delete(lemma_id)
+      NoamServer::Orchestra.instance.fire_player(lemma_id)
       response[:status] = 'ok'
-    else 
+    else
       response[:status] = 'fail'
     end
     content_type :json
@@ -296,25 +322,31 @@ class NoamApp < Sinatra::Base
     types = types || ['free', 'owned', 'other']
     response = {}
     if types.include?('free')
-      response['guests-free'] = NoamServer::UnconnectedLemmas.instance().getAll()
+      response['guests-free'] = {}
+      NoamServer::UnconnectedLemmas.instance.get_all.dup.each do |spalla_id, object|
+        if object[:desired_room_name] == "" or object[:desired_room_name] == NoamServer::ConfigManager[:room_name]
+          response['guests-free'][spalla_id] = object
+        end
+      end
     end
 
     if types.include?('owned')
-      response['guests-owned'] = NoamServer::GrabbedLemmas.instance().getAll()
-      
-      # NoamServer::Orchestra.instance.players.each do |spalla_id, player|
-      #   response['guests-owned'][spalla_id] = {
-      #     :spalla_id => spalla_id,
-      #     :device_type => player.device_type,
-      #     :last_activity => format_date( player.last_activity ),
-      #     :system_version => player.system_version,
-      #     :hears => player.hears,
-      #     :plays => player.plays
-      #   }
-      # end
+      response['guests-owned'] = {}
+      NoamServer::Orchestra.instance.players.dup.each do |spalla_id, player|
+        response['guests-owned'][spalla_id] = {
+          :name => spalla_id,
+          :device_type => player.device_type,
+          :last_activity => format_date( player.last_activity ),
+          :system_version => player.system_version,
+          :hears => player.hears,
+          :plays => player.plays,
+          :ip => player.host,
+          :desired_room_name => player.room_name
+        }
+      end
     end
     return response
-  end 
+  end
 
 
 
@@ -336,18 +368,20 @@ class NoamApp < Sinatra::Base
     players = {}
     events = {}
 
-    @orchestra.players.each do |spalla_id, player|
+    @orchestra.players.dup.each do |spalla_id, player|
       players[spalla_id] = {
         :spalla_id => spalla_id,
         :device_type => player.device_type,
         :last_activity => format_date( player.last_activity ),
         :system_version => player.system_version,
         :hears => player.hears,
-        :plays => player.plays
+        :plays => player.plays,
+        :ip => player.host,
+        :desired_room_name => player.room_name
       }
     end
 
-    @orchestra.event_names.each do |event|
+    @orchestra.event_names.dup.each do |event|
       events[event.to_s] = {
         :value_escaped => value_escaped(@values.get(event)),
         :timestamp => format_date( @values.timestamp(event) )

@@ -1,20 +1,72 @@
-
 body {
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	margin-top: 120px;
+}
+
+.table>tr {
+	border-bottom: 1px solid #DDD;
 }
 
 .table>thead:first-child>tr:first-child>td {
 	font-weight: bold;
+	height: 90px;
+	background-color: #FFF;
+}
+
+.table>thead:first-child>tr:first-child>td .timeago{
+	font-weight: normal;
+	font-size: 11px;
+}
+
+.table tr {
+	background-color: #FFF;
 	border-bottom: 1px solid #DDD;
 }
 
+.table tr td {
+	width: 150px;
+	height: 40px;
+}
+
+.table tr>td.name {
+	position: absolute;
+	left: 0px;
+	top: auto;
+	width: 100px;
+	border-right: 0px none black;
+	background-color: #FFF;
+}
+
+.table tr>td.timestamp {
+	position: absolute;
+	left: 100px;
+	top: auto;
+	width: 100px;
+	font-size: 11px;
+	border-right: 0px none black;
+	background-color: #FFF;
+}
+
+.table tr>td.value {
+	position: absolute;
+	left: 200px;
+	top: auto;
+	width: 100px;
+	border-right: 0px none black;
+	background-color: #FFF;
+}
+
+#Channels {
+	padding-left: 300px;
+	overflow-x: scroll;
+	overflow-y: visible;
+}
 
 .dataCellLimited {
 	max-width: 150px;
 	overflow: hidden;
 	height: 30px;
 }
-
 
 #defaultWelcomeScreen {
 	position: absolute;
@@ -192,11 +244,31 @@ body {
 	stroke: #F7931E;
 }
 
+.dropdown-item-container .nav-dropdown-container {
+	z-index: 1300;
+	position: fixed;
+	width: 100%;
+}
 
-.dropdown-item-container .guestListPane {
-	width: 870px;
+.dropdown-item-container .nav-dropdown-container .dropdown-item {
+	width: 900px;
+	margin: 0px auto;
 	padding: 10px;
 	height: 250px;
+	border: 1px solid rgba(0,0,0,.2);
+	border-radius: 6px;
+	-webkit-box-shadow: 0 5px 10px rgba(0,0,0,.4);
+	box-shadow: 0 5px 10px rgba(0,0,0,.4);
+}
+
+.dropdown-item-container #inutRoomName {
+	border-radius: 5px;
+	background-color: #EEE;
+	padding: 5px 10px;
+	margin: 8px 5px;
+	width: 70%;
+	font-size: 14px;
+	border-width: 0px; 
 }
 
 .sectionH {
@@ -215,12 +287,80 @@ body {
 	overflow: scroll;
 }
 
+.sectionH .scrollArea ul {
+	padding: 0px;
+	margin: 0px;
+}
+
 .sectionH .scrollArea ul li {
 	list-style: none;
 	margin-left: 0;
 	text-indent: -1em;
-	padding: 3px 0em 3px 1em;
+	padding: 4px 0em 4px 40px;
+	width: 100%;
 }
+
+.sectionH .scrollArea ul li .glyphicon{
+	position: relative;
+	top: -0px;
+}
+
+.sectionH .scrollArea ul li .glyphicon:before{
+	margin-right: 8px;
+	font-size: 9px;
+	color: #eaebeb;
+	padding: 2px 3px 2px 3px;
+	border-radius: 8px;
+	background-color: #a96ed5;
+}
+
+.sectionH .scrollArea ul li.pending .glyphicon:before{
+	margin-right: 8px;
+	font-size: 9px;
+	color: #eaebeb;
+	padding: 2px 3px 2px 3px;
+	border-radius: 8px;
+	background-color: #66CC66;
+}
+
+.sectionH .scrollArea ul li.freeing .glyphicon:before{
+	margin-right: 8px;
+	font-size: 9px;
+	color: #eaebeb;
+	padding: 2px 3px 2px 3px;
+	border-radius: 8px;
+	background-color: #CC6666;
+}
+
+.sectionH .scrollArea ul li .popover{
+	z-index: 1300;
+}
+
+.sectionH .scrollArea ul li {
+	background-color: #EEE;
+}
+
+.sectionH .scrollArea ul li:hover {
+	background-color: #DDD;
+}
+
+.sectionH .scrollArea ul li.locked {
+	cursor: default;	
+}
+
+.sectionH .scrollArea ul li.owned,
+.sectionH .scrollArea ul li.free {
+	cursor: pointer;	
+}
+
+.sectionH .scrollArea ul li.pending {
+	background-color: #CCFFCC;
+}
+
+.sectionH .scrollArea ul li.freeing {
+	background-color: #FFCCCC;
+}
+
 .sectionH .scrollArea ul li.joinable:hover {
 	cursor: pointer;
 	background-color: #EEEEEE;
