@@ -139,6 +139,34 @@
             
         },
 
+
+        // animate path from source to destination
+        animatePaths: function() {
+          // var test = document.querySelector('.connector');
+
+          var testNodes = document.querySelectorAll('.connector');
+
+          for (var node=0; node<testNodes.length; node++) {
+
+            var length = testNodes[node].getTotalLength();
+            // Clear any previous transition
+            testNodes[node].style.transition = testNodes[node].style.WebkitTransition = 'none';
+            // Set up the starting positions
+            testNodes[node].style.strokeDasharray = length + ' ' + length;
+            testNodes[node].style.strokeDashoffset = length;
+            // Trigger a layout so styles are calculated & the browser
+            // picks up the starting position before animating
+            testNodes[node].getBoundingClientRect();
+            // Define our transition
+            testNodes[node].style.transition = testNodes[node].style.WebkitTransition = 'stroke-dashoffset .5s ease-in-out';
+            // Go!
+            testNodes[node].style.strokeDashoffset = '0';
+
+          }
+
+        },
+
+
         parseToD3: function(collectionData) {
             var _this = this;
             // d3.json(collectionData, function(data) {
@@ -162,8 +190,9 @@
             var path = _this.svg.selectAll("path.link")
                 .data(links)
                 .enter().append("svg:path")
-                .attr("class", function(d) { return "link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
+                .attr("class", function(d) { return "connector link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
                 .attr("stroke", function(d) {return _this.getColor(d.target.parent)})
+                .attr("stroke-width", 4)
                 .attr("d", function(d, i) { 
                     // console.log(d);
                     return  _this.line(splines[i]); 
@@ -176,6 +205,8 @@
                 //   .attr("class", "arc")
                 //   .attr("d", d3.svg.arc().outerRadius(this.d.ry - 120).innerRadius(0).startAngle(Math.PI).endAngle(2 * Math.PI))
 
+
+            _this.animatePaths();    
 
 
                 // Establish nodes for text display
@@ -270,7 +301,14 @@
                 .style("fill", function(d) {
                      return _this.getColor(d);
                 })
-                .style("fill-opacity", 1.)
+                .style("fill-opacity", 1.);
+                // .on("mouseover", function(d) {
+                //   d3.select(this)
+                //     .transition()
+                //       .duration(500)
+                //       .attr('transform', 'scale(1.1)')
+                //   console.log('hey');
+                // });
 
 
             this.svg.selectAll("g.arc2")
@@ -508,18 +546,19 @@
         hoverLemma: function(d) {
           var _this = window.graphView;
           var $overlay = $('.lemma-overlay');
+
           $overlay.css({
             width: _this.d.ry-_this.d.overlayPadding,
-            // height: _this.d.ry-_this.d.overlayPadding,
             marginTop: _this.d.ry/2 + 30
           })
+
           $overlay.find('.header')
             .css('background', _this.getColor(d))
             .html(d.name);
+
           $overlay.find('.type').html(d.children[0].type);
           
           $overlay.find('.last-active').html(function(){
-            // return "Kilgore was here"
             var s = null;
             // _.each() is a syncronous function (supposedly)
             _.each(d.children, function(val,i) {
@@ -527,15 +566,11 @@
               if(!s) s=new Date(String(t).replace("T"," "));
               else s = new Date(String(t).replace("T"," ")) > s ? new Date(String(t).replace("T"," ")) : s;
             })
-            //http://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
-            // if(Object.prototype.toString.call(s) !== "[object Date]") s = "N/A";
-            // console.log("Output of last active", s)
             return  "Last Active: "  + s.toLocaleTimeString();
           });
 
           $overlay.find('.hear').html(function(){
             var s = "";
-            // _.each() is a syncronous function (supposedly)
             _.each(d.children, function(val,i) {
               if(val.output) return;
               s += (val.key + " "); 
@@ -545,7 +580,6 @@
 
           $overlay.find('.say').html(function(){
             var s = "";
-            // _.each() is a syncronous function (supposedly)
             _.each(d.children, function(val,i) {
               if(!val.output) return;
               s += (val.key + " "); 
