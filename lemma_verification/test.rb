@@ -3,15 +3,15 @@ module LemmaVerification
 
     attr_reader :name, :actual_value
 
-    def initialize(name, spalla_id, player_connection, test_behavior)
+    def initialize(name, lemma_id, player_connection, test_behavior)
       self.name = name
-      self.spalla_id = spalla_id
+      self.lemma_id = lemma_id
       self.player_connection = player_connection
       self.test_behavior = test_behavior
     end
 
     def start
-      player_connection.send_event(spalla_id, name, test_behavior.original_message)
+      player_connection.send_event(lemma_id, name, test_behavior.original_message)
     end
 
     def complete?
@@ -30,7 +30,7 @@ module LemmaVerification
     private
 
     attr_writer :name, :actual_value
-    attr_accessor :spalla_id, :player_connection, :complete, :test_behavior
+    attr_accessor :lemma_id, :player_connection, :complete, :test_behavior
 
   end
 end

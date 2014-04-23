@@ -24,11 +24,11 @@ module LemmaVerification
       def actual_value;end
     end
 
-    def self.build(test_name, spalla_id, connection)
+    def self.build(test_name, lemma_id, connection)
       if AVAILABLE_TESTS.has_key?(test_name)
-        Test.new(test_name, spalla_id, connection, AVAILABLE_TESTS[test_name].new)
+        Test.new(test_name, lemma_id, connection, AVAILABLE_TESTS[test_name].new)
       else
-        NoamServer::NoamLogging.warn("TestFactory", "#{spalla_id} asked for unkown test name: #{test_name}")
+        NoamServer::NoamLogging.warn("TestFactory", "#{lemma_id} asked for unkown test name: #{test_name}")
         NullTest.new
       end
     end
