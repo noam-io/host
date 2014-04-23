@@ -105,6 +105,7 @@ $purpleText: #592685;
 	position:absolute;
 	top: 130px; left: 0;
 	background:transparent;
+  z-index: 20;
 
 	.dropdown-item {
 		width: 50%; height: auto;
@@ -113,6 +114,11 @@ $purpleText: #592685;
 		padding: 5px;
 		background:white;
 		border: 1px solid #eee;
+
+    .scrollArea li {
+      cursor: pointer;
+    }
+
 	}
 
 &.settings-container > .dropdown-item {

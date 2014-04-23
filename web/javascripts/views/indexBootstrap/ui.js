@@ -9,7 +9,8 @@ $().ready(function() {
 			$("."+isfor).hide();
 		}
 	});
-
+	$('#welcomeScreenSubmit').remove();
+	$('.grid-view').hide();
 
 	// Graph buttons
 	$('.graph-button').on('click', function() {

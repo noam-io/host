@@ -13,7 +13,7 @@ path.arc {
 
 .link {
   fill: none;
-  stroke: #1f77b4;
+  /* stroke: #1f77b4; */
   stroke-opacity: .4;
   pointer-events: none;
 }
@@ -39,11 +39,60 @@ path.arc {
   stroke: #2ca02c;
 }
 
+.connector {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: dash 2s linear alternate infinite;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 .arc {
   stroke: steelblue;
   fill: steelblue;
 }
 .arcText {
   fill: white;
-  font: 16px sans-serif;
+  font: 16pt sans-serif;
 }
+
+.marker {
+  stroke: #1f77b4;
+  fill: #1f77b4;
+  opacity: .4;
+}
+
+.graph textpath {
+  margin-bottom: 22px;
+}
+
+
+.lemma-overlay {
+  display: none;
+  width: 640px;
+  background: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+  .header {
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    color: white;
+  }
+
+  .data-row {
+    float: left; 
+    clear: both; 
+    width: 100%; 
+    height: auto;
+  }
+}
+
+

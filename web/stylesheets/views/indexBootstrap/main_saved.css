@@ -1,0 +1,263 @@
+
+body {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;;
+}
+
+.table>thead:first-child>tr:first-child>td {
+  font-weight: bold;
+  border-bottom: 1px solid #DDD;
+}
+
+
+.dataCellLimited {
+  max-width: 150px;
+  overflow: hidden;
+  height: 30px;
+}
+
+
+#defaultWelcomeScreen {
+  position: absolute;
+  top: 0px;
+  z-index: 1400;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: #FFFFFF;
+  padding-top: 10%;
+  text-align: center;
+  font-size: 26px;
+}
+
+#defaultWelcomeScreen input[type=text] {
+  font-size: 24px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid #CCC;
+  width: 400px;
+}
+
+#defaultWelcomeScreen input[type=submit] {
+  font-size: 18px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid #CCC;
+  width: 200px;
+}
+
+
+#defaultWelcomeScreen input[type=submit]:hover {
+  background-color: #be96dc;
+  font-size: 18px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid #CCC;
+  width: 200px;
+}
+
+#defaultWelcomeScreen input[type=submit]:active {
+  background-color: #7f00de;
+  font-size: 18px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid #CCC;
+  width: 200px;
+}
+
+
+.MainViewToggles {
+
+}
+
+.graph-grid-menu ul.MainViewToggles li {
+  font-size: 20px;
+  font-weight: bolder;
+  background-color: inherit;
+  margin-bottom: 15px;
+}
+
+.graph-grid-menu ul.MainViewToggles li.active {
+  text-decoration: underline;
+}
+
+.graph-grid-menu ul.MainViewToggles li a {
+  color: #46007a;
+}
+
+
+.navbar-noam {
+  padding: 45px;
+  background-color: #FFFFFF;
+}
+
+.navbar-noam .container {
+  width: 960px;
+  margin: 0px auto;
+}
+
+/* Custom Grid View Styles */
+.player {
+  
+  cursor: pointer;
+}
+
+.player:hover {
+  background-color: #EEEEFF;
+}
+
+.table>thead>tr>.player.active {
+  background-color: #CCCCFF;
+}
+
+.table>tbody>tr.active>td {
+  background-color:rgba(0,0,255,0.1);
+}
+
+
+/* Lemma Detail Popup Styles */
+#detailPane {
+  position: fixed;
+  top: 100px;
+  right: -400px;
+  width: 400px;
+  height: 500px;
+
+  padding: 10px;
+  background-color: #F0F0F0;
+}
+
+#detailPane .handle {
+  cursor: pointer;
+  float: left;
+  width: 40px;
+  margin-top: -10px;
+  margin-left: -52px;
+  background-color: #F0F0F0;
+  text-align: center;
+  font-size: 18px;
+  line-height: 18px;
+  padding:10px 5px;
+}
+
+#detailPane #detailViews .newWindow {
+  float: right;
+  font-size: 10px;
+}
+
+#detailPane #detailViews .name {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+#detailPane #detailViews .ip {
+  font-size: 18px;
+}
+
+#detailPane #detailViews .joinedAt {
+  padding: 5px;
+}
+
+
+/* Graphic Holders */
+#activityGraph {
+  font-size: 10px;
+}
+
+#activityGraph .axis path,
+#activityGraph .axis  {
+  fill: none;
+  stroke: #000;
+}
+
+#activityGraph .topic,
+#activityGraph line.topic  {
+  stroke-width: 3px;
+}
+
+#activityGraph line.topic.topic-hear {
+  stroke: #00A99D;
+}
+
+#activityGraph line.topic.topic-play {
+  stroke: #F7931E;
+}
+
+
+.dropdown-item-container .guestListPane {
+  width: 870px;
+  padding: 10px;
+  height: 250px;
+}
+
+.sectionH {
+  float: left;
+  width: 25%;
+  height: 150px;
+  padding: 5px;
+}
+
+.sectionH .scrollArea {
+  background-color: #F6F6F6;
+  border: 1px solid #EEEEEE;
+  border-radius: 5px;
+  height: 200px;
+  max-height: 200px;
+  overflow: scroll;
+}
+
+.sectionH .scrollArea ul li {
+  list-style: none;
+  margin-left: 0;
+  text-indent: -1em;
+  padding: 3px 0em 3px 1em;
+}
+.sectionH .scrollArea ul li.joinable:hover {
+  cursor: pointer;
+  background-color: #EEEEEE;
+}
+
+.sectionH .scrollArea ul li.joinable:before {
+  width: 14px;
+  height: 12px;
+  padding: 0px 4px 3px 4px;
+  margin: -5px 5px 0px -30px;
+  line-height: 8px;
+  color: #eaebeb;
+  border-radius: 8px;
+  font-size: 10px;
+  content: '+';
+  background-color: #a96ed5;
+  content: '+';
+  background-color: 
+}
+
+.sectionH .scrollArea ul li.joinable:before {
+  width: 14px;
+  height: 12px;
+  padding: 0px 4px 3px 4px;
+  margin: -5px 5px 0px -30px;
+  line-height: 8px;
+  color: #eaebeb;
+  border-radius: 8px;
+  font-size: 10px;
+  content: '+';
+  background-color: #a96ed5;
+  content: '+';
+  background-color: 
+}
+
+.sectionH .scrollArea ul li.joinable:hover:before {
+  background-color: #46007a;
+}
+}
+

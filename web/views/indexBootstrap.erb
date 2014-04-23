@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="/images/ico/favicon.ico">
 
-    <title>Noam</title>
+    <title>NOAM by IDEO - <%= "#{@ips}" %></title>
 
     <!-- Bootstrap core CSS -->
     <style type="text/css">
@@ -22,6 +22,7 @@
 
     <link href="/stylesheets/main.css" rel="stylesheet">
     <link href="/stylesheets/views/indexBootstrap/main.css" rel="stylesheet">
+    <link href="/javascripts/d3bs/css/d3-bootstrap-plugins.min.css">
 
     <!-- Custom styles for this template -->
     <style>
@@ -154,21 +155,62 @@
 
       <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
 
-      <!--
+      
       <div class="graph-grid-menu">
         <ul class="MainViewToggles">
-          <li><a href="#graph" for="graph-view" class="graph-button">GRAPH</a></li>
-          <li class="active"><a href="#grid" for="grid-view" class="grid-button">GRID</a></li>
+          <li class="active"><a href="#graph" for="graph-view" class="graph-button">GRAPH</a></li>
+          <li><a href="#grid" for="grid-view" class="grid-button">GRID</a></li>
         </ul>
       </div>
       
       <div class="graph-view starter-template">
         <div class="graph"></div>
+
+
+<!--         <div class="lemma-overlay modal-dialog">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xs-12 header modal-header">
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="data-row ip"></div>
+                <div class="data-row hear"></div>
+                <div class="data-row say"></div>
+                <div class="data-row last-active"></div>
+
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+
+
+        <div class="lemma-overlay modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header header">
+              <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body clearfix">
+              <div class="data-row type"></div>
+              <div class="data-row last-active">Blarg</div>
+              <div class="data-row hear"></div>
+              <div class="data-row say"></div>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+
+
+
+
       </div>
-      -->
+      
 
       <div class="grid-view starter-template">
         <h4><strong>Grid View</strong></h2>
+
         <div style="position: relative;">
           <div id="Channels">
             <table class="table">
@@ -382,11 +424,14 @@
     <script src="/javascripts/libs/jquery-ui-1.8.23.custom.min.js"></script>
     <script src="/javascripts/libs/bootstrap.min.js"></script>
     <script src="/javascripts/libs/underscore-1.6.0-min.js"></script>
-    <script src="/javascripts/libs/timeago.js"/></script>
-    <script src="/javascripts/libs/d3.v3.min.js"/></script>
+    <script src="/javascripts/libs/timeago.js"></script>
+
+    <script src="/javascripts/libs/d3.v3.min.js"></script>
+
+    <script src="/javascripts/libs/d3bs/js/d3-bootstrap-plugins.min.js"></script>
     <script src="/javascripts/core/NoamRefresher.js"></script>
     <script src="/javascripts/views/indexBootstrap/Player.js"></script>
-    <!--<script src="/javascripts/views/index/graph.js"></script>-->
+    <script src="/javascripts/views/index/graph.js"></script>
     <script src="/javascripts/views/indexBootstrap/ui.js"></script>
     <script src="/javascripts/views/indexBootstrap/Channel.js"></script>
     <script src="/javascripts/views/indexBootstrap/DetailView.js"></script>
@@ -394,6 +439,5 @@
     <script src="/javascripts/views/indexBootstrap/FreeAgents.js"></script>
     <script src="/javascripts/views/indexBootstrap/indexBootstrapMain.js"></script>
     <script src="/javascripts/libs/underscore.js"></script>
-    <script src="/javascripts/libs/d3/d3.layout.js"></script>
   </body>
 </html>
