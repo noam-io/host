@@ -59,8 +59,4 @@ describe NoamServer::WebSocketEar do
     end
   end
 
-  it "respondes to new_connection" do
-    @ear.should respond_to(:new_connection)
-  end
-
 end

@@ -13,7 +13,7 @@ module NoamServer
         begin
           parsed_message = Noam::Messages.parse(msg)
           @spalla_id = parsed_message.spalla_id
-          handler.message_received(parsed_message)
+          handler.message_received(parsed_message, self)
           if !Orchestra.instance.can_play?(@spalla_id)
             close_connection_after_writing
           end

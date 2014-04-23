@@ -4,6 +4,7 @@ module NoamServer
 
     attr_accessor :last_activity
     attr_reader :spalla_id, :device_type, :system_version, :hears, :plays, :host, :port, :room_name
+
     def device_key
       (@device_type || "").downcase
     end
@@ -25,15 +26,15 @@ module NoamServer
       NoamLogging.debug(self, "   Plays: #{@room_name}")
     end
 
-    def send_heartbeat_acks?()
-      (@options["heartbeat_ack"] === true)
+    def send_heartbeat_acks?
+      @options["heartbeat_ack"] === true
     end
 
-    def get_heartbeat_rate()
+    def get_heartbeat_rate
       @options["heartbeat"] || -1
     end
 
-    def in_right_room?()
+    def in_right_room?
       @room_name == NoamServer.room_name or @room_name == ''
     end
 
@@ -48,5 +49,6 @@ module NoamServer
     def learn_to_play(event)
       @plays << event unless @plays.include?(event)
     end
+
   end
 end

@@ -1,15 +1,6 @@
 module NoamServer
   class AttenuatedPlayerConnection
 
-    def port
-      @ear.port
-    end
-
-    def host
-      @ear.host
-    end
-
-
     def initialize( ear, min_interval )
       @ear = ear
       @min_interval = min_interval
@@ -17,6 +8,14 @@ module NoamServer
       @last_send_time.default = Time.new(0)
       @last_sent_value = {}
       @last_sent_id = {}
+    end
+
+    def port
+      @ear.port
+    end
+
+    def host
+      @ear.host
     end
 
     def send_event( id_of_player, event_name, event_value, now = Time.now )
@@ -51,15 +50,8 @@ module NoamServer
     def send_message(id_of_player, name, message, now)
       @last_sent_value[name] = message
 
-      if @ear.send_data( message )
+      if @ear.send_data(message)
         @last_send_time[name] = now
-      else
-        @ear.new_connection do
-          msg = @last_sent_value[name]
-          NoamLogging.debug(self, "Player '#{id_of_player}' reconnected sending '#{msg}'")
-          @ear.send_data( msg )
-          @last_send_time[name] = now
-        end
       end
     end
   end
