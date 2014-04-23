@@ -1,11 +1,19 @@
 require "noam_server/noam_logging"
-require "tests/echo_test"
-require "tests/sum_test"
-require "tests/plus_one_test"
-require "tests/name_test"
+require "test"
+require "tests/echo"
+require "tests/sum"
+require "tests/plus_one"
+require "tests/name"
 
 module LemmaVerification
   class TestFactory
+
+    AVAILABLE_TESTS = {
+      "Echo" => Tests::Echo,
+      "Sum" => Tests::Sum,
+      "PlusOne" => Tests::PlusOne,
+      "Name" => Tests::Name
+    }
 
     class NullTest
       def name;end
@@ -17,15 +25,8 @@ module LemmaVerification
     end
 
     def self.build(test_name, spalla_id, connection)
-      case test_name
-      when "Echo"
-        Tests::EchoTest.new(spalla_id, connection)
-      when "Sum"
-        Tests::SumTest.new(spalla_id, connection)
-      when "PlusOne"
-        Tests::PlusOneTest.new(spalla_id, connection)
-      when "Name"
-        Tests::NameTest.new(spalla_id, connection)
+      if AVAILABLE_TESTS.has_key?(test_name)
+        Test.new(test_name, spalla_id, connection, AVAILABLE_TESTS[test_name].new)
       else
         NoamServer::NoamLogging.warn("TestFactory", "#{spalla_id} asked for unkown test name: #{test_name}")
         NullTest.new
