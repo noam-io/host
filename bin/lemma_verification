@@ -12,7 +12,7 @@ NoamServer::NoamLogging.instance(
   :appenders => [
     Logging.appenders.stdout(
       :layout => Logging.layouts.pattern(
-        :pattern => "[%d] [%-20c] [%-5l] %m\n",
+        :pattern => "[%d] [%-30c] [%-4l] %m\n",
         :color_scheme => :default
       )
     )

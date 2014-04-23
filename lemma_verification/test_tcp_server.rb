@@ -1,5 +1,5 @@
 require 'noam/tcp_listener'
-require 'test_message_handler'
+require 'test_tcp_message_handler'
 
 module LemmaVerification
   module TestListener
@@ -8,7 +8,7 @@ module LemmaVerification
 
     def post_init
       port, ip = Socket.unpack_sockaddr_in(get_peername)
-      handler = TestMessageHandler.new(ip)
+      handler = TestTcpMessageHandler.new(ip)
       @listener = Noam::TcpListener.new do |msg|
         parsed_message = Noam::Messages.parse(msg)
         handler.message_received(parsed_message, self)

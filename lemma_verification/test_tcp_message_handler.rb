@@ -4,7 +4,7 @@ require "noam_server/attenuated_player_connection"
 require "noam_server/player_connection"
 
 module LemmaVerification
-  class TestMessageHandler
+  class TestTcpMessageHandler
 
     def initialize(ip)
       self.ip = ip
@@ -42,11 +42,11 @@ module LemmaVerification
       )
       test.store_result(message.event_value)
       if test.expected_value == test.actual_value
-        NoamServer::NoamLogging.info("TestMessageHandler", "Finished #{test.name} for #{message.spalla_id}: PASS")
+        NoamServer::NoamLogging.info("TestTcpMessageHandler", "Finished #{test.name} for #{message.spalla_id}: PASS")
       else
-        NoamServer::NoamLogging.warn("TestMessageHandler", "Finished #{test.name} for #{message.spalla_id}: FAIL")
-        NoamServer::NoamLogging.warn("TestMessageHandler", "  Expected: #{test.expected_value}")
-        NoamServer::NoamLogging.warn("TestMessageHandler", "  Actual:   #{test.actual_value}")
+        NoamServer::NoamLogging.warn("TestTcpMessageHandler", "Finished #{test.name} for #{message.spalla_id}: FAIL")
+        NoamServer::NoamLogging.warn("TestTcpMessageHandler", "  Expected: #{test.expected_value}")
+        NoamServer::NoamLogging.warn("TestTcpMessageHandler", "  Actual:   #{test.actual_value}")
       end
     end
 
