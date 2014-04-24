@@ -9,7 +9,6 @@ $().ready(function() {
 			$("."+isfor).hide();
 		}
 	});
-	$('#welcomeScreenSubmit').remove();
 	$('.grid-view').hide();
 
 	// Graph buttons
