@@ -20,6 +20,7 @@ end
 group :test do
   gem 'jasmine'
   gem 'rspec'
+  gem 'surrogate'
 end
 
 group :release do

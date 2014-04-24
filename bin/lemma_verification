@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+$: << File.join(PROJECT_ROOT, "lib")
+$: << File.join(PROJECT_ROOT, "lemma_verification")
+
+require "fileutils"
+require "test_main"
+require "noam_server/noam_logging"
+
+NoamServer::NoamLogging.instance(
+  :level => :info,
+  :appenders => [
+    Logging.appenders.stdout(
+      :layout => Logging.layouts.pattern(
+        :pattern => "[%d] [%-30c] [%-4l] %m\n",
+        :color_scheme => :default
+      )
+    )
+  ])
+NoamServer::NoamLogging.start_up
+tmp_directory = File.join(PROJECT_ROOT, "tmp")
+FileUtils.mkdir(tmp_directory) if !Dir.exists?(tmp_directory)
+room_name = "lemma_verification"
+output_file_path = File.join(PROJECT_ROOT, "tmp", "verification_results.json")
+
+NoamServer::NoamLogging.info("LemmaVerification", "Join room #{room_name} to begin testing")
+
+LemmaVerification::TestMain.start(room_name, output_file_path)

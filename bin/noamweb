@@ -5,8 +5,8 @@ $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "web"))
 
 begin
   require "rubygems"
-  require 'em/pure_ruby'
   require 'hacks/em_patches'
+  require 'em/pure_ruby'
   require 'timeout'
 
   require 'noam_web'
