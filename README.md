@@ -57,3 +57,26 @@ Brains of the Noam system
 * Copy that .tar.gz archive into `./wrappers` (creating that directory if necessary)
 * Run `rake installer:osx` - this will unpack the .tar.gz, insert all the Noam-specific code, and build an installer at `./pkg/Noam.pkg`
 * NOTE: Adding new native gems (depending on what native dependencies they have) or upgrading Ruby will require changes to the ruby_app project.
+
+## Developing a Lemma
+
+There is a script to verify the implementation of Noam lemmas. The script starts a mock Noam server with the room name of `lemma_verification` and waits for lemmas to connect to it. Once a lemma connects to the room, tests will be run against the lemma.
+
+### Registering for Verification Tests
+
+Since different lemmas support different features, the lemma is responsible for registering for the tests it wants to be executed.
+
+There is one event name per test, so the lemma will register for each event name that it implements. e.g. `Echo`
+
+### Executing Verification Tests
+
+A test is executed by sending a message to the lemma, having the lemma send a response and making assertions around the returned value.
+
+Available tests can be found in `lemma_verification/tests`.
+
+An example using the `LemmaVerification::Tests::Echo` test:
+
+ * The lemma registers for "Echo" messages.
+ * The mock server sends an event named "Echo" with a dynamically generated event value to the lemma.
+ * The lemma sends a message named "EchoVerify" to the server
+ * The mock server asserts that the value returned is the original value sent.
