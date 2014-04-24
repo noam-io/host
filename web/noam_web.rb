@@ -187,7 +187,7 @@ class NoamApp < Sinatra::Base
 
   get '/' do
     @server_name = CONFIG[:server_name]
-    @ips = @@ips
+    @ips = @@ips ||= "0.0.0.0"
     @orchestra = NoamServer::Orchestra.instance
     @values = Statabase
     erb :indexBootstrap
@@ -208,7 +208,7 @@ class NoamApp < Sinatra::Base
 
     if params.include?('on')
       toggle = (params['on'] == true) || (params['on'] == 'true')
-      if(toggle != NoamServer::NoamServer.on)
+      if(toggle != NoamServer::NoamServer.on?)
         NoamServer::NoamServer.on=toggle
       end
     end
