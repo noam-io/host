@@ -7,6 +7,23 @@ require "fileutils"
 require "test_main"
 require "noam_server/noam_logging"
 
+require "optparse"
+
+
+verification_options = {
+  :room_name => "lemma_verification"
+}
+OptionParser.new do |command_line_options|
+  command_line_options.banner = "Usage: lemma_verification [options]"
+
+  command_line_options.on("-h", "Prints this help message") do |v|
+    puts command_line_options
+  end
+  command_line_options.on("-r [OPT]", "Specify the room name") do |room_name|
+    verification_options[:room_name] = room_name
+  end
+end.parse!
+
 NoamServer::NoamLogging.instance(
   :level => :info,
   :appenders => [
@@ -20,7 +37,7 @@ NoamServer::NoamLogging.instance(
 NoamServer::NoamLogging.start_up
 tmp_directory = File.join(PROJECT_ROOT, "tmp")
 FileUtils.mkdir(tmp_directory) if !Dir.exists?(tmp_directory)
-room_name = "lemma_verification"
+room_name = verification_options[:room_name]
 output_file_path = File.join(PROJECT_ROOT, "tmp", "verification_results.json")
 
 NoamServer::NoamLogging.info("LemmaVerification", "Join room #{room_name} to begin testing")
