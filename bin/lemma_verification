@@ -18,6 +18,7 @@ OptionParser.new do |command_line_options|
 
   command_line_options.on("-h", "Prints this help message") do |v|
     puts command_line_options
+    exit 0
   end
   command_line_options.on("-r [OPT]", "Specify the room name") do |room_name|
     verification_options[:room_name] = room_name
