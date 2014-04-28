@@ -9,19 +9,31 @@ require "noam_server/noam_logging"
 
 require "optparse"
 
-
-verification_options = {
-  :room_name => "lemma_verification"
+options = {
+  :room_name => "lemma_verification",
+  :tcp_port => 7733,
+  :web_socket_port => 8089,
+  :udp_port => 1030
 }
+
 OptionParser.new do |command_line_options|
   command_line_options.banner = "Usage: lemma_verification [options]"
 
-  command_line_options.on("-h", "Prints this help message") do |v|
+  command_line_options.on("-h", "--help", "Prints this help message") do |v|
     puts command_line_options
     exit 0
   end
-  command_line_options.on("-r [OPT]", "Specify the room name") do |room_name|
-    verification_options[:room_name] = room_name
+  command_line_options.on("-r", "--room-name [OPT]", "Specify the room name") do |room_name|
+    options[:room_name] = room_name
+  end
+  command_line_options.on("-t", "--tcp-port [OPT]", "Specify the tcp server port") do |tcp_port|
+    options[:tcp_port] = tcp_port
+  end
+  command_line_options.on("-w", "--web-socket-port [OPT]", "Specify the web socket server port") do |web_socket_port|
+    options[:web_socket_port] = web_socket_port
+  end
+  command_line_options.on("-u", "--udp-port [OPT]", "Specify the udp server port") do |udp_port|
+    options[:udp_port] = udp_port
   end
 end.parse!
 
@@ -35,12 +47,14 @@ NoamServer::NoamLogging.instance(
       )
     )
   ])
+
 NoamServer::NoamLogging.start_up
+
 tmp_directory = File.join(PROJECT_ROOT, "tmp")
 FileUtils.mkdir(tmp_directory) if !Dir.exists?(tmp_directory)
-room_name = verification_options[:room_name]
-output_file_path = File.join(PROJECT_ROOT, "tmp", "verification_results.json")
 
-NoamServer::NoamLogging.info("LemmaVerification", "Join room #{room_name} to begin testing")
+options[:output_file_path] = File.join(PROJECT_ROOT, "tmp", "verification_results.json")
 
-LemmaVerification::TestMain.start(room_name, output_file_path)
+NoamServer::NoamLogging.info("LemmaVerification", "Join room #{options[:room_name]} to begin testing")
+
+LemmaVerification::TestMain.start(options)
