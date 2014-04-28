@@ -27,7 +27,7 @@ module LemmaVerification
       port = message.callback_port
       ear = NoamServer::Ear.new(ip, port, incoming_tcp_connection)
       player_connection = if message.device_type == "arduino"
-        AttenuatedPlayerConnection.new(ear, 0.1)
+        NoamServer::AttenuatedPlayerConnection.new(ear, 0.1)
       else
         NoamServer::PlayerConnection.new(ear)
       end
