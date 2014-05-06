@@ -1,4 +1,4 @@
-describe( "NoamRefresher", function() {
+xdescribe( "NoamRefresher", function() {
   var divId = 'someDiv';
   var refreshRoute = '/some-route';
   var asyncRefreshRoute = '/asynch-route';
