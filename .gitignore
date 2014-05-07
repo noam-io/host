@@ -10,5 +10,5 @@ test/bower_components/
 /wrappers
 *.log
 *.tar.gz
-
+.bundle/install.log
 tmp/*
