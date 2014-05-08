@@ -77,9 +77,10 @@ module NoamServer
     end
 
     def check_heartbeats()
+      now = DateTime.now.to_time
       players.dup.each do |spalla_id, player|
         if player.get_heartbeat_rate > 0
-          time_since_heartbeat = DateTime.now.to_time - player.last_activity.to_time
+          time_since_heartbeat = now - player.last_activity.to_time
           if time_since_heartbeat > player.get_heartbeat_rate * 2
             NoamLogging.info(self, "Failed to get heartbeat of " + spalla_id + ": " + time_since_heartbeat.to_f.to_s + " seconds since activity.")
             fire_player(player.spalla_id)

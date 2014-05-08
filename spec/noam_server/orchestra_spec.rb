@@ -208,9 +208,9 @@ describe NoamServer::Orchestra do
     context "Heartbeat" do
       before do
         @now = DateTime.now
+        DateTime.stub(:now).and_return(@now)
         player_1.last_activity = @now
         player_2.last_activity = @now
-        DateTime.stub(:now).and_return(@now)
       end
 
       it "fires no one" do
