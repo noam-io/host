@@ -13,7 +13,7 @@ module LemmaVerification
     def message_received(message, incoming_tcp_connection)
       if message.is_a?(Noam::Messages::RegisterMessage)
         register_test_participant(message, incoming_tcp_connection)
-      else
+      elsif message.is_a?(Noam::Messages::EventMessage)
         if message.event_name.end_with?("Verify")
           test_name = message.event_name.sub(/Verify$/, "")
           run_test(test_name, message)
