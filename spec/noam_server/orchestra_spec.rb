@@ -16,8 +16,22 @@ describe NoamServer::Orchestra do
   let(:ip_2) { '192.168.3.2' }
   let(:player_1 ) { NoamServer::Player.new( id_1, 'Virtual Machine', 'System Version',
                                            ["listens_for_1", "listens_for_2"],
-                                           ["plays_1", "plays_2"] , ip_1, 111, "RoomName")}
-  let(:player_2) { NoamServer::Player.new( id_2, 'Pi', 'System Version', [], [], ip_2, 222, "RoomName") }
+                                           ["plays_1", "plays_2"] ,
+                                           ip_1,
+                                           111,
+                                           "RoomName",
+                                           {"heartbeat" => 2}) }
+
+  let(:player_2) { NoamServer::Player.new( id_2,
+                                          'Pi',
+                                          'System Version',
+                                          [],
+                                          [],
+                                          ip_2,
+                                          222,
+                                          "RoomName",
+                                          { "heartbeat" => 1,
+                                            "heartbeat_ack" => true } ) }
 
   let(:ear_1) { NoamServer::Ear.new(ip_1, 1234, nil) }
   let(:ear_2) { NoamServer::Ear.new(ip_2, 2345, nil) }
@@ -188,6 +202,35 @@ describe NoamServer::Orchestra do
 
       it 'handles nil' do
         orchestra.players_for( nil ).should == []
+      end
+    end
+
+    context "Heartbeat" do
+      before do
+        @now = DateTime.now
+        player_1.last_activity = @now
+        player_2.last_activity = @now
+        DateTime.stub(:now).and_return(@now)
+      end
+
+      it "fires no one" do
+        orchestra.check_heartbeats
+        orchestra.spalla_ids.should == [ id_1, id_2 ]
+      end
+
+      it "fires a player whose heart hasn't beat" do
+        player_1.last_activity = (@now.to_time - (player_1.get_heartbeat_rate * 2 + 1)).to_datetime
+        player_2.last_activity = (@now.to_time - (player_2.get_heartbeat_rate * 2)).to_datetime
+        orchestra.check_heartbeats
+        orchestra.spalla_ids.should == [ id_2 ]
+      end
+
+      it "never fires a play who doesn't support heartbeat" do
+        player_3 =  NoamServer::Player.new( "id3", 'Pi', 'System Version', [], [], ip_2, 222, "RoomName")
+        player_3.last_activity = @now.to_time - 1000
+        orchestra.register(double("connection"), player_3)
+        orchestra.check_heartbeats
+        orchestra.spalla_ids.should == [ id_1, id_2, "id3" ]
       end
     end
   end
