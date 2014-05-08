@@ -104,7 +104,8 @@
             this.cluster = d3.layout.cluster()
                 .size([360, this.d.ry-120]) // Degrees, radius
                 .sort( function(a,b) {
-                    return d3.ascending(a.key, b.key);
+                    var output_order = d3.ascending(a.output, b.output);
+                    return ((output_order!=0) ? output_order : d3.ascending(a.key, b.key));
                 })
                 .separation(function(a,b){
                   return 1;//(a.parent == b.parent ? 1 : 2) / a.depth;
@@ -279,6 +280,7 @@
               return !d.children && d.parent;
             })).length;
 
+
             // Arc Generator
             var groupArc = d3.svg.arc()
                 .innerRadius(this.d.ry-innerPadding)
@@ -293,6 +295,13 @@
                 .outerRadius(this.d.ry-textPathPadding)
                 .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
                 .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
+
+
+            var groupArcHearing = d3.svg.arc()
+                .innerRadius(this.d.ry-innerPadding)
+                .outerRadius(this.d.ry-outerPadding)
+                .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
+                .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.hearing; });
 
 
             this.svg.selectAll("g.arc")
@@ -317,6 +326,22 @@
                 //   console.log('hey');
                 // });
 
+
+
+            this.svg.selectAll("g.arc3")
+                .data(nodes.filter(function(d){
+                    // return d.name !== 'participant' && d.name;
+                    return d.depth == 2 && d.name;
+                }))
+                .enter().append("svg:path")
+                .attr("d", groupArcHearing)
+                .attr("class", function(d) {
+                    return "groupArcHearing " + d.name.split('.')[1];
+                })
+                .style("fill", function(d) {
+                    return '#ffffff';
+                })
+                .style("fill-opacity", 0.4);
 
             this.svg.selectAll("g.arc2")
                 .data(nodes.filter(function(d){
@@ -397,10 +422,14 @@
                 return { min: 0, max:0 };
             }
             min = max = data.children[0].x;
-           data.children.forEach(function(d){
+            var children_hearing = 0;
+            data.children.forEach(function(d){
                if(d.x < min) min = d.x;
                if(d.x > max) max = d.x;
-           });
+               if(!d.output) {
+                 children_hearing++;
+               }
+            });
             var pi = Math.PI;
             
             // var buffer = the more nodes, the smaller the buffer
@@ -412,8 +441,13 @@
 
 
             // console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
-            return { min: (min-sliceOfPie) * (pi/180), max: (max+sliceOfPie) * (pi/180), middle:(max+min)/2 };
+            var minc = (min-sliceOfPie) * (pi/180);
+            var maxc = (max+sliceOfPie) * (pi/180);
+            var hearingc = minc + ((maxc-minc)/data.children.length)*children_hearing;
+            //console.log("minc: " + minc + " - maxc: " + maxc + " - hearing: " + hearingc + " - children_hearing: " + children_hearing);
+            return { min: minc, max: maxc, middle:(max+min)/2, hearing: hearingc };
         },
+
 
         // This function consumes a node and returns the color of the lemma
         getColor: function(node) {
