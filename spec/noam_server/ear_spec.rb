@@ -50,7 +50,7 @@ describe NoamServer::Ear do
       it "sends data across the connection" do
         ear.send_data("foobar")
 
-        @connection.sent_messages.should == ["000006", "foobar"]
+        @connection.sent_messages.join.should == "000006foobar"
       end
 
       it "does not catch any errors raised attempting to connect" do
@@ -74,8 +74,8 @@ describe NoamServer::Ear do
         EventMachine.should_not_receive(:connect)
         ear.send_data("bar")
 
-        @connection.sent_messages.should include("foo")
-        @connection.sent_messages.should include("bar")
+        @connection.sent_messages.join.should include("foo")
+        @connection.sent_messages.join.should include("bar")
       end
 
       it "makes a new connection if we close the connection" do
@@ -106,7 +106,7 @@ describe NoamServer::Ear do
       it "forwards the data when a connection is made" do
         ear.send_data("foobar")
 
-        @connection.sent_messages.should == ["000006", "foobar"]
+        @connection.sent_messages.join.should == "000006foobar"
       end
     end
   end

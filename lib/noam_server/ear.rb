@@ -50,8 +50,7 @@ module NoamServer
     end
 
     def send_formatted_data(data)
-      outgoing_connection.send_data("%06d" % data.bytesize)
-      outgoing_connection.send_data(data)
+      outgoing_connection.send_data("%06d%s" % [data.bytesize, data])
     end
 
     private
