@@ -1,5 +1,6 @@
 require 'noam_server/noam_logging'
 require 'noam_server/unconnected_lemmas'
+require 'noam/sorting'
 
 module NoamServer
   class Orchestra
@@ -142,6 +143,12 @@ module NoamServer
 
     def spalla_ids
       players.values.map( &:spalla_id )
-    end
+		end
+
+		def get_players(order=nil)
+			return Noam::Sorting.run(players,order) if order
+			return players.dup
+		end
+
   end
 end

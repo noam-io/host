@@ -174,7 +174,7 @@ var GuestList = function(opts){
 	this.time = 0;
 	this.url = opts['url'];
 	this.async_url = opts['async_url'];
-	this.call_data = opts['call_data'];
+	this.call_data = opts['call_data'] || {};
 	this.interval = null;
 	this.run = false;
 	this.refresh();
@@ -196,6 +196,53 @@ GuestList.prototype.stop = function(){
 GuestList.prototype.refresh = function(){
 	this._refresh(this.url);
 }
+
+GuestList.prototype.free_agents_clear = function(){
+    this.free_agents = {};
+    $(this.freeElementQuery).empty();
+}
+
+GuestList.prototype.free_agents_asc_refresh = function(){
+    this.free_agents_clear();
+    this.call_data['guests-free-order'] = 'asc';
+    this._refresh(this.url, function(self) {
+        $("#free-guests-order-link").attr("onclick", "agentManager.free_agents_desc_refresh();");
+        $("#free-guests-order-link i").removeClass("glyphicon-arrow-down").addClass("glyphicon-arrow-up");
+    });
+}
+
+GuestList.prototype.free_agents_desc_refresh = function(){
+    this.free_agents_clear();
+    this.call_data['guests-free-order'] = 'desc';
+    this._refresh(this.url, function(self) {
+        $("#free-guests-order-link").attr("onclick", "agentManager.free_agents_asc_refresh();");
+        $("#free-guests-order-link i").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
+    });
+}
+
+GuestList.prototype.owned_agents_clear = function(){
+    this.your_agents = {};
+    $(this.ownedElementQuery).empty();
+}
+
+GuestList.prototype.owned_agents_asc_refresh = function(){
+    this.owned_agents_clear();
+    this.call_data['guests-owned-order'] = 'asc';
+    this._refresh(this.url, function(self) {
+        $("#owned-guests-order-link").attr("onclick", "agentManager.owned_agents_desc_refresh();");
+        $("#owned-guests-order-link i").removeClass("glyphicon-arrow-down").addClass("glyphicon-arrow-up");
+    });
+}
+
+GuestList.prototype.owned_agents_desc_refresh = function(){
+    this.owned_agents_clear();
+    this.call_data['guests-owned-order'] = 'desc';
+    this._refresh(this.url, function(self) {
+        $("#owned-guests-order-link").attr("onclick", "agentManager.owned_agents_asc_refresh();");
+        $("#owned-guests-order-link i").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
+    });
+}
+
 
 GuestList.prototype.arefresh = function(){
 	this._refresh(this.async_url, function(self){
