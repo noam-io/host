@@ -73,7 +73,7 @@
 
 
                 sender.transition()
-                     .style("opacity", .4)
+                     .style("opacity", 1)
                     // .style('font-size','10pt')
                     .duration(400)
                     .delay(400);
@@ -89,7 +89,7 @@
 
 
                 receiver.transition()
-                     .style("opacity", .4)
+                     .style("opacity", 1)
                     // .style('font-size','10pt')
                     .duration(400)
                     .delay(400);
@@ -200,7 +200,8 @@
                 .enter().append("svg:path")
                 .attr("class", function(d) { return "connector link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
                 .attr("stroke", function(d) {return _this.getColor(d.target.parent)})
-                .attr("stroke-width", 4)
+                .attr("stroke-width", 2.5)
+                .attr("opacity" , 1)
                 .attr("d", function(d, i) { 
                     // console.log(d);
                     return  _this.line(splines[i]); 
