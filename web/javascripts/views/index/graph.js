@@ -322,7 +322,7 @@
                 //   d3.select(this)
                 //     .transition()
                 //       .duration(500)
-                //       .attr('transform', 'scale(1.1)')
+                      // .attr('transform', 'scale(1.1)')
                 //   console.log('hey');
                 // });
 
@@ -341,7 +341,7 @@
                 .style("fill", function(d) {
                     return '#ffffff';
                 })
-                .style("fill-opacity", 0.4);
+                .style("fill-opacity", 0.25);
 
             this.svg.selectAll("g.arc2")
                 .data(nodes.filter(function(d){
