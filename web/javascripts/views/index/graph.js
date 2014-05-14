@@ -234,7 +234,7 @@
                   .attr("dy", ".31em")
                   .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
                   .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                  .text(function(d) { return d.name.split('.')[2]; })
+                  .text(function(d) { return d.name.split('.')[2].replace(/Hearing$/, ""); })
                   .on("mouseover", _this.hoverTopic)
                   .on("mouseout", _this.hoverOffTopic)
                   .on("click", _this.clickTopic)
@@ -470,14 +470,25 @@
         // For sanity
         mapHierarchy: function(data) {
             var map = {};
+
+            function generateName(name,data) {
+                if(!data || data.output) {
+                    return name;
+                } else {
+                    data.name = "" + name + "Hearing";
+                    return data.name;
+                }
+            }
+
             function find(name, data) {
-                var node = map[name], i;
+                var the_name = generateName(name, data);
+                var node = map[the_name], i;
                 if (!node) {
-                  node = map[name] = data || {name: name, children: []};
+                  node = map[the_name] = data || {name: the_name, children: []};
                   if (name.length) {
                     node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
                     node.parent.children.push(node);
-                    node.key = name.substring(i + 1);
+                    node.key = the_name.substring(i + 1);
                   }
                 }
                 // console.log(node)
@@ -506,7 +517,7 @@
             // For each import, construct a link from the source to target node.
             nodes.forEach(function(d) {
                 if (d.imports) d.imports.forEach(function(i) {
-                  imports.push({source: map[d.name], target: map[i]});
+                  imports.push({source: map[i], target: map[d.name]});
                 });
             });
             // console.log(imports)
