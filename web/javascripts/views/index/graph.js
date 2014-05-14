@@ -19,7 +19,7 @@
         line: null,
         svg: null,
         timer: null,
-        colors:[ '#210050','#46007a','#7f00de','#018b88','#01b8b1','#01ead6','#1667af','#01aeff','#6ed1ff','#73115b','#af007c','#d03593' ],
+        colors:[ '#210050','#018b88','#1667af','#73115b','#46007a','#01b8b1','#01aeff','#af007c','#7f00de','#01ead6','#6ed1ff','#d03593'],
         lemmaToColor: [],
         fakeData: 'javascripts/data/dummy.json',
 
