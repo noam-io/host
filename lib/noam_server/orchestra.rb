@@ -68,7 +68,7 @@ module NoamServer
     end
 
     def heartbeat(player_id)
-      NoamLogging.info(self, "Got heatbeat from " + player_id)
+      NoamLogging.debug(self, "Got heatbeat from " + player_id)
       player = players[player_id]
       player.last_activity = DateTime.now unless player.nil?
       if player.send_heartbeat_acks?

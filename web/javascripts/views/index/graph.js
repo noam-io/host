@@ -19,7 +19,7 @@
         line: null,
         svg: null,
         timer: null,
-        colors:[ '#210050','#46007a','#7f00de','#018b88','#01b8b1','#01ead6','#1667af','#01aeff','#6ed1ff','#73115b','#af007c','#d03593' ],
+        colors:[ '#210050','#018b88','#1667af','#73115b','#46007a','#01b8b1','#01aeff','#af007c','#7f00de','#01ead6','#6ed1ff','#d03593'],
         lemmaToColor: [],
         fakeData: 'javascripts/data/dummy.json',
 
@@ -73,7 +73,7 @@
 
 
                 sender.transition()
-                     .style("opacity", .4)
+                     .style("opacity", 1)
                     // .style('font-size','10pt')
                     .duration(400)
                     .delay(400);
@@ -89,7 +89,7 @@
 
 
                 receiver.transition()
-                     .style("opacity", .4)
+                     .style("opacity", 1)
                     // .style('font-size','10pt')
                     .duration(400)
                     .delay(400);
@@ -104,7 +104,8 @@
             this.cluster = d3.layout.cluster()
                 .size([360, this.d.ry-120]) // Degrees, radius
                 .sort( function(a,b) {
-                    return d3.ascending(a.key, b.key);
+                    var output_order = d3.ascending(a.output, b.output);
+                    return ((output_order!=0) ? output_order : d3.ascending(a.key, b.key));
                 })
                 .separation(function(a,b){
                   return 1;//(a.parent == b.parent ? 1 : 2) / a.depth;
@@ -199,7 +200,8 @@
                 .enter().append("svg:path")
                 .attr("class", function(d) { return "connector link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
                 .attr("stroke", function(d) {return _this.getColor(d.target.parent)})
-                .attr("stroke-width", 4)
+                .attr("stroke-width", 2.5)
+                .attr("opacity" , 1)
                 .attr("d", function(d, i) { 
                     // console.log(d);
                     return  _this.line(splines[i]); 
@@ -233,7 +235,7 @@
                   .attr("dy", ".31em")
                   .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
                   .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-                  .text(function(d) { return d.name.split('.')[2]; })
+                  .text(function(d) { return d.name.split('.')[2].replace(/Hearing$/, ""); })
                   .on("mouseover", _this.hoverTopic)
                   .on("mouseout", _this.hoverOffTopic)
                   .on("click", _this.clickTopic)
@@ -279,6 +281,7 @@
               return !d.children && d.parent;
             })).length;
 
+
             // Arc Generator
             var groupArc = d3.svg.arc()
                 .innerRadius(this.d.ry-innerPadding)
@@ -293,6 +296,13 @@
                 .outerRadius(this.d.ry-textPathPadding)
                 .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
                 .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.max; });
+
+
+            var groupArcHearing = d3.svg.arc()
+                .innerRadius(this.d.ry-innerPadding)
+                .outerRadius(this.d.ry-outerPadding)
+                .startAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.min; })
+                .endAngle(function(d){ var r=_this.getAngles({data: d, nodeLength: numOfNodes}); return r.hearing; });
 
 
             this.svg.selectAll("g.arc")
@@ -313,10 +323,26 @@
                 //   d3.select(this)
                 //     .transition()
                 //       .duration(500)
-                //       .attr('transform', 'scale(1.1)')
+                      // .attr('transform', 'scale(1.1)')
                 //   console.log('hey');
                 // });
 
+
+
+            this.svg.selectAll("g.arc3")
+                .data(nodes.filter(function(d){
+                    // return d.name !== 'participant' && d.name;
+                    return d.depth == 2 && d.name;
+                }))
+                .enter().append("svg:path")
+                .attr("d", groupArcHearing)
+                .attr("class", function(d) {
+                    return "groupArcHearing " + d.name.split('.')[1];
+                })
+                .style("fill", function(d) {
+                    return '#ffffff';
+                })
+                .style("fill-opacity", 0.25);
 
             this.svg.selectAll("g.arc2")
                 .data(nodes.filter(function(d){
@@ -397,10 +423,14 @@
                 return { min: 0, max:0 };
             }
             min = max = data.children[0].x;
-           data.children.forEach(function(d){
+            var children_hearing = 0;
+            data.children.forEach(function(d){
                if(d.x < min) min = d.x;
                if(d.x > max) max = d.x;
-           });
+               if(!d.output) {
+                 children_hearing++;
+               }
+            });
             var pi = Math.PI;
             
             // var buffer = the more nodes, the smaller the buffer
@@ -412,8 +442,13 @@
 
 
             // console.log('minmax return',{ min: min-2 * (pi/180), max: max+2 * (pi/180)});
-            return { min: (min-sliceOfPie) * (pi/180), max: (max+sliceOfPie) * (pi/180), middle:(max+min)/2 };
+            var minc = (min-sliceOfPie) * (pi/180);
+            var maxc = (max+sliceOfPie) * (pi/180);
+            var hearingc = minc + ((maxc-minc)/data.children.length)*children_hearing;
+            //console.log("minc: " + minc + " - maxc: " + maxc + " - hearing: " + hearingc + " - children_hearing: " + children_hearing);
+            return { min: minc, max: maxc, middle:(max+min)/2, hearing: hearingc };
         },
+
 
         // This function consumes a node and returns the color of the lemma
         getColor: function(node) {
@@ -436,14 +471,25 @@
         // For sanity
         mapHierarchy: function(data) {
             var map = {};
+
+            function generateName(name,data) {
+                if(!data || data.output) {
+                    return name;
+                } else {
+                    data.name = "" + name + "Hearing";
+                    return data.name;
+                }
+            }
+
             function find(name, data) {
-                var node = map[name], i;
+                var the_name = generateName(name, data);
+                var node = map[the_name], i;
                 if (!node) {
-                  node = map[name] = data || {name: name, children: []};
+                  node = map[the_name] = data || {name: the_name, children: []};
                   if (name.length) {
                     node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
                     node.parent.children.push(node);
-                    node.key = name.substring(i + 1);
+                    node.key = the_name.substring(i + 1);
                   }
                 }
                 // console.log(node)
@@ -472,7 +518,7 @@
             // For each import, construct a link from the source to target node.
             nodes.forEach(function(d) {
                 if (d.imports) d.imports.forEach(function(i) {
-                  imports.push({source: map[d.name], target: map[i]});
+                  imports.push({source: map[i], target: map[d.name]});
                 });
             });
             // console.log(imports)
