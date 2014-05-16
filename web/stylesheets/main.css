@@ -1,5 +1,5 @@
 /*Copyright (c) 2014, IDEO*/
-
+/*Copyright (c) 2014, IDEO*/
 path.arc {
   cursor: move;
   fill: #eee; }
@@ -43,7 +43,6 @@ path.arc {
 
   to {
     stroke-dashoffset: 0; } }
-
 .arc {
   stroke: steelblue;
   fill: steelblue; }
@@ -76,6 +75,7 @@ path.arc {
     width: 100%;
     height: auto; }
 
+/*Copyright (c) 2014, IDEO*/
 .nav {
   color: #592685; }
   .nav .server-name {

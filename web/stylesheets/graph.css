@@ -1,3 +1,5 @@
+/*Copyright (c) 2014, IDEO*/
+
 path.arc {
   cursor: move;
   fill: #eee; }
@@ -41,7 +43,6 @@ path.arc {
 
   to {
     stroke-dashoffset: 0; } }
-
 .arc {
   stroke: steelblue;
   fill: steelblue; }
