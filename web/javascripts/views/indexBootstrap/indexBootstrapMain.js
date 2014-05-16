@@ -52,7 +52,9 @@ $(function() {
 
       if(_.size(results['players']) !== window.numberOfPlayers) {
         $('.graph').html('');
-        window.graphView.init(results);
+        if (_.size(results['players']) > 0) {
+          window.graphView.init(results);
+        }
         window.numberOfPlayers = _.size(results['players']);
       } else {
         window.graphView.update(results['events']);
