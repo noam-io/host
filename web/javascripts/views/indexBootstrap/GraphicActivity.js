@@ -1,3 +1,5 @@
+//Copyright (c) 2014, IDEO 
+
 var GraphicActivity = function(){
 	this.duration = 45;
     this.now = new Date(Date.now() - this.duration);

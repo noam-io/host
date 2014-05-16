@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'socket'
 require 'noam_server/noam_logging'
 

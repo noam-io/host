@@ -1,3 +1,5 @@
+//Copyright (c) 2014, IDEO 
+
 $(function() {
   var processManualEventSubmit = function() {
     $.post( this.action, $(this).serialize() );

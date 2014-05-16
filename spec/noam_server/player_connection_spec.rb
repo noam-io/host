@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam_server/player_connection'
 
 describe NoamServer::PlayerConnection do

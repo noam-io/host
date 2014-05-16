@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+
+#Copyright (c) 2014, IDEO
+
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "config"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "lib"))
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', "web"))

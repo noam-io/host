@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'rubygems'
 require 'bundler'
 Bundler.setup(:default, :release)

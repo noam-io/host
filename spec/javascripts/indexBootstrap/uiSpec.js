@@ -1,3 +1,5 @@
+// #Copyright (c) 2014, IDEO 
+
 describe("Components click events", function() {
 
     beforeEach(function () {

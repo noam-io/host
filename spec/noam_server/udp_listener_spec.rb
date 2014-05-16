@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam_server/grabbed_lemmas'
 require 'noam_server/located_servers'
 require 'noam_server/udp_listener'

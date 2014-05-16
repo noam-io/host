@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam_server/reapable_repository'
 require 'noam_server/located_servers'
 

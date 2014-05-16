@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 #!/usr/bin/env ruby
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 $: << File.join(PROJECT_ROOT, "lib")

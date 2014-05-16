@@ -1,3 +1,5 @@
+// #Copyright (c) 2014, IDEO 
+
 xdescribe( "NoamRefresher", function() {
   var divId = 'someDiv';
   var refreshRoute = '/some-route';

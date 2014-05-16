@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam/tcp_listener'
 
 describe Noam::TcpListener do

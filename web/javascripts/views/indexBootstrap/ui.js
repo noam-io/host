@@ -1,3 +1,5 @@
+//Copyright (c) 2014, IDEO 
+
 $().ready(initialize_menu_buttons());
 
 function closeDropdown() {

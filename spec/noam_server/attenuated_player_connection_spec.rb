@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam_server/attenuated_player_connection'
 require 'em/pure_ruby'
 

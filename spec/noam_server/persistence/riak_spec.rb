@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require "noam_server/persistence/riak"
 
 describe NoamServer::Persistence::Riak, :integration => true do

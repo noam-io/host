@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'em/pure_ruby'
 require 'noam/tcp_listener'
 require 'noam_server/config_manager'

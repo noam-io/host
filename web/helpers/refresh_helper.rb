@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'cgi'
 def value_display(value)
   if value.is_a?(Array)

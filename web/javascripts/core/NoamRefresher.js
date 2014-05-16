@@ -1,3 +1,5 @@
+// #Copyright (c) 2014, IDEO 
+
 function NoamRefresher( params ) {
   this.params = params;
   this.time = 0;

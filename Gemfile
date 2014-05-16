@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 source "https://rubygems.org"
 
 gem 'async_sinatra'

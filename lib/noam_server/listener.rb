@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam/tcp_listener'
 require 'noam_server/message_handler'
 require 'noam_server/noam_logging'

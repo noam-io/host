@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require "riak"
 require "riak/robject"
 require "riak/failed_request"

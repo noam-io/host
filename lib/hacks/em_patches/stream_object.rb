@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'em/pure_ruby'
 
 # Patching #eventable_read and #eventable_write to rescue more exceptions that

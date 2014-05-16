@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require "releasy/builders/builder"
 require "releasy/mixins/has_gemspecs"
 require "releasy/mixins/can_exclude_encoding"

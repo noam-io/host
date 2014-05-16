@@ -1,3 +1,5 @@
+//Copyright (c) 2014, IDEO 
+
 $(function() {
   $(".last-value").click( function() {
     $("#play-event-name").attr('value', $(this).data('event-name'));

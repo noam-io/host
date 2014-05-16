@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam_server/orchestra'
 require 'noam/messages'
 require 'noam_server/ear'

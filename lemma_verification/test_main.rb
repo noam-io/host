@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require "em/pure_ruby"
 require "noam_server/noam_logging"
 require "test_udp_receiver"

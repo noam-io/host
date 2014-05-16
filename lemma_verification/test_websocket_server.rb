@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'em-websocket'
 require 'noam/tcp_listener'
 require 'test_websocket_message_handler'

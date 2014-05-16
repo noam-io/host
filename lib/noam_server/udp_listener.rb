@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam/messages'
 require 'noam_server/noam_logging'
 require 'noam_server/grabbed_lemmas'

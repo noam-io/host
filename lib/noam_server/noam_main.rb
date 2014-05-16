@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'config'
 require 'noam_server/config_manager'
 require 'noam_server/noam_logging'

@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam_server/noam_server'
 require 'noam_server/orchestra'
 require 'noam_server/message_handler'

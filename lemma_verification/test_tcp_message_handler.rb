@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require "noam_server/ear"
 require "noam_server/noam_logging"
 require "noam_server/attenuated_player_connection"

@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 module NoamServer
   class ReapableRepository
     def initialize(elements = {})

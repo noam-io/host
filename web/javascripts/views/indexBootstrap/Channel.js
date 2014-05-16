@@ -1,3 +1,5 @@
+//Copyright (c) 2014, IDEO 
+
 
 var GridDisplaySpeaks = "<span style=\"background-color: #487BA6; color: #EEE; padding: 1px 5px; border-radius: 5px;\">S</span>";
 var GridDisplayHears = "<span style=\"background-color: #592685; color: #EEE; padding: 1px 5px; border-radius: 5px;\">H</span>";

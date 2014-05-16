@@ -1,3 +1,5 @@
+//Copyright (c) 2014, IDEO 
+
 
 
 var Guest = function(holdingElementQuery, obj, type){

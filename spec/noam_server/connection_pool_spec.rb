@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require 'noam_server/connection_pool'
 require 'mocks/reactor'
 

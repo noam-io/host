@@ -1,3 +1,5 @@
+#Copyright (c) 2014, IDEO 
+
 require "lemma_verification/spec_helper"
 require "test"
 
