@@ -42,14 +42,19 @@ module LemmaVerification
         message.spalla_id,
         test_name
       )
-      test.store_result(message.event_value)
-      if test.expected_value == test.actual_value
-        NoamServer::NoamLogging.info("TestTcpMessageHandler", "Finished #{test.name} for #{message.spalla_id}: PASS")
+      if test
+        test.store_result(message.event_value)
+        if test.expected_value == test.actual_value
+          NoamServer::NoamLogging.info("TestTcpMessageHandler", "Finished #{test.name} for #{message.spalla_id}: PASS")
+        else
+          NoamServer::NoamLogging.warn("TestTcpMessageHandler", "Finished #{test.name} for #{message.spalla_id}: FAIL")
+          NoamServer::NoamLogging.warn("TestTcpMessageHandler", "  Expected: #{test.expected_value}")
+          NoamServer::NoamLogging.warn("TestTcpMessageHandler", "  Actual:   #{test.actual_value}")
+        end
       else
-        NoamServer::NoamLogging.warn("TestTcpMessageHandler", "Finished #{test.name} for #{message.spalla_id}: FAIL")
-        NoamServer::NoamLogging.warn("TestTcpMessageHandler", "  Expected: #{test.expected_value}")
-        NoamServer::NoamLogging.warn("TestTcpMessageHandler", "  Actual:   #{test.actual_value}")
+          NoamServer::NoamLogging.warn("TestTcpMessageHandler", "Invalid response #{test_name} for #{message.spalla_id}: FAIL")
       end
+
     end
 
     attr_accessor :ip
