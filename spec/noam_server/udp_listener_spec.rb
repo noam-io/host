@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'noam_server/grabbed_lemmas'
 require 'noam_server/located_servers'
@@ -94,14 +94,15 @@ describe "UDP Listener" do
   end
 
   it "saves located server information" do
-    connection = TestUdpConnection.new
-    NoamServer::NoamServer.room_name = "Foo"
-    beacon = Noam::Messages.build_server_beacon("Another Room ID", 9876)
-
-    NoamServer::LocatedServers.instance.get("Another Room ID").should == nil
-
     now = Time.now
     Time.stub(:now).and_return(now)
+
+    connection = TestUdpConnection.new
+    NoamServer::NoamServer.room_name = "Foo"
+    modified = Time.parse("2014-05-10 12:00")
+    beacon = Noam::Messages.build_server_beacon("Another Room ID", 9876, modified)
+
+    NoamServer::LocatedServers.instance.get("Another Room ID").should == nil
 
     connection.receive_data(beacon)
 
@@ -110,14 +111,15 @@ describe "UDP Listener" do
       :http_port => 9876,
       :beacon_port => 1234,
       :ip => "127.0.0.1",
-      :last_activity_timestamp => now.getutc
+      :last_activity_timestamp => now.getutc,
+      :last_modified => modified
     }
   end
 
   it "stops listening when the server is off" do
     connection = TestUdpConnection.new
     NoamServer::NoamServer.room_name = "Foo"
-    beacon = Noam::Messages.build_server_beacon("Another Room ID", 9876)
+    beacon = Noam::Messages.build_server_beacon("Another Room ID", 9876, nil)
     NoamServer::NoamServer.stub(:on?).and_return(false)
     Noam::Messages.should_not_receive(:parse)
 

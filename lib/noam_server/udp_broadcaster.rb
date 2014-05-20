@@ -1,15 +1,16 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'socket'
 require 'noam_server/noam_logging'
 
 module NoamServer
   class UdpBroadcaster
-    def initialize(broadcast_port, room_name, http_port)
+    def initialize(broadcast_port, room_name, http_port, lemmas)
       @http_port = http_port
       @room_name = room_name
       @broadcast_port = broadcast_port
       @socket = UDPSocket.new
+      @lemmas = lemmas
       @socket.setsockopt(Socket::SOL_SOCKET, Socket::SO_BROADCAST, true)
       broadcast_addresses.each do |address|
         log_broadcasting(address)
@@ -21,7 +22,7 @@ module NoamServer
     end
 
     def message_to_broadcast
-      Noam::Messages.build_server_beacon(@room_name, @http_port)
+      Noam::Messages.build_server_beacon(@room_name, @http_port, @lemmas.last_modified)
     end
 
     def go

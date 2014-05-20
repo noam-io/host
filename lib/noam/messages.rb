@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'json'
 
@@ -87,11 +87,12 @@ module Noam
     end
 
     class ServerBeaconMessage < Message
-      attr_accessor :room_name, :http_port
+      attr_accessor :room_name, :http_port, :timestamp
       def initialize(data)
         index = super(data)
         @room_name = @spalla_id
         @http_port = data[index+=1]
+        @timestamp = Time.parse(data[index+=1])
         index
       end
     end
@@ -140,8 +141,8 @@ module Noam
       ["marco", spalla_id, room_name, "ruby", "1.1"].to_json
     end
 
-    def self.build_server_beacon(room_name, http_port)
-      ["server_beacon", room_name, http_port].to_json
+    def self.build_server_beacon(room_name, http_port, timestamp)
+      ["server_beacon", room_name, http_port, timestamp].to_json
     end
 
     def self.build_heartbeat_ack(spalla_id)

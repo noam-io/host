@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'noam_server/reapable_repository'
 
@@ -7,6 +7,12 @@ describe NoamServer::ReapableRepository do
     @now = Time.now
     Time.stub(:now).and_return(@now)
     @repository = NoamServer::ReapableRepository.new
+  end
+
+  it "updates last-modified" do
+    entry = { :name => "element #1", :last_activity_timestamp => @now - 30 }
+    @repository.add(entry)
+    @repository.last_modified.should == @now
   end
 
   it "fires callbacks on add" do

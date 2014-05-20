@@ -85,7 +85,8 @@ module NoamServer
         :http_port => message.http_port,
         :ip => ip,
         :beacon_port => port,
-        :last_activity_timestamp => Time.now.getutc
+        :last_activity_timestamp => Time.now.getutc,
+        :last_modified => message.timestamp
       })
     end
 

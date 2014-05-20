@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'noam/messages'
 require 'noam_server/udp_broadcaster'
@@ -9,12 +9,14 @@ describe NoamServer::UdpBroadcaster do
   let(:room_name) { "Noam Moderator" }
   let(:http_port) { 8888 }
   let(:broadcast_port) { 24039 }
-  let(:expected_beacon_message) { Noam::Messages.build_server_beacon(room_name, http_port) }
+  let(:timestamp) { Time.now.getutc() }
+  let(:expected_beacon_message) { Noam::Messages.build_server_beacon(room_name, http_port, timestamp) }
   let(:broadcast_ip_1) { '3.4.255.255' }
   let(:broadcast_ip_2) { '101.202.255.255' }
+  let(:lemma) { double(:last_modified => Time.now.getutc()) }
   let(:socket){ double }
 
-  let(:broadcaster) { described_class.new(broadcast_port, room_name, http_port) }
+  let(:broadcaster) { described_class.new(broadcast_port, room_name, http_port, lemma) }
 
   before :each do
     broad_addr_1 = double("broad_addr_1", :ipv4? => true, :ip_address => broadcast_ip_1)

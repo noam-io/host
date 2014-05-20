@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'config'
 require 'noam_server/config_manager'
@@ -33,7 +33,8 @@ module NoamServer
       @webserver = WebSocketServer.new(ConfigManager[:web_socket_port])
       @broadcaster = UdpBroadcaster.new(ConfigManager[:broadcast_port],
                                         ConfigManager[:room_name],
-                                        ConfigManager[:web_server_port])
+                                        ConfigManager[:web_server_port],
+                                       GrabbedLemmas.instance)
       @marcopolo = UdpListener.new
     end
 

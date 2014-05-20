@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'json'
 require 'noam/messages'
@@ -99,12 +99,14 @@ describe Noam::Messages do
   end
 
   it "should build and parse a server_beacon message" do
-    message = ["server_beacon", "Room Name", 8888].to_json
-    built = described_class.build_server_beacon("Room Name", 8888)
+    timestamp = Time.now.getutc
+    message = ["server_beacon", "Room Name", 8888, timestamp.to_s].to_json
+    built = described_class.build_server_beacon("Room Name", 8888, timestamp)
     built.should == message
     parsed = described_class.parse(message)
     parsed.room_name.should == "Room Name"
     parsed.message_type.should == "server_beacon"
     parsed.http_port.should == 8888
+    parsed.timestamp.to_s.should == timestamp.to_s
   end
 end

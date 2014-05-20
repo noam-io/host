@@ -1,7 +1,8 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 module NoamServer
   class ReapableRepository
+    attr_reader :last_modified
 
     def initialize(elements = {})
       @elements = elements
@@ -13,6 +14,7 @@ module NoamServer
     end
 
     def run_callbacks
+      @last_modified = Time.now.getutc
       @change_callbacks.each do |callback|
         callback.call
       end
