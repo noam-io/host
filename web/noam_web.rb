@@ -369,6 +369,7 @@ class NoamApp < Sinatra::Base
 
     players = {}
     events = {}
+		number_of_played_messages = 0
 
     @orchestra.players.dup.each do |spalla_id, player|
       players[spalla_id] = {
@@ -381,6 +382,7 @@ class NoamApp < Sinatra::Base
         :ip => player.host,
         :desired_room_name => player.room_name
       }
+			number_of_played_messages += player.plays.length
     end
 
     @orchestra.event_names.dup.each do |event|
@@ -393,6 +395,7 @@ class NoamApp < Sinatra::Base
     result = {
       :players => players,
       :events => events,
+			:'number-played-messages' => number_of_played_messages
     }
   end
 

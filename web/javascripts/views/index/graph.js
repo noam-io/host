@@ -184,8 +184,12 @@
             // HERE BE DRAGONS!!!
             // Data munging.  
 
-            var d = _this.mapToNodes(collectionData),
-                nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
+            var d = _this.mapToNodes(collectionData);
+            if(d.length == 0) {
+                // This can happen if there are lemmas that only send messages.
+                return;
+            }
+            var nodes = _this.cluster.nodes(_this.mapHierarchy(d)),
                 links = _this.getConnections(nodes),
                 splines = _this.bundle(links);
 

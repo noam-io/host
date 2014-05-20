@@ -5,6 +5,7 @@ $(function() {
   var players = {};
   var channels = {};
   window.numberOfPlayers = 0;
+  window.numberOfPlayedMessages = 0;
   window.serverUp = false;
 
   var processManualEventSubmit = function() {
@@ -47,15 +48,16 @@ $(function() {
     errorMessage: 'Contacting Maestro &hellip;',
     cb: function(results){
       window.serverUp = true;
-      // console.log('cursize',window.numberOfPlayers)
-      // console.log('newsize',_.size(results['players']));
+//    console.log('cursize',window.numberOfPlayers)
+//    console.log('newsize',_.size(results['players']));
 
-      if(_.size(results['players']) !== window.numberOfPlayers) {
+      if((_.size(results['players']) !== window.numberOfPlayers) || (results['number-played-messages'] !== window.numberOfPlayedMessages)) {
         $('.graph').html('');
-        if (_.size(results['players']) > 0) {
+        window.numberOfPlayers = _.size(results['players']);
+        window.numberOfPlayedMessages = results['number-played-messages'];
+        if(window.numberOfPlayers > 0) {
           window.graphView.init(results);
         }
-        window.numberOfPlayers = _.size(results['players']);
       } else {
         window.graphView.update(results['events']);
       }

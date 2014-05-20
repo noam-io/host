@@ -4,6 +4,29 @@ require 'web/spec_helper'
 require 'json'
 
 describe NoamApp do
+	let(:id_1) { 'Arduino1' }
+	let(:id_2) { 'Raspberry2' }
+	let(:ip_1) { '10.0.3.2' }
+	let(:ip_2) { '192.168.3.2' }
+	let(:player_1 ) { NoamServer::Player.new( id_1, 'Virtual Machine', 'System Version',
+																						["listens_for_1", "listens_for_2"],
+																						["plays_1", "plays_2"] ,
+																						ip_1,
+																						111,
+																						"RoomName",
+																						{"heartbeat" => 2}) }
+
+	let(:player_2) { NoamServer::Player.new( id_2,
+																					 'Pi',
+																					 'System Version',
+																					 [],
+																					 [],
+																					 ip_2,
+																					 222,
+																					 "RoomName",
+																					 { "heartbeat" => 1,
+																						 "heartbeat_ack" => true } ) }
+
   describe "POST /settings" do
     it "sets the name of the app" do
       post '/settings', {:name => 'foobar'}, {"HTTP_ACCEPT" => "application/json"}
@@ -79,29 +102,6 @@ describe NoamApp do
 	end
 
 	describe 'GET /guests for owned agents' do
-		let(:id_1) { 'Arduino1' }
-		let(:id_2) { 'Raspberry2' }
-		let(:ip_1) { '10.0.3.2' }
-		let(:ip_2) { '192.168.3.2' }
-		let(:player_1 ) { NoamServer::Player.new( id_1, 'Virtual Machine', 'System Version',
-																							["listens_for_1", "listens_for_2"],
-																							["plays_1", "plays_2"] ,
-																							ip_1,
-																							111,
-																							"RoomName",
-																							{"heartbeat" => 2}) }
-
-		let(:player_2) { NoamServer::Player.new( id_2,
-																						 'Pi',
-																						 'System Version',
-																						 [],
-																						 [],
-																						 ip_2,
-																						 222,
-																						 "RoomName",
-																						 { "heartbeat" => 1,
-																							 "heartbeat_ack" => true } ) }
-
 
 		it "returns 2 lemmas order by time of registration" do
 			NoamServer::Orchestra.any_instance.stub(:players).and_return({:Arduino1 => player_1, :Raspberry2 => player_2})
@@ -131,6 +131,17 @@ describe NoamApp do
 			resp['guests-owned'][resp['guests-owned'].keys[1]]["name"].should == "Arduino1"
 		end
 
+
+	end
+
+	describe 'GET /refresh for owned agents' do
+
+		it "returns 2 as the quantity of messages that can be played" do
+			NoamServer::Orchestra.any_instance.stub(:players).and_return({:Arduino1 => player_1, :Raspberry2 => player_2})
+			get '/refresh', {"HTTP_ACCEPT" => "application/json"}
+			resp = JSON.parse(last_response.body)
+			resp["number-played-messages"].should == 2
+		end
 
 	end
 
