@@ -130,13 +130,19 @@
                 <div class="menu-title">Traffic</div>
               </div>
               <div class="sectionH" id="ownedAgentList">
-                <div class="menu-title">Your Guests</div>
+                <div class="menu-title">
+                  Your Guests
+                  <a href="#" id="owned-guests-order-link" onclick="agentManager.owned_agents_asc_refresh();"><i class="glyphicon glyphicon-arrow-down"></i></a>
+                </div>
                 <div class="scrollArea">
                   <ul></ul>
                 </div>
               </div>
               <div class="sectionH" id="freeAgentList">
-                <div class="menu-title">Free Guests</div>
+                <div class="menu-title">
+                  Free Guests
+                  <a href="#" id="free-guests-order-link" onclick="agentManager.free_agents_asc_refresh();"><i class="glyphicon glyphicon-arrow-down"></i></a>
+                </div>
                 <div class="scrollArea">
                   <ul></ul>
                 </div>

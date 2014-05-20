@@ -255,7 +255,7 @@ class NoamApp < Sinatra::Base
   get '/guests' do
     response.headers['Cache-Control'] = 'no-cache'
     newtime = Time.now.to_ms
-    response = get_guests(request['types'])
+    response = get_guests(request['types'], {'guests-free-order' => request['guests-free-order'], 'guests-owned-order' => request['guests-owned-order']})
     response[:time] = newtime
     content_type :json
     body(response.to_json)
@@ -266,7 +266,7 @@ class NoamApp < Sinatra::Base
     requestType = request['types']
     requestTime = request['time'] || 0
     FreeAgentQueue.instance.pile_time_check(requestTime.to_i) do |type, time|
-      response = get_guests(requestType)
+      response = get_guests(requestType, {'guests-free-order' => request['guests-free-order'], 'guests-owned-order' => request['guests-owned-order']})
       response[:type] = type
       response[:time] = time
       content_type :json
@@ -320,12 +320,12 @@ class NoamApp < Sinatra::Base
   ####
   #
   ####
-  def get_guests(types)
+  def get_guests(types, order)
     types = types || ['free', 'owned', 'other']
     response = {}
     if types.include?('free')
       response['guests-free'] = {}
-      NoamServer::UnconnectedLemmas.instance.get_all.dup.each do |spalla_id, object|
+      NoamServer::UnconnectedLemmas.instance.get_all(order['guests-free-order']).dup.each do |spalla_id, object|
         if object[:desired_room_name] == "" or object[:desired_room_name] == NoamServer::ConfigManager[:room_name]
           response['guests-free'][spalla_id] = object
         end
@@ -334,7 +334,7 @@ class NoamApp < Sinatra::Base
 
     if types.include?('owned')
       response['guests-owned'] = {}
-      NoamServer::Orchestra.instance.players.dup.each do |spalla_id, player|
+      NoamServer::Orchestra.instance.get_players(order['guests-owned-order']).dup.each do |spalla_id, player|
         response['guests-owned'][spalla_id] = {
           :name => spalla_id,
           :device_type => player.device_type,

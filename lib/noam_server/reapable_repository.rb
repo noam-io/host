@@ -2,6 +2,7 @@
 
 module NoamServer
   class ReapableRepository
+
     def initialize(elements = {})
       @elements = elements
       @change_callbacks = []
@@ -17,8 +18,9 @@ module NoamServer
       end
     end
 
-    def get_all
-      @elements.dup
+		def get_all(order=nil)
+			return Noam::Sorting.run(@elements,order) if order
+			return @elements.dup
     end
 
     def get(element_id)
