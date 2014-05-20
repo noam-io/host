@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'web/spec_helper'
 require 'json'
@@ -48,6 +48,21 @@ describe NoamApp do
 		end
 
 	end
+
+  describe "GET /guests for other guests" do
+
+    before(:each) do
+      NoamServer::OtherGuestsList.instance(double(:serverlist, :on_change => nil))
+      NoamServer::OtherGuestsList.instance.response_handler( {"name" => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
+    end
+
+		it "returns 1 lemma" do
+			get '/guests', {"HTTP_ACCEPT" => "application/json"}
+			last_response.should be_ok
+			resp = JSON.parse(last_response.body)
+			resp['guests-other'][resp['guests-other'].keys[0]]["name"].should == "Lemma1"
+		end
+  end
 
 	describe "GET /guests for free agents" do
 

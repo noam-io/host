@@ -8,6 +8,7 @@ require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'noam_server/grabbed_lemmas'
 require 'noam_server/unconnected_lemmas'
+require 'noam_server/other_guests_list'
 require 'helpers/refresh_helper.rb'
 
 
@@ -316,10 +317,6 @@ class NoamApp < Sinatra::Base
     body("ok")
   end
 
-
-  ####
-  #
-  ####
   def get_guests(types, order)
     types = types || ['free', 'owned', 'other']
     response = {}
@@ -330,6 +327,10 @@ class NoamApp < Sinatra::Base
           response['guests-free'][spalla_id] = object
         end
       end
+    end
+
+    if types.include?('other')
+      response['guests-other'] = NoamServer::OtherGuestsList.instance.get_all()
     end
 
     if types.include?('owned')

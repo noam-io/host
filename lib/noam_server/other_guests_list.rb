@@ -4,16 +4,14 @@ require 'noam_server/noam_logging'
 module NoamServer
   class OtherGuestsList
 
+    def self.instance(servers = nil)
+      @instance ||= self.new(servers)
+    end
+
     def initialize(servers)
       @server_list = servers
-      @server_list.on_change do
-        @server_list.get_all.each do |name, server|
-          if name != NoamServer.room_name
-            NoamLogging.info(self, "#{name} #{NoamServer.room_name}")
-            request_lemmas(server)
-          end
-        end
-      end
+      @guests = {}
+      @server_list.on_change { servers_changed }
     end
 
     def request_lemmas(server)
@@ -23,13 +21,29 @@ module NoamServer
         :request => "/guests",
         :query_string => "types=[owned]"
       )
-      http.callback {|response|
-      NoamLogging.info(self, "Response from other server: #{response.inspect}")
-        #populate local other list with those lemmas
+      http.callback { |response|
+        response_handler(server, JSON.parse(response[:content]))
       }
-
     end
 
+    def servers_changed()
+      @server_list.get_all.each do |name, server|
+        if name != NoamServer.room_name
+          NoamLogging.info(self, "#{name} #{NoamServer.room_name}")
+          request_lemmas(server)
+        end
+      end
+    end
+
+    def response_handler(server, list)
+      guests = list["guests-owned"]
+      NoamLogging.debug(self, "Other Guest Response: #{guests.inspect}")
+      @guests[server["name"]] =  guests
+    end
+
+    def get_all
+      @guests.values.reduce(&:merge!)
+    end
 
   end
 end

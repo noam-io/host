@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'noam_server/reapable_repository'
 

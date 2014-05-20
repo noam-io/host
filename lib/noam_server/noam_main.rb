@@ -36,7 +36,7 @@ module NoamServer
                                         ConfigManager[:web_server_port],
                                        GrabbedLemmas.instance)
       @marcopolo = UdpListener.new
-      @other_guests = OtherGuestsList.new(LocatedServers.instance)
+      OtherGuestsList.instance(LocatedServers.instance)
     end
 
     def start
