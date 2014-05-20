@@ -1,4 +1,4 @@
-//Copyright (c) 2014, IDEO 
+//Copyright (c) 2014, IDEO
 
 
 
@@ -182,8 +182,10 @@ var GuestList = function(opts){
 	this.refresh();
 	this.free_agents = {};
 	this.your_agents = {};
+	this.other_agents = {};
 	this.freeElementQuery = opts['freeElementQuery'];
 	this.ownedElementQuery = opts['ownedElementQuery'];
+	this.otherElementQuery = opts['otherElementQuery'];
 }
 
 GuestList.prototype.start = function(){
@@ -283,6 +285,10 @@ GuestList.prototype.loadContent = function(data){
 		this.storeAgent(this.ownedElementQuery, data['guests-owned'][lemmaId], 'owned', this.your_agents);
 	}
 
+	for(lemmaId in data['guests-other']){
+		this.storeAgent(this.otherElementQuery, data['guests-other'][lemmaId], 'other', this.other_agents);
+	}
+
 	var checkValidFreeAgent = function(list_received, list_display){
 		return function(){
 			var lemma_name = $(this).attr('lemma-name');
@@ -296,6 +302,7 @@ GuestList.prototype.loadContent = function(data){
 
 	// Remove any expired lemmas
 	$(this.ownedElementQuery + " li").each(checkValidFreeAgent(data['guests-owned'], this.your_agents));
+	$(this.otherElementQuery + " li").each(checkValidFreeAgent(data['guests-other'], this.other_agents));
 	$(this.freeElementQuery + " li").each(checkValidFreeAgent(data['guests-free'], this.free_agents));
 }
 
@@ -315,7 +322,8 @@ var agentManager = new GuestList({
 	'url': "/guests",
 	'async_url': "/aguests",
 	'freeElementQuery': "#freeAgentList ul",
-	'ownedElementQuery': "#ownedAgentList ul"
+	'ownedElementQuery': "#ownedAgentList ul",
+	'otherElementQuery': "#otherAgentList ul"
 });
 //var ownedAgentManager = new GuestList("#ownedAgentList ul");
 
