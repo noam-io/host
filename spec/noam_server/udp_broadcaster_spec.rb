@@ -16,9 +16,10 @@ describe NoamServer::UdpBroadcaster do
   let(:lemma) { double(:last_modified => Time.now.getutc()) }
   let(:socket){ double }
 
-  let(:broadcaster) { described_class.new(broadcast_port, room_name, http_port, lemma) }
+  let(:broadcaster) { described_class.new(broadcast_port, http_port, lemma) }
 
   before :each do
+    NoamServer::NoamServer.stub(:room_name).and_return(room_name)
     broad_addr_1 = double("broad_addr_1", :ipv4? => true, :ip_address => broadcast_ip_1)
     ifaddr_1 = double("ifaddr_1", :broadaddr => broad_addr_1)
 

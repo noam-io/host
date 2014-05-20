@@ -35,6 +35,24 @@ describe NoamServer::ReapableRepository do
     calls.should == 0
   end
 
+  it "fires callback when the entry has changed" do
+    class TestRepo < described_class
+      def same?(a, b)
+        return a[:last_activity_timestamp] == b[:last_activity_timestamp]
+      end
+    end
+
+    repository = TestRepo.new
+    repository.add({ :name => "element #1", :last_activity_timestamp => @now - 30 })
+
+    calls = 0
+    repository.on_change { calls += 1 }
+
+    repository.add({ :name => "element #1", :last_activity_timestamp => @now - 31 })
+    calls.should == 1
+
+  end
+
   it "runs callbacks on delete" do
     entry = { :name => "element #1", :last_activity_timestamp => @now - 30 }
     @repository.add(entry)

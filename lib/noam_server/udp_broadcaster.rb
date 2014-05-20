@@ -5,9 +5,8 @@ require 'noam_server/noam_logging'
 
 module NoamServer
   class UdpBroadcaster
-    def initialize(broadcast_port, room_name, http_port, lemmas)
+    def initialize(broadcast_port, http_port, lemmas)
       @http_port = http_port
-      @room_name = room_name
       @broadcast_port = broadcast_port
       @socket = UDPSocket.new
       @lemmas = lemmas
@@ -22,7 +21,7 @@ module NoamServer
     end
 
     def message_to_broadcast
-      Noam::Messages.build_server_beacon(@room_name, @http_port, @lemmas.last_modified)
+      Noam::Messages.build_server_beacon(NoamServer.room_name, @http_port, @lemmas.last_modified)
     end
 
     def go

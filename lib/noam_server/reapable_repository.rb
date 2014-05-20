@@ -29,15 +29,17 @@ module NoamServer
       @elements[element_id]
     end
 
-    # Add Element to repository
-    # If element is not found add it
     def add(element)
-      is_new_element = !include?(element[:name])
+      existing = get(element[:name])
+      modified = (existing.nil? || !same?(existing, element))
       @elements[element[:name]] = element
-      if is_new_element
-        run_callbacks
-      end
+      run_callbacks if modified
     end
+
+    def same?(existing, current)
+      existing[:name] == current[:name]
+    end
+
 
     def include?(element_id)
       !@elements[element_id].nil?

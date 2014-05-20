@@ -10,6 +10,7 @@ require 'noam_server/udp_listener'
 require 'noam_server/grabbed_lemmas'
 require 'noam_server/unconnected_lemmas'
 require 'noam_server/web_socket_server'
+require 'noam_server/other_guests_list'
 
 module NoamServer
   class NoamMain
@@ -32,10 +33,10 @@ module NoamServer
       @server = NoamServer.new(ConfigManager[:listen_port])
       @webserver = WebSocketServer.new(ConfigManager[:web_socket_port])
       @broadcaster = UdpBroadcaster.new(ConfigManager[:broadcast_port],
-                                        ConfigManager[:room_name],
                                         ConfigManager[:web_server_port],
                                        GrabbedLemmas.instance)
       @marcopolo = UdpListener.new
+      @other_guests = OtherGuestsList.new(LocatedServers.instance)
     end
 
     def start
