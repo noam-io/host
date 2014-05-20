@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'noam/messages'
 require 'noam_server/noam_logging'
@@ -14,31 +14,35 @@ module NoamServer
 
     def receive_data(message)
       # If the server is off, ignore marco-polo
+      # TODO: move this ugly hack with a global dependency
       if not NoamServer.on?
         NoamLogging.debug(self, "Ignoring message - server off.")
         return
       end
 
       message = Noam::Messages.parse(message)
+      port, ip = get_port_and_ip
       if message.message_type == "marco"
-        port, ip = get_port_and_ip
-        polo_message = make_polo
-        if message.room_name == NoamServer.room_name and NoamServer.room_name != ""
-          NoamLogging.debug(self, "Sending polo #{polo_message.inspect} to #{ip}:#{port}")
-          remember_connected_lemma(ip, port, message)
-          send_data(polo_message)
-        else
-          remember_unconnected_lemma(ip, port, message)
-          if grabbable_lemma?(message)
-            NoamLogging.debug(self, "Sending polo #{polo_message.inspect} to grabbed lemma: #{ip}:#{port}")
-            send_data(polo_message)
-          end
-        end
+        handle_marco(ip, port, message)
       elsif message.message_type == "server_beacon"
-        port, ip = get_port_and_ip
         remember_server(ip, port, message)
       else
-        NoamLogging.info(self, "UDP handler dropped message because it was not a 'marco' message #{message.inspect}")
+        NoamLogging.info(self, "UDP handler dropped unknown message: #{message.inspect}")
+      end
+    end
+
+    def handle_marco(ip, port, message)
+      polo_message = make_polo
+      if message.room_name == NoamServer.room_name and NoamServer.room_name != ""
+        NoamLogging.debug(self, "Sending polo #{polo_message.inspect} to #{ip}:#{port}")
+        remember_connected_lemma(ip, port, message)
+        send_data(polo_message)
+      else
+        remember_unconnected_lemma(ip, port, message)
+        if grabbable_lemma?(message)
+          NoamLogging.debug(self, "Sending polo #{polo_message.inspect} to grabbed lemma: #{ip}:#{port}")
+          send_data(polo_message)
+        end
       end
     end
 
