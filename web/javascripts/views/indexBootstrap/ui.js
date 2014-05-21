@@ -12,8 +12,18 @@ function inside(event,selector) {
     return ($(event.target).closest(selector).length > 0)
 }
 
+function toggleView(viewToHideSel, viewToShowSel, buttonToActivateSel) {
+    $(viewToHideSel).hide();
+    $(viewToShowSel).show();
+    $('.graph-grid-menu').find('.active').removeClass('active');
+    $(buttonToActivateSel).parent().addClass('active');
+}
+
+function isOnGrid() {
+    return location.hash.indexOf("grid") > 0;
+}
+
 function initialize_menu_buttons() {
-    var active = '.graph';
 
     $('#MainViewToggles a').each(function(){
         var isfor = $(this).attr('for');
@@ -23,21 +33,21 @@ function initialize_menu_buttons() {
             $("."+isfor).hide();
         }
     });
-    $('.grid-view').hide();
+
+    if (isOnGrid()) {
+      toggleView('.graph-view', '.grid-view', '.grid-button');
+    } else {
+      $('.grid-view').hide();
+    }
 
     // Graph buttons
     $('.graph-button').on('click', function() {
-        $('.grid-view').hide();
-        $('.graph-view').show();
-        $('.graph-grid-menu').find('.active').removeClass('active');
-        $(this).parent().addClass('active');
-    })
+        toggleView('.grid-view', '.graph-view', this);
+    });
+
     $('.grid-button').on('click', function() {
-        $('.grid-view').show();
-        $('.graph-view').hide();
-        $('.graph-grid-menu').find('.active').removeClass('active');
-        $(this).parent().addClass('active');
-    })
+        toggleView('.graph-view', '.grid-view', this);
+    });
 
     // Nav buttons
     $('.settings-button').on('click', function(event) {

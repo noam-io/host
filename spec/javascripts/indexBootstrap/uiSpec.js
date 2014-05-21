@@ -30,3 +30,16 @@ describe("Components click events", function() {
     });
 
 });
+
+describe("Graph and Grid view", function() {
+
+    it("grid view should be shown if it was previously been shown", function() {
+        loadFixtures('indexBootstrap.html');
+        window.location.hash = "#grid";
+        initialize_menu_buttons();
+        expect($('.graph-view')).toBeHidden();
+        expect($('.grid-view')).toBeVisible();
+        window.location.hash = "";
+    });
+
+});
