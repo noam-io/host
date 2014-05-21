@@ -92,7 +92,7 @@ module Noam
         index = super(data)
         @room_name = @spalla_id
         @http_port = data[index+=1]
-        @timestamp = Time.parse(data[index+=1])
+        @timestamp = Time.parse(data[index+=1]) if index + 1 < data.size
         index
       end
     end
