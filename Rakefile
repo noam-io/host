@@ -18,7 +18,7 @@ rescue LoadError
 end
 
 NOAM_VERSION = "0.2.1"
-NOAM_OSX_ID = "com.ideo.noam_server"
+NOAM_OSX_ID = "noam.io.host"
 NOAM_OSX_APP_NAME = "Noam"
 
 Releasy::Project.new do
@@ -57,11 +57,12 @@ namespace :installer do
     # NOTE: Once we need to run scripts, the --scripts flag lets us specify a
     # scripts directory for bash scripts named things like preflight,
     # postflight, etc. to run at those times.
+    FileUtils.mkdir_p('./pkg/Noam')
     system %[pkgbuild --root "#{folder_containing_app}/#{NOAM_OSX_APP_NAME}.app" \\
                       --install-location "/Applications/#{NOAM_OSX_APP_NAME}.app" \\
                       --version #{version} \\
                       --identifier #{NOAM_OSX_ID} \\
-                      ./pkg/#{NOAM_OSX_APP_NAME}.pkg]
-
+                      ./pkg/Noam/Install#{NOAM_OSX_APP_NAME}.pkg]
+    system %[hdiutil create -volname Noam ./pkg/#{NOAM_OSX_APP_NAME}-v#{NOAM_VERSION}.dmg -srcfolder ./pkg/Noam -format UDZO -imagekey zlib-level=9]
   end
 end
