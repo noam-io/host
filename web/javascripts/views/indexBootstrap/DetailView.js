@@ -1,6 +1,18 @@
 //Copyright (c) 2014, IDEO 
 
+function animateOpen(right) {
+	if (right != 0) {
+		var curWidth = $('#graph-grid').width();
+		$('#graph-grid').animate({'width': curWidth - 400});
+	}
+}
 
+function animateClose() {
+	var curWidth = $('#graph-grid').width();
+	$('#graph-grid').width('auto');
+	var autoWidth = $('#graph-grid').width();
+	$('#graph-grid').width(curWidth).animate({'width': autoWidth});
+}
 
 var DetailView = function(){
 	this.divId = "detailPane";
@@ -29,11 +41,13 @@ DetailView.prototype.toggle = function(){
 }
 
 DetailView.prototype.open = function(){
+	var right = parseInt($("#"+this.divId).attr('pos'));
   $("#"+this.divId).show();
 	$("#"+this.divId+" .handle .dir").html('>');
 	$("#"+this.divId).attr('pos', '0');
 	$("#"+this.divId).animate({right: 0});
 	$("#mainContainer").animate({'padding-right': 400});
+	animateOpen(right);
 }
 
 DetailView.prototype.close = function(){
@@ -41,6 +55,7 @@ DetailView.prototype.close = function(){
   $("#"+this.divId).attr('pos', "-400");
   $("#"+this.divId).animate({right: -400});
   $("#mainContainer").animate({'padding-right': 0});
+	animateClose();
 }
 
 DetailView.prototype.refresh = function(){

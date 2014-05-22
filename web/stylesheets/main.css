@@ -119,9 +119,14 @@ path.arc {
     .nav .power.active {
       background: url("/images/Icon-Run.png") no-repeat; }
 
+.graph-grid {
+  width: auto;
+}
+
 .graph-grid-menu {
   width: 100%;
-  margin: 50px auto; }
+  height: 40px;
+  padding-top: 50px; }
   .graph-grid-menu ul {
     width: 201px;
     margin: 0 auto; }

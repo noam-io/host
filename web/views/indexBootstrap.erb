@@ -74,9 +74,9 @@
           </div>
       </div>
 
-      <div class="container" id="mainBody">
+      <div id="mainBody">
 
-      <!-- Settings Dropdown -->
+        <!-- Settings Dropdown -->
         <div class="dropdown-item-container settings-container" style="width: 100%;">
           <div class="nav-dropdown-container" style="margin: auto 0px;">
             <div style="width: 900px; margin: 0px auto; ">
@@ -159,268 +159,271 @@
         </div>
       <!-- end network dropdown -->
 
-
       <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
 
-      
-      <div class="graph-grid-menu">
-        <ul class="MainViewToggles">
-          <li class="active"><a href="#graph" for="graph-view" class="graph-button">GRAPH</a></li>
-          <li><a href="#grid" for="grid-view" class="grid-button">GRID</a></li>
-        </ul>
-      </div>
-      
-      <div class="graph-view starter-template">
-        <div class="graph"></div>
 
+      <div style="width: 100%">
+        <div id="detailPane">
+            <div class="handle">
+              <span class="dir"><</span><BR/>I<BR/>N<BR/>S<BR/>I<BR/>G<BR/>H<BR/>T
+            </div>
+            <div id="detailViews">
 
-<!--         <div class="lemma-overlay modal-dialog">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-xs-12 header modal-header">
-
+              <div id="detailDefault">
+                Click on a Lemma or Topic to view details.
               </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-12">
-                <div class="data-row ip"></div>
-                <div class="data-row hear"></div>
-                <div class="data-row say"></div>
-                <div class="data-row last-active"></div>
 
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-
-
-        <div class="lemma-overlay modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header header">
-              <h4 class="modal-title">Modal title</h4>
-            </div>
-            <div class="modal-body clearfix">
-              <div class="data-row type"></div>
-              <div class="data-row last-active">Blarg</div>
-              <div class="data-row hear"></div>
-              <div class="data-row say"></div>
-            </div>
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-
-
-
-
-      </div>
-      
-
-      <div class="grid-view starter-template">
-        <h4><strong>Grid View</strong></h2>
-
-        <div style="position: relative;">
-          <div id="Channels">
-            <table class="table">
-              <thead>
-                <tr>
-                  <td class="name">Topic Name</td>
-                  <td class="timestamp">Last Updated</td>
-                  <td class="value">Value</td>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
- <!--        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Noam Server</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <div class="dropdown noam-dropdown" style="height: 50px; float: left;">
-            <ul class="nav navbar-nav">
-              <li>
-                <div class="nav-item nav-settings" data-target="#" id="settingsPane" data-toggle="dropdown">
-                  <div class="img"></div>
-                  Settings
+              <div id="detailLemma">
+                <div>
+                  <span class="name">Participant 2</span> - <span class="ip">192.168.1.113</span>
+                  <span class="newWindow"><a href="#">New Window</a></span>
                 </div>
-                <div class="dropdown-menu" aria-labelledby="settingsPane">
-                  <div class="menu-title">Noam Host Name</div>
+                <div class="version">
+                  Arduino Lemma v-1.0.1
+                </div>
+                <div class="joinedAt">
+                  Joined the conversation at -:--AM (------- ago)
+                </div>
+                <div id="activityGraph">
+                </div>
+              </div>
 
-                  <div class="menu-title">Log</div>
-
-                  <div class="menu-title">Settings</div>
+              <div id="detailTopic">
+                <div>
+                  <span class="name">Participant 2</span>
+                  <span class="newWindow"><a href="#">New Window</a></span>
+                </div>
+                <div class="status">
+                  Joined the conversation at -:--AM (------ ago)
+                </div>
+                <div>
+                  Current Value: <span class="value">192.168.1.113</span>
+                </div>
+                <form id="sendMessageForm">
                   <div>
-                    <table>
-                      <tr>
-                        <td>IP</td>
-                        <td>----</td>
-                      </tr>
-                      <tr>
-                        <td>Discovery UDP Broadcast</td>
-                        <td>----</td>
-                      </tr>
-                      <tr>
-                        <td>Websocket Port</td>
-                        <td>---</td>
-                      </tr>
-                      <tr>
-                        <td>UI Port</td>
-                        <td>---</td>
-                      </tr>
+                    <input class="sendMessageValue" type="value"> <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        <div id="graph-grid">
+            <div class="graph-grid-menu">
+              <ul class="MainViewToggles">
+                <li class="active"><a href="#graph" for="graph-view" class="graph-button">GRAPH</a></li>
+                <li><a href="#grid" for="grid-view" class="grid-button">GRID</a></li>
+              </ul>
+            </div>
+            <div class="container">
+                <div class="graph-view starter-template">
+                  <div class="graph"></div>
+
+
+                  <!--         <div class="lemma-overlay modal-dialog">
+                            <div class="container-fluid">
+                              <div class="row">
+                                <div class="col-xs-12 header modal-header">
+
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <div class="data-row ip"></div>
+                                  <div class="data-row hear"></div>
+                                  <div class="data-row say"></div>
+                                  <div class="data-row last-active"></div>
+
+                                </div>
+                              </div>
+                            </div>
+                          </div> -->
+
+
+
+                  <div class="lemma-overlay modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header header">
+                        <h4 class="modal-title">Modal title</h4>
+                      </div>
+                      <div class="modal-body clearfix">
+                        <div class="data-row type"></div>
+                        <div class="data-row last-active">Blarg</div>
+                        <div class="data-row hear"></div>
+                        <div class="data-row say"></div>
+                      </div>
+                    </div><!-- /.modal-content -->
+                  </div><!-- /.modal-dialog -->
+
+
+
+
+                </div>
+                <div class="grid-view starter-template">
+                  <h4><strong>Grid View</strong></h4>
+
+                    <div style="position: relative;">
+                      <div id="Channels">
+                        <table class="table">
+                          <thead>
+                          <tr>
+                            <td class="name">Topic Name</td>
+                            <td class="timestamp">Last Updated</td>
+                            <td class="value">Value</td>
+                          </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <!--        <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#">Noam Server</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                  <div class="dropdown noam-dropdown" style="height: 50px; float: left;">
+                    <ul class="nav navbar-nav">
+                      <li>
+                        <div class="nav-item nav-settings" data-target="#" id="settingsPane" data-toggle="dropdown">
+                          <div class="img"></div>
+                          Settings
+                        </div>
+                        <div class="dropdown-menu" aria-labelledby="settingsPane">
+                          <div class="menu-title">Noam Host Name</div>
+
+                          <div class="menu-title">Log</div>
+
+                          <div class="menu-title">Settings</div>
+                          <div>
+                            <table>
+                              <tr>
+                                <td>IP</td>
+                                <td>----</td>
+                              </tr>
+                              <tr>
+                                <td>Discovery UDP Broadcast</td>
+                                <td>----</td>
+                              </tr>
+                              <tr>
+                                <td>Websocket Port</td>
+                                <td>---</td>
+                              </tr>
+                              <tr>
+                                <td>UI Port</td>
+                                <td>---</td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="nav-item nav-network" data-target="#" id="networkPane" data-toggle="dropdown">
+                          <div class="img"></div>
+                            Network
+                          </a>
+                        </div>
+                        <div class="dropdown-menu network" style="width: 800px;" aria-labelledby="networkPane">
+                          <div class="sectionH">
+                            <div class="menu-title">Traffic</div>
+                          </div>
+                          <div class="sectionH" id="ownedAgentList">
+                            <div class="menu-title">Your Guests</div>
+                            <div class="scrollArea">
+                              <ul></ul>
+                            </div>
+                          </div>
+                          <div class="sectionH" id="freeAgentList">
+                            <div class="menu-title">Free Guests</div>
+                            <div class="scrollArea">
+                              <ul></ul>
+                            </div>
+                          </div>
+                          <div class="sectionH">
+                            <div class="menu-title">Other Guests</div>
+                            <div class="scrollArea">
+                              <ul>
+                                <li class="releaseable" data-toggle="tooltip">Participant 1</li>
+                                <li class="locked" data-toggle="tooltip">Participant 1</li>
+                                <li class="releaseable" data-toggle="tooltip">Participant 1</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="pull-right"  style="height: 50px; float: left;">
+                    <ul class="nav navbar-nav">
+                      <li><a href="#"><%= "#{@server_name}" %></a></li>
+                      <li><a href="#"><%= "#{@ips}" %></a></li>
+                      <li style="padding-top: 8px;">
+                        <div class="nav-item nav-run" data-target="#" data-toggle="dropdown" style="margin-top: -10px;">
+                          <div class="img"></div>
+                            Network
+                          </a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div><!--/.nav-collapse
+              </div>
+            </div>
+
+            <div id="mainContainer" class="container">
+              <BR/><BR/>
+              <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
+
+              <ul id="mainTabs" class="nav nav-tabs">
+                <li class="active"><a href="#graphView" data-toggle="tab">Graph</a></li>
+                <li><a href="#gridView" data-toggle="tab">Grid</a></li>
+              </ul>
+
+              <!-- Tab panes --
+              <div class="tab-content">
+                <!-- Graph View Here --
+                <div class="tab-pane" id="graphView">
+                  <BR/>
+                  <center>
+                    <img src="" title="Placeholder for graph view" width="400" height="400">
+                  </center>
+                </div>
+                <!-- End Graph View --
+
+                <!-- Grid View of Server--
+                <div class="tab-pane" id="gridView">
+                  <div class="starter-template">
+                    <h4>Noam Grid View</h4>
+                  </div>
+
+                  <div id="Channels">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <td>Topic Name</td>
+                          <td>Last Updated</td>
+                          <td>Value</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
                     </table>
                   </div>
                 </div>
-              </li>
-              <li>
-                <div class="nav-item nav-network" data-target="#" id="networkPane" data-toggle="dropdown">
-                  <div class="img"></div>
-                    Network
-                  </a>
                 </div>
-                <div class="dropdown-menu network" style="width: 800px;" aria-labelledby="networkPane">
-                  <div class="sectionH">
-                    <div class="menu-title">Traffic</div>
-                  </div>
-                  <div class="sectionH" id="ownedAgentList">
-                    <div class="menu-title">Your Guests</div>
-                    <div class="scrollArea">
-                      <ul></ul>
-                    </div>
-                  </div>
-                  <div class="sectionH" id="freeAgentList">
-                    <div class="menu-title">Free Guests</div>
-                    <div class="scrollArea">
-                      <ul></ul>
-                    </div>
-                  </div>
-                  <div class="sectionH">
-                    <div class="menu-title">Other Guests</div>
-                    <div class="scrollArea">
-                      <ul>
-                        <li class="releaseable" data-toggle="tooltip">Participant 1</li>
-                        <li class="locked" data-toggle="tooltip">Participant 1</li>
-                        <li class="releaseable" data-toggle="tooltip">Participant 1</li>
-                      </ul>
-                    </div>
-                  </div>
+                -->
                 </div>
-              </li>
-            </ul>
-          </div>
-
-          <div class="pull-right"  style="height: 50px; float: left;">
-            <ul class="nav navbar-nav">
-              <li><a href="#"><%= "#{@server_name}" %></a></li>
-              <li><a href="#"><%= "#{@ips}" %></a></li>
-              <li style="padding-top: 8px;">
-                <div class="nav-item nav-run" data-target="#" data-toggle="dropdown" style="margin-top: -10px;">
-                  <div class="img"></div>
-                    Network
-                  </a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div><!--/.nav-collapse
+            </div>
+        </div>
       </div>
-    </div>
 
-    <div id="mainContainer" class="container">
-      <BR/><BR/>
-      <div class="alert alert-danger" id="serverDownError" style="display: none;">Server is down.</div>
-
-      <ul id="mainTabs" class="nav nav-tabs">
-        <li class="active"><a href="#graphView" data-toggle="tab">Graph</a></li>
-        <li><a href="#gridView" data-toggle="tab">Grid</a></li>
-      </ul>
-
-      <!-- Tab panes --
-      <div class="tab-content">
-        <!-- Graph View Here --
-        <div class="tab-pane" id="graphView">
-          <BR/>
-          <center>
-            <img src="" title="Placeholder for graph view" width="400" height="400">
-          </center>
-        </div>
-        <!-- End Graph View --
-
-        <!-- Grid View of Server--
-        <div class="tab-pane" id="gridView">
-          <div class="starter-template">
-            <h4>Noam Grid View</h4>
-          </div>
-
-          <div id="Channels">
-            <table class="table">
-              <thead>
-                <tr>
-                  <td>Topic Name</td>
-                  <td>Last Updated</td>
-                  <td>Value</td>
-                </tr>
-              </thead>
-              <tbody>
-
-              </tbody>
-            </table>
-          </div>
-        </div>
-        </div>
-        -->
-      </div>
     </div><!-- /.container -->
 
-    <div id="detailPane" pos="400">
-      <div class="handle">
-        <span class="dir"><</span><BR/>I<BR/>N<BR/>S<BR/>I<BR/>G<BR/>H<BR/>T
-      </div>
-      <div id="detailViews">
-
-        <div id="detailDefault">
-          Click on a Lemma or Topic to view details.
-        </div>
-
-        <div id="detailLemma">
-          <div>
-            <span class="name">Participant 2</span> - <span class="ip">192.168.1.113</span>
-            <span class="newWindow"><a href="#">New Window</a></span>
-          </div>
-          <div class="version">
-            Arduino Lemma v-1.0.1
-          </div>
-          <div class="joinedAt">
-            Joined the conversation at -:--AM (------- ago)
-          </div>
-          <div id="activityGraph">
-          </div>
-        </div>
-
-        <div id="detailTopic">
-          <div>
-            <span class="name">Participant 2</span>
-            <span class="newWindow"><a href="#">New Window</a></span>
-          </div>
-          <div class="status">
-            Joined the conversation at -:--AM (------ ago)
-          </div>
-          <div>
-            Current Value: <span class="value">192.168.1.113</span>
-          </div>
-          <form id="sendMessageForm">
-          <div>
-            <input class="sendMessageValue" type="value"> <button id="sendMessageButton" type="submit" class="btn btn-primary">Send Message</button>
-          </div>
-          </form>
-        </div>
-      </div>
-    </div>
 
 
 
