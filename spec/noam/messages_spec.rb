@@ -98,6 +98,15 @@ describe Noam::Messages do
     parsed.system_version.should == "1.1"
   end
 
+  it "should parse an older server_beacon" do
+    message = ["server_beacon", "Room Name", 8888].to_json
+    parsed = described_class.parse(message)
+    parsed.room_name.should == "Room Name"
+    parsed.message_type.should == "server_beacon"
+    parsed.http_port.should == 8888
+    parsed.timestamp.to_s.should == ""
+  end
+
   it "should build and parse a server_beacon message" do
     timestamp = Time.now.getutc
     message = ["server_beacon", "Room Name", 8888, timestamp.to_s].to_json
