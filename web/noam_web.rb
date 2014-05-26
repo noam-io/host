@@ -376,7 +376,7 @@ class NoamApp < Sinatra::Base
       players[spalla_id] = {
         :spalla_id => spalla_id,
         :device_type => player.device_type,
-        :last_activity => format_date( player.last_activity ),
+        :last_activity => format_date_utc( player.last_activity ),
         :system_version => player.system_version,
         :hears => player.hears,
         :plays => player.plays,
@@ -389,7 +389,7 @@ class NoamApp < Sinatra::Base
     @orchestra.event_names.dup.each do |event|
       events[event.to_s] = {
         :value_escaped => value_escaped(@values.get(event)),
-        :timestamp => format_date( @values.timestamp(event) )
+        :timestamp => format_date_utc( @values.timestamp(event) )
       }
     end
 
