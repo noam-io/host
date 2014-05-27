@@ -21,7 +21,14 @@ end
 
 # Includes milliseconds so receiver can differential fine-grained updates
 def format_date( date )
-  date.strftime( "%Y-%m-%dT%H:%M:%S:%L%z" ) if date
+	date.strftime( "%Y-%m-%dT%H:%M:%S:%L%z" ) if date
+end
+
+def format_date_utc( date )
+	if date
+		utc_date = date.new_offset(0)
+		utc_date.strftime( "%Y-%m-%dT%H:%M:%S.%LZ" )
+	end
 end
 
 # Add conversion from Time to Milliseconds

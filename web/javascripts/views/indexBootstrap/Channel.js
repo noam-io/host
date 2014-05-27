@@ -9,7 +9,7 @@ function Channel(channel, players){
 	this.update(channel, players);
 	this.cb = {};
 	this.removed = false;
-	this.timestamp = new Date();
+	this.timestamp = new Date().toISOString();
 }
 
 
@@ -146,9 +146,9 @@ Channel.prototype.draw = function(players){
 				numPH++;
 			}
 			if(obj.find('.'+lemma_id.replace(/\s+/g, '-')).size() == 0){
-				obj.append($("<td></td>").hide().fadeIn(1000).addClass(lemma_id.replace(/\s+/g, '-')).html(hear + plays));
+				obj.append($("<td></td>").hide().fadeIn(1000).addClass(lemma_id.replace(/\s+/g, '-')).css("display", "table-cell").html(hear + plays));
 			} else {
-				obj.find('.'+lemma_id.replace(/\s+/g, '-')).html(hear + plays);
+				obj.find('.'+lemma_id.replace(/\s+/g, '-')).css("display", "table-cell").html(hear + plays);
 			}
 		}
 		if(numPH == 0){
