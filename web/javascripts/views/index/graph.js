@@ -126,8 +126,6 @@
                 .insert("div", "h2")
                 .style("width", "100%")//this.d.w + "px")
                 .style("height", this.d.h + "px")
-                .style("position", "absolute")
-                .style("left","0px")
                 .style("-webkit-backface-visibility", "hidden");
 
             // Binds svg to the containing div
