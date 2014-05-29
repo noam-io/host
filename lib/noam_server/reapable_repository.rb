@@ -2,7 +2,7 @@
 
 module NoamServer
   class ReapableRepository
-    attr_reader :last_modified
+    attr_accessor :last_modified
 
     def initialize(elements = {})
       @elements = elements

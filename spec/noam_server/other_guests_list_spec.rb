@@ -17,8 +17,8 @@ describe NoamServer::OtherGuestsList do
 
   it "add guests from multiple servers" do
     list = described_class.new(server_repo)
-    list.response_handler( {"name" => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
-    list.response_handler( {"name" => "server2"}, { "guests-owned" => {"Lemma2"=>{"name"=>"Lemma2"}}})
+    list.response_handler( {:name => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
+    list.response_handler( {:name => "server2"}, { "guests-owned" => {"Lemma2"=>{"name"=>"Lemma2"}}})
     list.get_all.size.should == 2
   end
 
@@ -41,8 +41,8 @@ describe NoamServer::OtherGuestsList do
 
   it "drops a server's lemmas when the server no longer exists" do
     list = described_class.new(server_repo)
-    list.response_handler( {"name" => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
-    list.response_handler( {"name" => "server2"}, { "guests-owned" => {"Lemma4"=>{"name"=>"Lemma4"}}})
+    list.response_handler( {:name => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
+    list.response_handler( {:name => "server2"}, { "guests-owned" => {"Lemma4"=>{"name"=>"Lemma4"}}})
 
     server_repo.stub(:on_change)
     EventMachine::Protocols::HttpClient.stub(:request).and_return(double(:http, :callback => nil))
