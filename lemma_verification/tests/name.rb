@@ -14,7 +14,7 @@ module LemmaVerification
       def expected_value
         {
           "fullName" => full_name
-        }.to_json
+        }
       end
 
       private
