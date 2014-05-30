@@ -1,6 +1,7 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'config'
+require 'fileutils'
 
 #####
 #
@@ -21,7 +22,8 @@ module NoamServer
     # Save this to disk, optionally specifying a new location
     def save(file=nil)
       @file = file if file
-      File.open(@file,'w') do |f| 
+      FileUtils.mkdir_p(File.dirname(@file))
+      File.open(@file,'w') do |f|
         f.write(JSON.pretty_generate(@h))
       end
       self
@@ -52,7 +54,7 @@ module NoamServer
   class ConfigManager
 
     @@user_filename = ENV['HOME']+'/Documents/noam_settings.json'
-    
+
     def self.instance
       @instance ||= self.new(CONFIG)
     end
@@ -64,14 +66,14 @@ module NoamServer
         @_overwritten.reload(@@user_filename)
       end
       @_master = @root_config.clone
-      @_master = @_master.merge(@_overwritten)     
+      @_master = @_master.merge(@_overwritten)
     end
 
     def save()
       @_overwritten.save(@@user_filename)
     end
 
-    def method_missing(*a,&b) 
+    def method_missing(*a,&b)
       if a[0].to_s == "[]="
         @_overwritten.send(*a,&b)
         @_master.send(*a,&b)
