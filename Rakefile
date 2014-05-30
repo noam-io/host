@@ -8,6 +8,16 @@ require 'releasy'
 $LOAD_PATH << "./lib"
 require 'releasy/noam_osx_app'
 
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => :all_tests
+
+task :all_tests => ['spec', 'jasmine:ci'] do
+
+end
+
 begin
   require 'jasmine'
   load 'jasmine/tasks/jasmine.rake'

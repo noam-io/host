@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 source "https://rubygems.org"
 
@@ -24,6 +24,8 @@ group :test do
   gem 'rspec'
   gem 'surrogate'
   gem 'rack-test'
+  gem 'rake'
+  gem 'rack'
 end
 
 group :release do

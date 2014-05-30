@@ -97,7 +97,9 @@ DEPENDENCIES
   logging
   mongo
   multi_json (= 1.7.2)
+  rack
   rack-test
+  rake
   releasy
   riak-client (= 1.1.1)
   rspec
