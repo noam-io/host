@@ -22,7 +22,7 @@ module NoamServer
     def response_handler(server, list)
       guests = list["guests-owned"]
       NoamLogging.debug(self, "Other Guest Response: #{guests.inspect}")
-      @guests[server["name"]] =  guests
+      @guests[server[:name]] =  guests
     end
 
     def get_all
