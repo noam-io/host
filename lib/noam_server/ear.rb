@@ -33,13 +33,15 @@ module NoamServer
     end
 
     def terminate
-      incoming_connection.close_connection_after_writing if incoming_connection
-      outgoing_connection.close_connection_after_writing if outgoing_connection
+      safely_close(incoming_connection)
+      safely_close(outgoing_connection)
       self.incoming_connection = nil
       self.outgoing_connection = nil
     end
 
     private
+
+    attr_accessor :data_to_send, :connection_pending, :outgoing_connection
 
     def make_new_outgoing_connection(data = nil)
       self.connection_pending = true
@@ -55,9 +57,12 @@ module NoamServer
       outgoing_connection.send_data("%06d%s" % [data.bytesize, data])
     end
 
-    private
-
-    attr_accessor :data_to_send, :connection_pending, :outgoing_connection
+    def safely_close(connection)
+      connection.close_connection_after_writing if connection
+    rescue RuntimeError => e
+      stack_trace = e.backtrace.join("\n  == ")
+      NoamLogging.warn(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stack_trace}")
+    end
 
   end
 end

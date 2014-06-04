@@ -3,8 +3,6 @@
 require "lemma_verification/spec_helper"
 require "tests/name"
 
-require "json"
-
 require "mocks/lemma_verification_test_behavior"
 
 describe LemmaVerification::Tests::Name do
@@ -32,8 +30,7 @@ describe LemmaVerification::Tests::Name do
       first_name = @name_test_behavior.original_message["firstName"]
       last_name = @name_test_behavior.original_message["lastName"]
 
-      parsed_expected_value = JSON.parse(@name_test_behavior.expected_value)
-      parsed_expected_value.should == {
+      @name_test_behavior.expected_value.should == {
         "fullName" => "#{first_name} #{last_name}"
       }
     end
