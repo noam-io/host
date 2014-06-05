@@ -61,7 +61,7 @@ module NoamServer
       connection.close_connection_after_writing if connection
     rescue RuntimeError => e
       stack_trace = e.backtrace.join("\n  == ")
-      NoamLogging.warn(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stack_trace}")
+      NoamLogging.debug(self, "Error: #{e.to_s}\n Stack Trace:\n == #{stack_trace}")
     end
 
   end
