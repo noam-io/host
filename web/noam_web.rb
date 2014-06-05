@@ -9,30 +9,12 @@ require 'noam_server/noam_server'
 require 'noam_server/grabbed_lemmas'
 require 'noam_server/unconnected_lemmas'
 require 'noam_server/other_guests_list'
+require 'noam_server/statabase'
 require 'helpers/refresh_helper.rb'
-
-
-class Statabase
-  @@values = {}
-  @@timestamps = {}
-
-  def self.set(name, value)
-    @@values[name] = value
-    @@timestamps[name] = DateTime.now
-  end
-
-  def self.get(name)
-    @@values[name] || 0
-  end
-
-  def self.timestamp(name)
-    @@timestamps[name]
-  end
-end
 
 # Store value and time of last message per player for web interface
 NoamServer::Orchestra.instance.on_play do |name, value, player|
-  Statabase.set( name, value )
+  NoamServer::Statabase.instance.set( name, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
   RefreshQueue.instance.enqueue_response
@@ -192,7 +174,7 @@ class NoamApp < Sinatra::Base
     @server_name = CONFIG[:server_name]
     @ips = @@ips ||= "0.0.0.0"
     @orchestra = NoamServer::Orchestra.instance
-    @values = Statabase
+    @values = NoamServer::Statabase.instance
     erb :indexBootstrap
   end
 
@@ -366,7 +348,7 @@ class NoamApp < Sinatra::Base
   ####
   def get_orchestra_state
     @orchestra = NoamServer::Orchestra.instance
-    @values = Statabase
+    @values = NoamServer::Statabase
 
     players = {}
     events = {}
