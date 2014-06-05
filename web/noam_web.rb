@@ -7,6 +7,7 @@ require 'noam_server/config_manager'
 require 'noam_server/noam_logging'
 require 'noam_server/noam_server'
 require 'noam_server/grabbed_lemmas'
+require 'noam_server/orchestra_state'
 require 'noam_server/unconnected_lemmas'
 require 'noam_server/other_guests_list'
 require 'noam_server/statabase'
@@ -210,7 +211,7 @@ class NoamApp < Sinatra::Base
     response.headers['Cache-Control'] = 'no-cache'
     requestTime = request['time'] || 0
     RefreshQueue.instance.pile_time_check(requestTime.to_i) do |type, time|
-      state = get_orchestra_state
+      state = NoamServer::OrchestraState.new
       state[:type] = type
       state[:time] = time
       content_type :json
@@ -220,10 +221,10 @@ class NoamApp < Sinatra::Base
 
   get '/refresh' do
     response.headers['Cache-Control'] = 'no-cache'
-    newtime = Time.now.to_ms
-    state = get_orchestra_state
-    state[:time] = newtime
+    now = Time.now.to_ms
+    state = NoamServer::OrchestraState.new
     state[:type] = :good
+    state[:time] = now
     content_type :json
     body(state.to_json)
   end
@@ -332,55 +333,4 @@ class NoamApp < Sinatra::Base
     end
     return response
   end
-
-
-
-
-
-  ####
-  # Helper function to return dict of the players and events in the Orchestra
-  #
-  # {
-  #   'player' => players in orchestra,
-  #   'events' => events in orchestra
-  # }
-  #
-  ####
-  def get_orchestra_state
-    @orchestra = NoamServer::Orchestra.instance
-    @values = NoamServer::Statabase
-
-    players = {}
-    events = {}
-		number_of_played_messages = 0
-
-    @orchestra.players.dup.each do |spalla_id, player|
-      players[spalla_id] = {
-        :spalla_id => spalla_id,
-        :device_type => player.device_type,
-        :last_activity => format_date_utc( player.last_activity ),
-        :system_version => player.system_version,
-        :hears => player.hears,
-        :plays => player.plays,
-        :ip => player.host,
-        :desired_room_name => player.room_name
-      }
-			number_of_played_messages += player.plays.length
-    end
-
-    @orchestra.event_names.dup.each do |event|
-      events[event.to_s] = {
-        :value_escaped => value_escaped(@values.get(event)),
-        :timestamp => format_date_utc( @values.timestamp(event) )
-      }
-    end
-
-    result = {
-      :players => players,
-      :events => events,
-			:'number-played-messages' => number_of_played_messages
-    }
-  end
-
-
 end
