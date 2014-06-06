@@ -53,16 +53,46 @@ describe NoamApp do
 
     before(:each) do
       NoamServer::OtherGuestsList.instance(double(:serverlist, :on_change => nil))
-      NoamServer::OtherGuestsList.instance.response_handler( {"name" => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
     end
 
 		it "returns 1 lemma" do
+      NoamServer::OtherGuestsList.instance.response_handler( {"name" => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
 			get '/guests', {"HTTP_ACCEPT" => "application/json"}
 			last_response.should be_ok
 			resp = JSON.parse(last_response.body)
 			resp['guests-other'][resp['guests-other'].keys[0]]["name"].should == "Lemma1"
 		end
-  end
+
+		it "returns lemma that points to a roomName that does not exist" do
+			NoamServer::UnconnectedLemmas.stub_chain(:instance, :get_all).and_return({"Lemma2"=>{"name"=>"Lemma2"}})
+			NoamServer::OtherGuestsList.instance.response_handler( {"name" => "server1"}, { "guests-owned" => {}})
+			get '/guests', {"HTTP_ACCEPT" => "application/json"}
+			last_response.should be_ok
+			resp = JSON.parse(last_response.body)
+			resp['guests-other'][resp['guests-other'].keys[0]]["name"].should == "Lemma2"
+		end
+
+		it "returns 2 lemmas, one that points to a roomName that does not exist and the other connected to another roomName" do
+			NoamServer::UnconnectedLemmas.stub_chain(:instance, :get_all).and_return({"Lemma2"=>{"name"=>"Lemma2"}})
+			NoamServer::OtherGuestsList.instance.response_handler( {"name" => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
+			get '/guests', {"HTTP_ACCEPT" => "application/json"}
+			last_response.should be_ok
+			resp = JSON.parse(last_response.body)
+			resp['guests-other'][resp['guests-other'].keys[0]]["name"].should == "Lemma2"
+			resp['guests-other'][resp['guests-other'].keys[1]]["name"].should == "Lemma1"
+		end
+
+		it "should differentiate these 2 lemmas by other guest type" do
+			NoamServer::UnconnectedLemmas.stub_chain(:instance, :get_all).and_return({"Lemma2"=>{"name"=>"Lemma2"}})
+			NoamServer::OtherGuestsList.instance.response_handler( {"name" => "server1"}, { "guests-owned" => {"Lemma1"=>{"name"=>"Lemma1"}}})
+			get '/guests', {"HTTP_ACCEPT" => "application/json"}
+			last_response.should be_ok
+			resp = JSON.parse(last_response.body)
+			resp['guests-other'][resp['guests-other'].keys[0]]["otherguesttype"].should == "Free"
+			resp['guests-other'][resp['guests-other'].keys[1]]["otherguesttype"].should == "Grabbed"
+		end
+
+	end
 
 	describe "GET /guests for free agents" do
 
