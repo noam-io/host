@@ -322,16 +322,25 @@ class NoamApp < Sinatra::Base
     response = {}
     if types.include?('free')
       response['guests-free'] = {}
+			# to iterate over unconnected lemmas once, store the lemmas pointing to a room that does not exist
+			other_guests_free = {}
       NoamServer::UnconnectedLemmas.instance.get_all(order['guests-free-order']).dup.each do |spalla_id, object|
         if object[:desired_room_name] == "" or object[:desired_room_name] == NoamServer::ConfigManager[:room_name]
           response['guests-free'][spalla_id] = object
+				else
+					object[:'otherguesttype'] = 'Free'
+					other_guests_free[spalla_id] = object
         end
       end
     end
 
     if types.include?('other')
-      response['guests-other'] = NoamServer::OtherGuestsList.instance.get_all()
-    end
+			response['guests-other'] = other_guests_free || {}
+			NoamServer::OtherGuestsList.instance.get_all().each do |spalla_id, object|
+				object[:'otherguesttype'] = 'Grabbed'
+				response['guests-other'][spalla_id] = object
+			end
+		end
 
     if types.include?('owned')
       response['guests-owned'] = {}

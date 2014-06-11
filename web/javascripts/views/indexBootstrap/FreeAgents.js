@@ -70,13 +70,14 @@ Guest.prototype.setupElementCallbacks = function(){
 }
 
 Guest.prototype.update = function(holdingElementQuery, obj, type){
+	var otherguesttypeprev = this.otherguesttype
 	for(key in obj){
 		this[key] = obj[key];
 	}
 	var elem = this.getElement();
 	var newHoldingElement = (this.holdingElement != holdingElementQuery);
 	this.holdingElement = holdingElementQuery;
-	if(type != this.type && this.type != "pending" && this.type != "freeing"){
+	if((type != this.type && this.type != "pending" && this.type != "freeing") || (type == 'other' && this.otherguesttype != otherguesttypeprev)){
 		elem.removeClass(this.getClass());
 		elem.find('.glyphicon').removeClass(this.getIconClass());
 		this.type = type;
@@ -168,6 +169,8 @@ Guest.prototype.getIconClass = function(){
 		return "glyphicon-exclamation-sign";
 	} else if(this.type == "pending") {
 		return "glyphicon-bell";
+	} else if((this.type == "other") && (this.otherguesttype == 'Grabbed')) {
+		return "glyphicon-paperclip";
 	}
 }
 
