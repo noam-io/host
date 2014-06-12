@@ -15,7 +15,7 @@ require 'helpers/refresh_helper.rb'
 
 # Store value and time of last message per player for web interface
 NoamServer::Orchestra.instance.on_play do |name, value, player|
-  NoamServer::Statabase.instance.set( name, value )
+  NoamServer::Statabase.instance.set( name, player.spalla_id, value )
   $last_active_id = player.spalla_id if player
   $last_active_event = name
   RefreshQueue.instance.enqueue_response

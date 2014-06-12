@@ -50,7 +50,7 @@
 
             _.each(d,function(val,key){
                 // console.log(val)
-                var select = _this.svg.selectAll("path.link.target-" + val)
+                var select = _this.svg.selectAll("path.link.source-" + val)
                   .each(_this.updateNodes("source", true))
                   .transition()
                     .style("opacity", 1)
@@ -75,26 +75,11 @@
 
 
                 sender.transition()
-                     .style("opacity", 1)
+                     .style("opacity", 0.5)
                     // .style('font-size','10pt')
                     .duration(400)
                     .delay(400);
 
-
-                // Highlight receiver
-                var receiver = _this.svg.selectAll('.target#node-' + val)
-                    // .each(_this.updateNodes("source", true))
-                  .transition()
-                    .style("opacity", 1)
-                    // .style('font-size','10pt')
-                    .duration(400);
-
-
-                receiver.transition()
-                     .style("opacity", 1)
-                    // .style('font-size','10pt')
-                    .duration(400)
-                    .delay(400);
 
               })
         },
@@ -202,7 +187,7 @@
             var path = _this.svg.selectAll("path.link")
                 .data(links)
                 .enter().append("svg:path")
-                .attr("class", function(d) { return "connector link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
+                .attr("class", function(d) { return "connector link name-" + d.source.name.split('.')[2] + " source-" + d.source.name.split('.')[1] + d.source.name.split('.')[2] + " target-" + d.target.name.split('.')[2]; })
                 .attr("stroke", function(d) {return _this.getColor(d.target.parent)})
                 .attr("stroke-width", 2.5)
                 .attr("opacity" , 1)
@@ -230,7 +215,7 @@
                   .attr("class", function(d) {
                     return d.output ? "source" : "target";
                   })
-                  .attr("id", function(d) { return "node-" + d.key; })
+                  .attr("id", function(d) { return "node-" + d.name.split('.')[1] + d.name.split('.')[2]; })
                   .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
 
 
@@ -580,12 +565,15 @@
             var _this = this;
 
             _.each(data, function(val,key) {
-                _this.lastEvent[key] = _this.lastEvent[key] || {};
+							_.each(val,function(event_information, spalla_id) {
+								var event_id = spalla_id + key
+                _this.lastEvent[event_id] = _this.lastEvent[event_id] || {};
                 //console.log(_this.lastEvent[key].timestamp,val.timestamp)
-                if(_this.lastEvent[key].timestamp !== val.timestamp) {
-                    map.push(key);
-                    _this.lastEvent[key].timestamp = val.timestamp;
+                if(_this.lastEvent[event_id].timestamp !== event_information.timestamp) {
+                    map.push(event_id);
+                    _this.lastEvent[event_id].timestamp = event_information.timestamp;
                 }
+							});
             });
             //  console.log(map)
             return map;

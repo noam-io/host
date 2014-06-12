@@ -58,17 +58,32 @@ describe NoamServer::OrchestraState do
   context "including registered players' events" do
     let(:event_state) { subject[:events] }
 
-    it "event :value_escaped is the event's value as an HTML-safe string" do
-      orchestra.stub(:event_names) { ["example_event"] }
-      statabase.set("example_event", "example_value!")
-      event_state["example_event"][:value_escaped].should == "example_value%21"
-    end
+		it "should include the lemma that fire the event" do
+			orchestra.stub(:events) { {"example_event" => {'player_1' => 'player1_connection'}} }
+			statabase.set("example_event", "player_1", "example_value!")
+			event_state["example_event"].keys[0].should == 'player_1'
+		end
 
-    it "event :timestamp is the event's #timestamp, formatted to utc" do
-      orchestra.stub(:event_names) { ["example_event"] }
-      statabase.set("example_event", "example_value!")
-      event_state["example_event"][:timestamp].should == format_utc(statabase.timestamp("example_event"))
-    end
+		it "should include the 2 lemmas that fires events" do
+			orchestra.stub(:events).and_return({"example_event" => {'player_1' => 'player1_connection'}})
+			statabase.set("example_event", "player_1", "example_value!")
+			statabase.set("example_event", "player_2", "example_value1!")
+			event_state["example_event"].keys[0].should == 'player_1'
+			event_state["example_event"].keys[1].should == 'player_2'
+		end
+
+		it "event :value_escaped is the event's value as an HTML-safe string" do
+			orchestra.stub(:events) { {"example_event" => {'player_1' => 'player1_connection'}} }
+			statabase.set("example_event", "player_1", "example_value!")
+			event_state["example_event"]["player_1"][:value_escaped].should == "example_value%21"
+		end
+
+		it "event :timestamp is the event's #timestamp, formatted to utc" do
+			orchestra.stub(:events) { {"example_event" => {'player_1' => 'player1_connection'}} }
+			statabase.set("example_event", "player_1", "example_value!")
+			event_state["example_event"]["player_1"][:timestamp].should == format_utc(statabase.timestamp("example_event", "player_1"))
+		end
+
   end
 
   it ":number-played-messages is the total count of messages played" do

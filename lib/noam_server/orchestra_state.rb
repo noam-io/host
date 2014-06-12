@@ -31,14 +31,21 @@ module NoamServer
     end
 
     def self.events
-      Orchestra.instance.event_names.reduce({}) {|hash, event_name|
-        hash[event_name] = {
-          value_escaped: html_safe(statabase.get(event_name)),
-          timestamp:     format_utc(statabase.timestamp(event_name))
-        }
-        hash
-      }
-    end
+			hash = {}
+			Orchestra.instance.events.each do |event_name, value|
+				lemmas = statabase.get_lemmas(event_name)
+				if (lemmas)
+					hash[event_name] = {}
+					lemmas.each do |spalla_id, value|
+						hash[event_name][spalla_id] = {
+								value_escaped: html_safe(value),
+								timestamp: format_utc(statabase.timestamp(event_name, spalla_id))
+						}
+					end
+				end
+			end
+			hash
+		end
 
     def self.statabase
       @@statabase ||= Statabase.instance
