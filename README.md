@@ -18,11 +18,11 @@ Brains of the Noam system
 
 * clone this repository
 
-        git clone https://github.com/ideo/noam.git
+        git clone https://github.com/noam-io/host
 
 * cd (change directory) to this repository
 
-        cd noam
+        cd host
 
 * Install bundler gem
 
