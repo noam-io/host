@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/noam-io/host.svg?branch=master)](https://travis-ci.org/noam-io/host)
+
 # Noam Server
 ======================================
 Brains of the Noam system
