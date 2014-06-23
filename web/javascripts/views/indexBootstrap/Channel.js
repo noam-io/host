@@ -46,14 +46,28 @@ Channel.prototype.createElementCallbacks = function(){
 
 Channel.prototype.update = function(channel, players){
 	var updated = false;
-	for(key in channel){
-		updated = updated || (key in this && this[key] != channel[key]);
-		this[key] = channel[key];
+	var spallas_updated = {};
+	for(spalla_id in channel){
+		spallas_updated[spalla_id] = false;
+		if(this[spalla_id] === undefined) {
+			updated = true;
+			this[spalla_id] = channel[spalla_id];
+		} else {
+			for(key in channel[spalla_id]) {
+				spallas_updated[spalla_id] = spallas_updated[spalla_id] || (key in this[spalla_id] && this[spalla_id][key] != channel[spalla_id][key]);
+				this[spalla_id][key] = channel[spalla_id][key];
+			}
+			updated = updated  || spallas_updated[spalla_id]
+		}
 	}
 	if(updated){
 		this.draw(players);
 		this.highlight();
-		activityGraph.addActivity(channel_name);
+		for(spalla_id in channel){
+			if(spallas_updated[spalla_id]) {
+				activityGraph.addActivity(channel_name, spalla_id);
+			}
+		}
 		for(cbName in this.cb){
 			this.cb[cbName](this);
 		}

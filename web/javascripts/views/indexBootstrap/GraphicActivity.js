@@ -55,33 +55,48 @@ GraphicActivity.prototype.init = function(){
 	}, this.duration);
 }
 
-GraphicActivity.prototype.addActivity = function(topic){
+GraphicActivity.prototype.addActivity = function(topic, spalla_id){
 	if(!(topic in this.topicLookupByName)){
 		this.topics.push({
-			'data': [],
+			'spallas': {},
 			'name': topic
 		});
+
 		this.topicLookupByName[topic] = this.topics.length - 1;
 	}
 
-	this.topics[this.topicLookupByName[topic]]['data'].push({t: new Date()});
+	if(this.topics[this.topicLookupByName[topic]]['spallas'][spalla_id] === undefined){
+		this.topics[this.topicLookupByName[topic]]['spallas'][spalla_id] = [];
+	}
+	this.topics[this.topicLookupByName[topic]]['spallas'][spalla_id].push({t: new Date()});
 }
 
-GraphicActivity.prototype.drawTopic = function(topicDisplayHeight, topic, type){
+GraphicActivity.prototype.drawTopic = function(topicDisplayHeight, topic, type, spalla_id){
 	var self = this;
 	if(!(topic in this.topicLookupByName)){
-		return 0;
+		return;
 	}
 
 	var topicI = this.topicLookupByName[topic];
 
-	while(self.topics[topicI]['data'].length > 0 && self.topics[topicI]['data'][0].t < self.x.domain()[0]){
-		self.topics[topicI]['data'].splice(0, 1);
+	var events = []
+	if(type === 'topic-play'){
+		events = self.topics[topicI]['spallas'][spalla_id];
+	} else {
+		for(sp in self.topics[topicI]['spallas']) {
+			events = _.union(events, self.topics[this.topicLookupByName[topic]]['spallas'][sp]);
+		}
+		events = _.sortBy(events, "t");
+		events = _.uniq(events, true, function(e) {return "+" + e.t})
+	}
+
+	while(events.length > 0 && events[0].t < self.x.domain()[0]){
+		events.splice(0, 1);
 		self.svg.select(".topic-"+topicI).remove();
 	}
 
-	self.svg.selectAll(".topic-"+topicI)
-		.data(self.topics[topicI]['data'])
+	self.svg.selectAll(".topic-"+topicI+" " + type)
+		.data(events)
 		.enter().append("svg:line")
 		.attr("class", "topic topic-"+topicI+" " + type)
 		.attr("x1", function(d, i) { return self.x(d.t); })
@@ -91,22 +106,30 @@ GraphicActivity.prototype.drawTopic = function(topicDisplayHeight, topic, type){
 		.attr("transform", function(d){
 			//return "translate(" + -(self.x(self.x.domain()[1]) - self.x(d.t)) + ")"
 		});
-	return 1;
 }
 
 GraphicActivity.prototype.tick = function(){
 	var self = this;
+
+	if(window.detailViewManager.activeLemma) {
+		var spalla_id = window.detailViewManager.activeLemma.spalla_id;
+	} else {
+		return;
+	}
 
 	var labels = [];
 	var topicDisplayNum = 0;
 
 	for(hearTopic in self.viewTopicsHears){
 		labels.push(self.viewTopicsHears[hearTopic]);
-		topicDisplayNum += self.drawTopic(topicDisplayNum, self.viewTopicsHears[hearTopic], 'topic-hear');
+		self.drawTopic(topicDisplayNum, self.viewTopicsHears[hearTopic], 'topic-hear', spalla_id);
+		topicDisplayNum++;
 	}
+
 	for(playsTopic in self.viewTopicsPlays){
 		labels.push(self.viewTopicsPlays[playsTopic]);
-		topicDisplayNum += self.drawTopic(topicDisplayNum, self.viewTopicsPlays[playsTopic], 'topic-play');
+		self.drawTopic(topicDisplayNum, self.viewTopicsPlays[playsTopic], 'topic-play', spalla_id);
+		topicDisplayNum++;
 	}
 
 	// Set side labels
