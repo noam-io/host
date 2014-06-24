@@ -91,7 +91,22 @@ describe NoamServer::Orchestra do
     connection_1.stub(:send_event).and_raise("unknown send_data target")
     orchestra.play("listens_for_1", 12.42, player_1.spalla_id)
     orchestra.players.should == {}
-  end
+	end
+
+	it "should not remove the player from the Grabbed Lemmas when is fired" do
+		NoamServer::GrabbedLemmas.instance.add({
+																	 :name => id_1,
+																	 :desired_room_name => "room_name",
+																	 :device_type => "java",
+																	 :system_version => "1",
+																	 :ip => "127.0.0.1",
+																	 :port => "8084",
+																	 :last_activity_timestamp => Time.now.getutc
+															 })
+		orchestra.register( connection_1, player_1 )
+		orchestra.fire_player( id_1 )
+		NoamServer::GrabbedLemmas.instance.get_all().include?(id_1).should be_true
+	end
 
   it "should update plays when an event is sent" do
     orchestra.register( connection_1, player_1 )

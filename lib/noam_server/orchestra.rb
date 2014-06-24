@@ -64,8 +64,6 @@ module NoamServer
         actors.empty?
       end
 
-			GrabbedLemmas.instance.delete(spalla_id)
-
 			@unregister_callbacks.each do |callback|
         callback.call(player)
       end
