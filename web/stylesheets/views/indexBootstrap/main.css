@@ -26,40 +26,27 @@ body {
 }
 
 .table tr td {
-	width: 150px;
 	height: 40px;
 }
 
-.table tr>td.name {
-	position: absolute;
-	left: 0px;
-	top: auto;
-	width: 100px;
+.table tr>td.name, .table tr>td.timestamp, .table tr>td.value {
 	border-right: 0px none black;
 	background-color: #FFF;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 15%;
+}
+
+.table tr>td.name {
+	max-width: 100px;
 }
 
 .table tr>td.timestamp {
-	position: absolute;
-	left: 100px;
-	top: auto;
-	width: 100px;
 	font-size: 11px;
-	border-right: 0px none black;
-	background-color: #FFF;
-}
-
-.table tr>td.value {
-	position: absolute;
-	left: 200px;
-	top: auto;
-	width: 100px;
-	border-right: 0px none black;
-	background-color: #FFF;
 }
 
 #Channels {
-	padding-left: 300px;
 	overflow-x: scroll;
 	overflow-y: visible;
 }
@@ -133,6 +120,10 @@ body {
 
 }
 
+#graph-grid > .container {
+	max-width: 100%;
+}
+
 .graph-grid-menu ul.MainViewToggles li {
 	font-size: 20px;
 	font-weight: bolder;
@@ -185,9 +176,9 @@ body {
 	right: -400px;
 	width: 400px;
 	height: 500px;
-
 	padding: 10px;
 	background-color: #F0F0F0;
+	z-index: 1000;
 }
 
 #detailPane .handle {
