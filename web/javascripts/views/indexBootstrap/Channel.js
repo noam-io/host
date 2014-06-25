@@ -89,12 +89,11 @@ Channel.prototype.toTR = function(players){
 	tr.append($("<td></td>").addClass('name').html(this.name.replace(/\s+/g, '-')));
 	tr.append($("<td></td>").addClass('timestamp').html(activity_substring));
 	var displayVal = unescape(this.value_escaped);
-	var valueTR = $("<td></td>").addClass('dataCellLimited').addClass('value').html(
-		displayVal.substring(0, 10) + ((displayVal.length > 10) ? "..." : ""));
+	var valueTR = $("<td></td>").addClass('dataCellLimited').addClass('value').html(displayVal);
 	valueTR.attr('data-trigger', 'hover');
 	valueTR.attr('data-placement', 'right');
 	valueTR.attr('data-content', displayVal);
-	valueTR.popover();
+	valueTR.popover({container: 'body'});
 	tr.append(valueTR);
 	var numSH = 0;
 	for(lemma_id in players){
@@ -149,7 +148,7 @@ Channel.prototype.draw = function(players){
 			obj.find('.timestamp').html($.timeago(this.timestamp));
 		}
 		var displayVal = unescape(this.value_escaped);
-		obj.find('.value').html(displayVal.substring(0, 10) + ((displayVal.length > 10) ? "..." : ""));
+		obj.find('.value').html(displayVal);
 		obj.find('.value').attr('data-content', displayVal);
 		obj.find('.popover-content').empty().append(displayVal);
 		var numPH = 0;
