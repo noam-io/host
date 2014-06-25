@@ -35,11 +35,10 @@ body {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	width: 15%;
 }
 
 .table tr>td.name {
-	max-width: 100px;
+	max-width: 150px;
 }
 
 .table tr>td.timestamp {
