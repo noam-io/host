@@ -9,7 +9,7 @@ function Channel(channel, players){
 	this.update(channel, players);
 	this.cb = {};
 	this.removed = false;
-	this.timestamp = new Date().toISOString();
+	this.timestamp = new Date();
 }
 
 
@@ -47,6 +47,9 @@ Channel.prototype.createElementCallbacks = function(){
 Channel.prototype.update = function(channel, players){
 	var updated = false;
 	var spallas_updated = {};
+
+	// Each channel returns a list of lemmas and their update times and values
+	// Here we look though each updated spalla and record the values / times 
 	for(spalla_id in channel){
 		spallas_updated[spalla_id] = false;
 		if(this[spalla_id] === undefined) {
@@ -58,6 +61,15 @@ Channel.prototype.update = function(channel, players){
 				this[spalla_id][key] = channel[spalla_id][key];
 			}
 			updated = updated  || spallas_updated[spalla_id]
+		}
+
+		if(this[spalla_id].timestamp){
+			this[spalla_id].date = new Date(this[spalla_id].timestamp);
+			if((this[spalla_id].date != "Invalid Date") &&
+			   (this.timestamp == null || this[spalla_id].date > this.timestamp)){
+				this.timestamp = this[spalla_id].date;
+				this.value_escaped = channel[spalla_id].value_escaped;
+			}
 		}
 	}
 	if(updated){
