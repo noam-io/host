@@ -34,7 +34,7 @@ module NoamServer
       @webserver = WebSocketServer.new(ConfigManager[:web_socket_port])
       @broadcaster = UdpBroadcaster.new(ConfigManager[:broadcast_port],
                                         ConfigManager[:web_server_port],
-                                       GrabbedLemmas.instance)
+                                       Orchestra.instance)
       @marcopolo = UdpListener.new
       OtherGuestsList.instance(LocatedServers.instance)
     end

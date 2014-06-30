@@ -7,7 +7,7 @@ require 'noam/sorting'
 
 module NoamServer
   class Orchestra
-    attr_reader :players, :events
+    attr_reader :players, :events, :last_modified
 
     def self.instance
       @instance ||= self.new
@@ -20,6 +20,7 @@ module NoamServer
       @play_callbacks = []
       @register_callbacks = []
       @unregister_callbacks = []
+			@last_modified = Time.now.utc
     end
 
     def clear
@@ -45,6 +46,8 @@ module NoamServer
 
       UnconnectedLemmas.instance.delete(spalla_id)
 
+			update_last_modified
+
       player.plays.each do |event|
         @events[event] ||= {}
       end
@@ -64,6 +67,8 @@ module NoamServer
         actors.delete(spalla_id)
         actors.empty?
       end
+
+			update_last_modified
 
 			@unregister_callbacks.each do |callback|
         callback.call(player)
@@ -151,6 +156,12 @@ module NoamServer
 		def get_players(order=nil)
 			return Noam::Sorting.run(players,order) if order
 			return players.dup
+		end
+
+		private
+
+		def update_last_modified
+			@last_modified = Time.now.utc
 		end
 
   end
