@@ -74,7 +74,11 @@ Channel.prototype.update = function(channel, players){
 	}
 	if(updated){
 		this.draw(players);
-		this.highlight();
+		for(spalla_id in channel){
+			if(spallas_updated[spalla_id]){
+				this.highlight(spalla_id);
+			}
+		}
 		for(spalla_id in channel){
 			if(spallas_updated[spalla_id]) {
 				activityGraph.addActivity(channel_name, spalla_id);
@@ -126,13 +130,15 @@ Channel.prototype.toTR = function(players){
 	}
 }
 
-Channel.prototype.highlight = function(){
-	var obj = $("#Channels .table tbody .channel[channel-name="+this.name.replace(/\s+/g, '-')+"]");
+Channel.prototype.highlight = function(spalla_id){
+	var obj = $("#Channels .table tbody .channel[channel-name="+this.name.replace(/\s+/g, '-')+"] ."+spalla_id);
 	if(obj.size() != 0){
 		// Clear previous highlight unanimation
 		if(this.highlightTimeout){
 			clearTimeout(this.highlightTimeout);
 		}
+
+		obj.removeAttr('style');
 
 		// Animate to highlight
 		obj.stop().animate({'background-color': '#FF9'}, 300);
