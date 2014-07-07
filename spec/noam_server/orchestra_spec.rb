@@ -60,7 +60,13 @@ describe NoamServer::Orchestra do
     orchestra.play("listens_for_1", 12.42, player_1.spalla_id )
   end
 
-  it "deletes newly-registered players from the unconnected list" do
+	it "changes last modified when a player is registered" do
+		before = orchestra.last_modified
+		orchestra.register(connection_1, player_1)
+		orchestra.last_modified.should_not == before
+	end
+
+	it "deletes newly-registered players from the unconnected list" do
     NoamServer::UnconnectedLemmas.instance.add({:name => id_1})
     NoamServer::UnconnectedLemmas.instance.get(id_1).should_not == nil
     orchestra.register(connection_1, player_1)
@@ -71,9 +77,17 @@ describe NoamServer::Orchestra do
     orchestra.register( connection_1, player_1 )
     orchestra.fire_player( id_1 )
     orchestra.players.has_key?( id_1 ).should be_false
-  end
+	end
 
-  it "updates events when a player is fired" do
+	it "changes last modified when a player is fired" do
+		orchestra.register( connection_1, player_1 )
+		before = orchestra.last_modified
+		orchestra.fire_player( id_1 )
+		orchestra.last_modified.should_not == before
+	end
+
+
+	it "updates events when a player is fired" do
     orchestra.register( connection_1, player_1 )
     player_3 = NoamServer::Player.new( "Web #3", 'Virtual Machine', 'System Version',
                                       ["listens_for_1", "listens_for_2"],
