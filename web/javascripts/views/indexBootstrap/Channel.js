@@ -10,6 +10,7 @@ function Channel(channel, players){
 	this.cb = {};
 	this.removed = false;
 	this.timestamp = new Date();
+	this.value_escaped = "";
 }
 
 

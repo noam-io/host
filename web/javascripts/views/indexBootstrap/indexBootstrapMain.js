@@ -73,6 +73,14 @@ $(function() {
         } else {
           players[lemma_id].update(_players[lemma_id]);
         }
+
+        // Ensures all channels are added to grid even if no activity
+        var allChannels = players[lemma_id].hears.concat(players[lemma_id].plays);
+        allChannels.map(function(value){
+          if(!(value in channels)){
+            channels[value] = new Channel({'name' : value }, players); 
+          }
+        });
       }
 
       $("#Channels .table thead tr .player").each(function(){
