@@ -1,9 +1,12 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
+require 'noam/sorting'
 require 'noam_server/grabbed_lemmas'
 require 'noam_server/noam_logging'
+require 'noam_server/null_player'
 require 'noam_server/unconnected_lemmas'
-require 'noam/sorting'
+
+
 
 module NoamServer
   class Orchestra
@@ -77,8 +80,8 @@ module NoamServer
 
     def heartbeat(player_id)
       NoamLogging.debug(self, "Got heatbeat from " + player_id)
-      player = players[player_id]
-      player.last_activity = DateTime.now unless player.nil?
+      player = get_player(player_id)
+      player.last_activity = DateTime.now
       if player.send_heartbeat_acks?
         connection = @connections[player_id]
         connection.send_heartbeat_ack(player_id)
@@ -102,17 +105,12 @@ module NoamServer
       @events.keys.sort
     end
 
-    def can_play?(player_id)
-      player = players[player_id]
-      return (player_id == :web_ui_lemma) || (player && player.in_right_room?)
-    end
-
     def play(event, value, player_id)
-      return if !can_play?(player_id)
+      player = get_player(player_id)
+      return if !player.in_right_room?
 
-      player = players[player_id]
-      player.learn_to_play(event) unless player.nil?
-      player.last_activity = DateTime.now unless player.nil?
+      player.learn_to_play(event)
+      player.last_activity = DateTime.now
       @events[event] ||= {}
 
       # We need to dup here since #fire_player can mutate the underlying hashes
@@ -146,17 +144,21 @@ module NoamServer
 
     def players_for(spalla_ids)
       spalla_ids ||= []
-      valid_players = players.select{ |spalla_id, player| spalla_ids.include? spalla_id }.values
+      players.select{ |spalla_id, player| spalla_ids.include? spalla_id }.values
     end
 
     def spalla_ids
       players.values.map( &:spalla_id )
-		end
+    end
 
 		def get_players(order=nil)
 			return Noam::Sorting.run(players,order) if order
 			return players.dup
 		end
+
+    def get_player(player_id)
+      players[player_id] || Noam::NullPlayer.new
+    end
 
 		private
 

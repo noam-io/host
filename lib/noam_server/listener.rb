@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'noam/tcp_listener'
 require 'noam_server/message_handler'
@@ -16,7 +16,7 @@ module NoamServer
           parsed_message = Noam::Messages.parse(msg)
           @spalla_id = parsed_message.spalla_id
           handler.message_received(parsed_message, self)
-          if !Orchestra.instance.can_play?(@spalla_id)
+          if !Orchestra.instance.get_player(@spalla_id).in_right_room?
             close_connection_after_writing
           end
         rescue JSON::ParserError
