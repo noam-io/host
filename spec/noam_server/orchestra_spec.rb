@@ -1,4 +1,4 @@
-#Copyright (c) 2014, IDEO 
+#Copyright (c) 2014, IDEO
 
 require 'logger'
 require 'config'
@@ -200,6 +200,18 @@ describe NoamServer::Orchestra do
       end
 
       orchestra.play("food", "bard", id_1)
+      @callback_run.should be_true
+    end
+
+    it "creates null player objects when unknown players play" do
+      #don't register a player
+
+      orchestra.on_play do |name, value, player|
+        @callback_run = true
+        player.should_not be_nil
+      end
+
+      orchestra.play("food", "bard", :web_ui_lemma)
       @callback_run.should be_true
     end
   end
