@@ -14,11 +14,10 @@ module Noam
 
     def receive_data(data)
       enum = data.each_byte
-      while true
+      loop do
         read_length(enum) if self.message_length.nil?
         read_payload(enum) unless self.message_length.nil?
       end
-    rescue StopIteration
     end
 
     def read_length(enum)
